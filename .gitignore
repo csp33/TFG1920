@@ -241,6 +241,6 @@ TSWLatexianTemp*
 # generated if using elsarticle.cls
 *.spl
 
-# ID
+# PDF
 
-input/id.tex
+*.pdf
