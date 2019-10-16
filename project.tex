@@ -1,0 +1,101 @@
+\documentclass[12pt,english]{article}
+\usepackage[a4paper,left=3cm,right=2cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{amsthm,thmtools}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{subcaption}
+\usepackage{adjustbox}
+\usepackage{multirow}
+\usepackage[hidelinks]{hyperref}
+\usepackage{caption}
+\usepackage{amsthm}
+\usepackage{multicol}
+\usepackage{float}
+\usepackage{amsfonts}
+\usepackage{titling}
+\usepackage{soul}
+\usepackage{listings}
+\usepackage{array}
+\usepackage[framemethod=tikz]{mdframed}
+
+
+\graphicspath{ {./img/}}
+\makeatletter
+\def\input@path{{input/}}
+\makeatother
+\selectlanguage{english}
+
+
+
+\lstset{
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
+
+
+\makeindex
+
+\definecolor{light-gray}{gray}{0.95}
+\lstset{columns=fullflexible,basicstyle=\ttfamily}
+\surroundwithmdframed[
+  hidealllines=true,
+  backgroundcolor=light-gray,
+  innerleftmargin=0pt,
+  innertopmargin=0pt,
+  innerbottommargin=0pt]{lstlisting}
+
+
+\begin{document}
+
+\input{titlepage.tex}
+\input{preface.tex}
+\thispagestyle{empty}
+\newpage
+\tableofcontents{}
+\newpage
+\listoffigures
+\thispagestyle{empty}
+\newpage
+
+\section{Introduction}
+
+\subsection{Context}
+
+\subsection{Motivation}
+
+\subsection{Objectives}
+
+\subsection{Structure}
+
+
+\section{State of the art}
+
+\section{Methodology}
+
+\subsection{Design}
+
+\subsection{Implementation}
+
+
+\section{Evaluation}
+
+\subsection{Experimental setup}
+
+\subsection{Results}
+
+
+\section{Discussion}
+
+\section{Conclusions}
+
+
+
+
+
+\end{document}
