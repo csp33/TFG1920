@@ -20,6 +20,7 @@
 \usepackage{amsfonts}
 \usepackage{titling}
 \usepackage{soul}
+\usepackage[nottoc]{tocbibind}
 \usepackage{listings}
 \usepackage{array}
 \usepackage[framemethod=tikz]{mdframed}
@@ -65,16 +66,115 @@
 
 \section{Introduction}
 
+The aim of this project is to create a Telegram bot that will act as a personal couch, specifically a psychologist.\\
+
+In addition, it is intended to develop a software development kit to easily create another coaches (for example a nutritionist). All these couches will interact with a Natural Processing Language module that will transform the user response into an ontology, so that the bot can naturally continue the conversation as it takes relevant data to be shown to an specialist.
+
 \subsection{Context}
+
 
 \subsection{Motivation}
 
+Mental disorders are very common in our society. They are difficult to be diagnosed and properly treated. Most intervention programs do not last as much as they should and doctors have a very high workload, so patients need to wait for a long time before being advised by a doctor. In addition, although having a mental disease is very common, it is still a taboo subject. \\
+
+On the other hand, smartphones are becoming increasingly integrated in our lives. Chat applications are used on a daily basis.\\
+
+Modern chat applications allow us to create bots that can interact with us like if there was a person on the other side.\\
+
+As we previously discussed, mental disorders are taboo, so having a bot you can talk with about how was your day, feelings, etc. could lead to an easier way of diagnosing them because chat conversations are seen as ''natural'' by the society. In addition, the bot will chat with us in a natural way thanks to the NLP module. This will help the patient not to consider the coach a doctor, making easier to tell it how he/she feels.
+
 \subsection{Objectives}
+
+MOSCOW ?
+- parse audios, emojis, etc
+- different languages ?
+- architecture (containers)
 
 \subsection{Structure}
 
-
+\newpage
 \section{State of the art}
+
+\subsubsection{Classification of conversational agents}
+
+According to ''Survey of conversational agents in health'' \cite{a7}, we can classify chatbots according to the following items:
+
+\begin{figure}[H]
+  \centering
+  \includegraphics{taxonomy.jpg}
+  \caption{Classification of conversational agents}
+\end{figure}
+
+
+\subsubsection{Health conversational agents to teach}
+
+Chatbots can help students by creating a simulation of a particular scenario so that they can learn how to act.
+\begin{itemize}
+  \item ''A tool for training primary health care medical students: The virtual simulated patient''\cite{a1} offers a simulation of a real patient that presents several symptoms. Students must interview him and make a diagnostic as a doctor would do in real life.
+  \item ''A Virtual Counseling Application Using Artificial Intelligence for Communication Skills Training in Nursing Education: Development Study'' \cite{a8} intends to improve undergraduates communication skills with patients.
+\end{itemize}
+
+
+\subsubsection{Health conversational agents to help}
+
+Another useful field of application is helping professionals to do their work.
+
+\begin{itemize}
+  \item ''Mandy: Towards a smart primary care chatbot application'' \cite{a2} is an agent that interviews patients before the doctor does. Mandy elaborates a diagnostic based on several questions about patients symptoms and sends it to the doctor so that he can save that time.
+  \item As professional treatments do not last as much, complements such as ''Artificial Intelligence-Assisted Online Social Therapy for Youth Mental Health'' \cite{a5} appear. They offer a long-term treatment after the professional one so that the patient's progress is not lost.
+\end{itemize}
+
+\subsubsection{Effectiveness of health conversational agents}
+
+Health coaches can be really helpful, as we can see in the following publications:
+
+\begin{itemize}
+  \item ''Usability and acceptability assessment of an empathic virtual agent to prevent major depression'' \cite{a9} proposes a platform to identify and provide early intervention for symptoms of depression and suicide. Its usability percentage was 75.7\% and its accuracy, 70.9\%
+  \item ''Designing behavioral self-regulation application for preventive personal mental healthcare'' \cite{a3} offers preventive therapy for mental healthcare. The users' mental health punctuation significantly improved after using the application. Moreover, the usage rate and the number of suggested actions carried out was high. That indicates that people found the app useful.
+  \item ''Real-time tailoring of depression counseling by conversational agent'' \cite{a4} is an agent that responds to users' affective states during virtual therapy sessions. Facial expressions and voices are measured during the session. 70\% of users affirmed that they felt understood by the agent. 50\% of them stated that the agent evoked emotional responses in them during the interactions.
+\end{itemize}
+
+\subsubsection{Challenges related to health conversational agents}
+
+Challenges related to health chatbots can be classified into five categories:
+\begin{itemize}
+  \item Generation and understanding of dialog. Chatbots should be able to understand users in a natural way, taking into account the context of the conversation, voice, ambiguities, etc. and elaborate a question to continue the conversation in a natural way.
+  \item Integrate chatbots with other technologies, such as machine learning algorithms to adapt themselves to the user.
+  \item Adaptation of chatbots for elder people. They should be simple so that everyone can take advantage of their benefits.
+\end{itemize}
+
+\subsubsection{Popularity of chatbots}
+
+Several queries were performed on \textit{scopus.com} to check the number of articles per year related to chatbots and their applications in health. The obtained results were the following ones:
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{chatbot.png}
+  \caption{Result of 'chatbot' query}
+\end{figure}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{chatbotandassistant.png}
+  \caption{Result of 'chatbot AND assistant' query}
+\end{figure}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{chatbotandcoach.png}
+  \caption{Result of 'chatbot AND coach' query}
+\end{figure}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{conversationalagent.png}
+  \caption{Result of 'conversational agent' query}
+\end{figure}
+
+We can conclude that chatbots and their application to health are growing technologies.
 
 \section{Methodology}
 
@@ -94,11 +194,8 @@
 
 \section{Conclusions}
 
-\section{References}
 
-
-
-
-
-
+\newpage
+\bibliographystyle{abbrv}
+\bibliography{refs}
 \end{document}
