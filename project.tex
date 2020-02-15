@@ -14,24 +14,24 @@
 \usepackage{multirow}
 \usepackage[hidelinks]{hyperref}
 \usepackage{caption}
+\usepackage{apacite}
 \usepackage{amsthm}
 \usepackage{multicol}
 \usepackage{float}
 \usepackage{amsfonts}
 \usepackage{titling}
 \usepackage{soul}
+\usepackage{pgfplots}
 \usepackage[nottoc]{tocbibind}
 \usepackage{listings}
 \usepackage{array}
 \usepackage[framemethod=tikz]{mdframed}
-
 
 \graphicspath{ {./img/}}
 \makeatletter
 \def\input@path{{input/}}
 \makeatother
 \selectlanguage{english}
-
 
 
 \lstset{
@@ -50,6 +50,11 @@
   innerleftmargin=0pt,
   innertopmargin=0pt,
   innerbottommargin=0pt]{lstlisting}
+
+\pgfplotsset{width=8cm,compat=1.9, xlabel={Year},
+  ylabel={Number of documents}, xtick distance={2},
+  ytick distance={2}, ymajorgrids=true,grid style=dashed,
+  /pgf/number format/.cd,use comma,1000 sep={}}
 
 
 \begin{document}
@@ -71,11 +76,14 @@ The aim of this project is to create a Telegram bot that will act as a personal 
 In addition, it is intended to develop a software development kit to easily create another coaches (for example a nutritionist). All these couches will interact with a Natural Processing Language module that will transform the user response into an ontology, so that the bot can naturally continue the conversation as it takes relevant data to be shown to an specialist.
 
 \subsection{Context}
+Mental disorders are very common in our society. They are difficult to be diagnosed and properly treated. Most intervention programs do not last as much as they should and doctors have a very high workload, so patients need to wait for a long time before being advised by a doctor. In addition, although having a mental disease is very common, it is still a taboo subject whose stigma makes them even more difficult to be diagnosed and treated.\\
+
+In addition, there is not a continuous traceability of patients' health status, so relevant data is not retrieved.
+
 
 
 \subsection{Motivation}
 
-Mental disorders are very common in our society. They are difficult to be diagnosed and properly treated. Most intervention programs do not last as much as they should and doctors have a very high workload, so patients need to wait for a long time before being advised by a doctor. In addition, although having a mental disease is very common, it is still a taboo subject. \\
 
 On the other hand, smartphones are becoming increasingly integrated in our lives. Chat applications are used on a daily basis.\\
 
@@ -93,11 +101,11 @@ MOSCOW ?
 \subsection{Structure}
 
 \newpage
-\section{State of the art}
+\subsection{State of the art}
 
 \subsubsection{Classification of conversational agents}
 
-According to ''Survey of conversational agents in health'' \cite{a7}, we can classify chatbots according to the following items:
+According to \cite{Montenegro201956}, we can classify chatbots according to the following items:
 
 \begin{figure}[H]
   \centering
@@ -110,8 +118,8 @@ According to ''Survey of conversational agents in health'' \cite{a7}, we can cla
 
 Chatbots can help students by creating a simulation of a particular scenario so that they can learn how to act.
 \begin{itemize}
-  \item ''A tool for training primary health care medical students: The virtual simulated patient''\cite{a1} offers a simulation of a real patient that presents several symptoms. Students must interview him and make a diagnostic as a doctor would do in real life.
-  \item ''A Virtual Counseling Application Using Artificial Intelligence for Communication Skills Training in Nursing Education: Development Study'' \cite{a8} intends to improve undergraduates communication skills with patients.
+  \item \cite{Lopez2008194} offers a simulation of a real patient that presents several symptoms. Students must interview him and make a diagnostic as a doctor would do in real life.
+  \item \cite{Shorey2019e14658} intends to improve undergraduates communication skills with patients.
 \end{itemize}
 
 
@@ -120,8 +128,8 @@ Chatbots can help students by creating a simulation of a particular scenario so 
 Another useful field of application is helping professionals to do their work.
 
 \begin{itemize}
-  \item ''Mandy: Towards a smart primary care chatbot application'' \cite{a2} is an agent that interviews patients before the doctor does. Mandy elaborates a diagnostic based on several questions about patients symptoms and sends it to the doctor so that he can save that time.
-  \item As professional treatments do not last as much, complements such as ''Artificial Intelligence-Assisted Online Social Therapy for Youth Mental Health'' \cite{a5} appear. They offer a long-term treatment after the professional one so that the patient's progress is not lost.
+  \item \cite{Ni201738} is an agent that interviews patients before the doctor does. Mandy elaborates a diagnostic based on several questions about patients symptoms and sends it to the doctor so that he can save that time.
+  \item As professional treatments do not last as much, complements such as \cite{DAlfonso2017} appear. They offer a long-term treatment after the professional one so that the patient's progress is not lost.
 \end{itemize}
 
 \subsubsection{Effectiveness of health conversational agents}
@@ -129,9 +137,9 @@ Another useful field of application is helping professionals to do their work.
 Health coaches can be really helpful, as we can see in the following publications:
 
 \begin{itemize}
-  \item ''Usability and acceptability assessment of an empathic virtual agent to prevent major depression'' \cite{a9} proposes a platform to identify and provide early intervention for symptoms of depression and suicide. Its usability percentage was 75.7\% and its accuracy, 70.9\%
-  \item ''Designing behavioral self-regulation application for preventive personal mental healthcare'' \cite{a3} offers preventive therapy for mental healthcare. The users' mental health punctuation significantly improved after using the application. Moreover, the usage rate and the number of suggested actions carried out was high. That indicates that people found the app useful.
-  \item ''Real-time tailoring of depression counseling by conversational agent'' \cite{a4} is an agent that responds to users' affective states during virtual therapy sessions. Facial expressions and voices are measured during the session. 70\% of users affirmed that they felt understood by the agent. 50\% of them stated that the agent evoked emotional responses in them during the interactions.
+  \item \cite{Breso2016297} proposes a platform to identify and provide early intervention for symptoms of depression and suicide. Its usability percentage was 75.7\% and its accuracy, 70.9\%
+  \item \cite{Hirano2017} offers preventive therapy for mental healthcare. The users' mental health punctuation significantly improved after using the application. Moreover, the usage rate and the number of suggested actions carried out was high. That indicates that people found the app useful.
+  \item \cite{Ring2016} is an agent that responds to users' affective states during virtual therapy sessions. Facial expressions and voices are measured during the session. 70\% of users affirmed that they felt understood by the agent. 50\% of them stated that the agent evoked emotional responses in them during the interactions.
 \end{itemize}
 
 \subsubsection{Challenges related to health conversational agents}
@@ -146,35 +154,48 @@ Challenges related to health chatbots can be classified into five categories:
 \subsubsection{Popularity of chatbots}
 
 Several queries were performed on \textit{scopus.com} to check the number of articles per year related to chatbots and their applications in health. The obtained results were the following ones:
-
 \begin{figure}[H]
-  \centering
-  \includegraphics[width=0.5\textwidth]{chatbot.png}
-  \caption{Result of 'chatbot' query}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[title=Result of 'chatbot' query, ytick distance={50}]
+        \addplot table {data/chatbot_query_results.dat};
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}
+  \hspace{3cm}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[title=Result of 'chatbot AND assistant' query, ytick distance={10}]
+        \addplot table {data/chatbot_and_assistant_query_results.dat};
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}
+
+  \vspace{1cm}
+
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[title=Result of 'chatbot AND health' query, ytick distance={10}]
+        \addplot table {data/chatbot_and_health_query_results.dat};
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}
+  \hspace{3cm}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[title=Result of 'conversational agent' query, ytick distance={50}]
+        \addplot table {data/conversational_agent_query_results.dat};
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}
+  \caption{Search results of different queries performed in \textit{scopus.com}}
 \end{figure}
 
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.5\textwidth]{chatbotandassistant.png}
-  \caption{Result of 'chatbot AND assistant' query}
-\end{figure}
-
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.5\textwidth]{chatbotandcoach.png}
-  \caption{Result of 'chatbot AND coach' query}
-\end{figure}
-
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.5\textwidth]{conversationalagent.png}
-  \caption{Result of 'conversational agent' query}
-\end{figure}
-
-We can conclude that chatbots and their application to health are growing technologies.
+Although the scale of the different plots is different, we can observe that all of them show a considerable incresing number of articles and papers related to chatbots.
 
 \section{Methodology}
 
@@ -196,6 +217,6 @@ We can conclude that chatbots and their application to health are growing techno
 
 
 \newpage
-\bibliographystyle{abbrv}
+\bibliographystyle{apacite}
 \bibliography{refs}
 \end{document}
