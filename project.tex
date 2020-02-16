@@ -76,32 +76,60 @@ The aim of this project is to create a Telegram bot that will act as a personal 
 In addition, it is intended to develop a software development kit to easily create another coaches (for example a nutritionist). All these couches will interact with a Natural Processing Language module that will transform the user response into an ontology, so that the bot can naturally continue the conversation as it takes relevant data to be shown to an specialist.
 
 \subsection{Context}
-Mental disorders are very common in our society. They are difficult to be diagnosed and properly treated. Most intervention programs do not last as much as they should and doctors have a very high workload, so patients need to wait for a long time before being advised by a doctor. In addition, although having a mental disease is very common, it is still a taboo subject whose stigma makes them even more difficult to be diagnosed and treated.\\
 
-In addition, there is not a continuous traceability of patients' health status, so relevant data is not retrieved.
+Mental disorders are very common in our society. According to \cite{Bandelow2015}, almost 34\% of the population suffer from anxiety at least once in their lives. They are difficult to be diagnosed and properly treated. Most intervention programs do not last as much as they should and doctors have a very high workload, so patients need to wait for a long time before being advised by a doctor. In addition, although having a mental disease is very common, it is still a taboo subject whose stigma makes them even more difficult to be diagnosed and treated, as \cite{Davies2000} states.\\
 
+In addition, people do not go to the doctor every time something happens, so there is not a continuous traceability of patients' health status. This causes a lot of relevant data not to be retrieved. This data could be suitable to perform more specific and personal medical analysis. Having a coach that regularly interacts with the patient as well as extracts data from his or her responses would take advantage of this information.
 
 
 \subsection{Motivation}
 
+Nowadays, technology is becoming increasingly integrated in our lives. Specifically, smartphones have became a daily basis used tool. People read the news, check the weather, chat with their relatives and friends, etc. using smartphones. Modern chat applications (such as Telegram) allow people to create bots that can interact with them like if there was a person on the other side. These chatbots are increasingly becoming popular amongst people because they cover many functionalities, from tracking shipments to playing games and reminding stuff. Telegram bots do not require another app to be installed in the client's phone, so the client can save storage space is saved.\\
 
-On the other hand, smartphones are becoming increasingly integrated in our lives. Chat applications are used on a daily basis.\\
+As we previously discussed, mental disorders are taboo, so having a bot you can talk with about how was your day, feelings, etc. could lead to an easier way of diagnosing them because chat conversations are seen as ''natural'' by society. In addition, the bot will chat with the patient in a natural way thanks to the Natural Language Processing module. This will help the patient not to consider the coach a doctor, making easier to tell it how he or she feels.
 
-Modern chat applications allow us to create bots that can interact with us like if there was a person on the other side.\\
-
-As we previously discussed, mental disorders are taboo, so having a bot you can talk with about how was your day, feelings, etc. could lead to an easier way of diagnosing them because chat conversations are seen as ''natural'' by the society. In addition, the bot will chat with us in a natural way thanks to the NLP module. This will help the patient not to consider the coach a doctor, making easier to tell it how he/she feels.
+\newpage
 
 \subsection{Objectives}
 
-MOSCOW ?
-- parse audios, emojis, etc
-- different languages ?
-- architecture (containers)
+\begin{itemize}
+  \item \textbf{Main objective}: develop a chatbot able to interact with a patient in a natural way. This chatbot will retrieve data from his or her attitude and responses and generate a report with this information to be sent to the patient's doctor.
+  \item \textbf{Secondary objectives}:
+    \begin{itemize}
+      \item Develop helper modules for the chatbot so that it can perform its functionalities.
+      \item Design an architecture based on containers to host the chatbot modules.
+      \item Test a beta version of the chatbot in real people and analyse the retrieved data.
+    \end{itemize}
+\end{itemize}
 
 \subsection{Structure}
 
+The first chapter of this project offers an introduction to the context in which the main goal is intended to be developed. It also contains an analysis of related papers. This analysis is divided into three main categories (health domains, dialog and architecture) and a research about the popularity of chatbots.\\
+
+The second one (\textbf{Methodology}) contains the proper requisites design. architecture, programming language and frameworks that are intended to be used in the charbot development, as well as its the most important modules and some code snippets to illustrate its functionality.\\
+
+The third one, \textbf{Evaluation}, shows the results of the chatbot testing amongst real people and the obtained results in an objective way.\\
+
+The fourth chapter, \textbf{Discussion}, analyses the results obtained in the third chapter.\\
+
+Finally, the last one, \textbf{Conclussions} analyses the initial objectives of the project and if they were achieved or not.
+
+
+
 \newpage
 \subsection{State of the art}
+
+\subsubsection{Health domains}
+
+\subsubsection{Dialog}
+
+\subsubsection{Architecture}
+
+\subsubsection{Popularity}
+
+
+
+
 
 \subsubsection{Classification of conversational agents}
 
