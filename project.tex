@@ -71,11 +71,7 @@
 
 \section{Introduction}
 
-\textcolor{red}{EXPANDIR}
-
-The aim of this project is to create a Telegram bot that will act as a personal couch, specifically a psychologist.\\
-
-In addition, it is intended to develop a software development kit to easily create another coaches (for example a nutritionist). All these couches will interact with a Natural Processing Language module that will transform the user response into an ontology, so that the bot can naturally continue the conversation as it takes relevant data to be shown to an specialist.
+\textcolor{red}{SHOREY DECIR QUÉ HACE UN POCO}
 
 \subsection{Context}
 
@@ -86,20 +82,23 @@ In addition, people do not go to the doctor every time something happens, so the
 
 \subsection{Motivation}
 
-Nowadays, technology is becoming increasingly integrated in our lives. Specifically, smartphones have became a daily basis used tool. People read the news, check the weather, chat with their relatives and friends, etc. using smartphones. Modern chat applications (such as Telegram) allow people to create bots that can interact with them like if there was a person on the other side. These chatbots are increasingly becoming popular amongst people because they cover many functionalities, from tracking shipments to playing games and reminding stuff. Telegram bots do not require another app to be installed in the client's phone, so the client can save storage space is saved.\\
+Nowadays, technology is becoming increasingly integrated in our lives. Specifically, smartphones have became a daily basis used tool. People read the news, check the weather, chat with their relatives and friends, etc. using smartphones. Modern chat applications (such as Telegram \footnote{https://telegram.org/} allow people to create bots that can interact with them like if there was a person on the other side. These chatbots are increasingly becoming popular amongst people because they cover many functionalities, from tracking shipments to playing games and reminding stuff. Telegram bots do not require another app to be installed in the client's phone, so the client can save storage space is saved.\\
 
-As we previously discussed, mental disorders are taboo, so having a bot you can talk with about how was your day, feelings, etc. could lead to an easier way of diagnosing them because chat conversations are seen as ''natural'' by society. In addition, the bot will chat with the patient in a natural way thanks to the Natural Language Processing module. This will help the patient not to consider the coach a doctor, making easier to tell it how he or she feels.
+As we previously discussed, mental disorders are taboo, so having a bot you could talk with about how was your day, feelings, etc. could lead to an easier way of diagnosing them because chat conversations are seen as ''natural'' by society. In addition, the bot would chat with the patient in a natural way thanks to Natural Language Processing. This will help the patient not to consider the coach a doctor, making easier to tell it how he or she feels.
 
 \newpage
 
 \subsection{Objectives}
 
+\textcolor{red}{CAMbiar  patient por people with mental disorders.}
+\textcolor{red}{venderlo como conversational agent as a sensor, mide información sobre comportamiento de una persona dada. ESTE ES EL OBJETIVO. lo del doctor es trabajo que se puede derivar de ahí, eso no va a los objetivos.}
+\textcolor{red}{segundo objetivo secundario: lo hago con contenedores porque blabla}
 \begin{itemize}
-  \item \textbf{Main objective}: develop a chatbot able to interact with a patient in a natural way. This chatbot will retrieve data from his or her attitude and responses and generate a report with this information to be sent to the patient's doctor.
-  \item \textbf{Secondary objectives}:
+  \item \textbf{Main goal}: to develop a chatbot able to interact with a patient in a natural way. \textcolor{red}{analyze person behaviour} This chatbot will retrieve data from his or her attitude and responses and generate a report with this information to be sent to the patient's doctor.
+  \item \textbf{Secondary goals}:
     \begin{itemize}
-      \item Develop helper modules for the chatbot so that it can perform its functionalities.
-      \item Design an architecture based on containers to host the chatbot modules.
+      \item DISEÑAR ARQUITECTURA FLEXIBLE Y ESCALABLE QUE PERMITA AÑADIR FUNCIONALIDAD A LOS CHATBOTS
+      \item IMPLEMENTAR UN CHATBOT QUE PERMITA BLABLA , otro: -- Design an architecture based on containers to host the chatbot modules.
       \item Test a beta version of the chatbot in real people and analyse the retrieved data.
     \end{itemize}
 \end{itemize}
@@ -107,7 +106,7 @@ As we previously discussed, mental disorders are taboo, so having a bot you can 
 \subsection{Structure}
 \textcolor{red}{FIX EN QUÉ SE DIVIDE ESTADO DEL ARTE CUANDO ESTÉ TERMINADO}
 
-The first chapter of this project offers an introduction to the context in which the main goal is intended to be developed. It also contains an analysis of related papers. This analysis is divided into three main categories (health domains, dialogue and architecture) and a research about the popularity of chatbots.\\
+The first chapter of this project offers an introduction to the context in which the main goal is intended to be developed. That section also contains an analysis of related papers. This analysis is divided into three main categories (health domains, dialogue and architecture) and a research about the popularity of chatbots.\\
 
 The second one (\textbf{Methodology}) contains the proper requisites design. architecture, programming language and frameworks that are intended to be used in the chatbot development, as well as its the most important modules and some code snippets to illustrate its functionality.\\
 
@@ -123,27 +122,25 @@ Finally, the last one, \textbf{Conclussions} analyses the initial objectives of 
 
 \subsection{State of the art}
 
-According to \cite{Montenegro201956}, a possible classification for chatbots state of the art could be the following:
-
 \subsubsection{Health domains}
 
-Chatbots can be applied to many health domains. For example, \cite{Alesanco2017185} is an agent that provides help to perform dermatological medicament prescriptions. \cite{BennetPraba20193470} takes care about nutrition by proposing a chatbot to motivate patients to maintain weight. Another example of conversational interface oriented to health is \cite{Falala-Sechet2019236}. It is about establishing a dialogue with patients to help them go through difficult situations that can affect their psychological status.\\
+Chatbots can be applied to many health domains. For example, \cite{Alesanco2017185} proposes an agent that provides help to perform dermatological medicament prescriptions. \cite{BennetPraba20193470} takes care about nutrition by proposing a chatbot to motivate patients to maintain weight. Another example of conversational interface oriented to health is \cite{Falala-Sechet2019236}. This paper is about establishing a dialogue with patients to help them go through difficult situations that can affect their psychological status.\\
 
-Chat agents can not only be classified according to the area they area applied to, but also according to the objective public. We can distinguish chatbots to help students learn, such as \cite{Lopez2008194} proposal. It offers a simulation of a real patient that presents several symptoms so that students have to interview it and make a diagnostic as a doctor would do in real life. Other interesting project is \cite{Shorey2019e14658}, that intends to improve communication between patients and hospital workers.\\
+Chat agents can not only be classified according to the area they area applied to, but also according to the objective public. We can distinguish chatbots to help students learn, such as \cite{Lopez2008194} proposal, that offers a simulation of a real patient that presents several symptoms so that students have to interview it and make a diagnostic as a doctor would do in real life. Other interesting project is \cite{Shorey2019e14658}, that intends to improve communication between patients and hospital workers.\\
 
-There are also chatbots aimed to help doctors do their work. For example, \cite{Ni201738} is an agent that interviews patients before the doctor does. Mandy elaborates a diagnostic based on several questions about patients symptoms and sends it to the doctor so that he can save that time. As professional treatments do not last as much, complements such as \cite{DAlfonso2017} appear. They offer a long-term treatment after the professional one so that the patient's progress is not lost. \\
+There are also chatbots aimed to help doctors do their work. For example, \cite{Ni201738} offers an agent that interviews patients before the doctor does. Mandy elaborates a diagnostic based on several questions about patients symptoms and sends it to the doctor so that he can save that time. As professional treatments do not last as much, complements such as \cite{DAlfonso2017} are used. They offer a long-term treatment after the professional one so that the patient's progress is not lost. \\
 
-Last but not least, virtual agents can be aimed to help patients. For example, \cite{Harilal2020349} is a counsellor that helps patients with depression by establishing empathetic conversations with them. \cite{Roca2020954} is an agent that offers help to people by reminding the intake of their medication, sending notifications to caregivers, providing summaries, etc.
+Last but not least, virtual agents can be aimed to help patients. For example, \cite{Harilal2020349} is a counsellor that helps patients with depression by establishing empathetic conversations with them. \cite{Roca2020954} suggests an agent that offers help to people by reminding the intake of their medication, sending notifications to caregivers, providing summaries, etc.
 
 
 \subsubsection{Dialogue}
 
 \textcolor{red}{Si el chatbot es coach (te ayuda a conseguir lo que quieres) o counseling (main goal: que te des cuenta de las cosas tú mismo. Te ayudan a identificar y resolver problemas). También si usa voz, texto o ambas}
-
-\subsubsection{Architecture}
+\subsubsection{Technology}
 
 \textcolor{red}{Añadir aquí una discusión con las plataformas que existen, número de usuarios, si tienen API para implementar bots, etc.}
 
+A review of each of the previous sections can be seen in \cite{Montenegro201956}
 \subsubsection{Number of publications related to chatbots}
 
 Several queries were performed on \textit{scopus.com} to check the number of articles per year related to chatbots and their applications in health. The obtained results were the following ones:
@@ -196,18 +193,6 @@ We can observe that all of them show a considerable increasing number of article
 
 
 
-\subsubsection{Classification of conversational agents}
-
-According to \cite{Montenegro201956}, we can classify chatbots according to the following items:
-
-\begin{figure}[H]
-  \centering
-  \includegraphics{taxonomy.jpg}
-  \caption{Classification of conversational agents}
-\end{figure}
-
-
-
 
 
 \subsubsection{Effectiveness of health conversational agents}
@@ -217,7 +202,7 @@ Health coaches can be really helpful, as we can see in the following publication
 \begin{itemize}
   \item \cite{Breso2016297} proposes a platform to identify and provide early intervention for symptoms of depression and suicide. Its usability percentage was 75.7\% and its accuracy, 70.9\%
   \item \cite{Hirano2017} offers preventive therapy for mental healthcare. The users' mental health punctuation significantly improved after using the application. Moreover, the usage rate and the number of suggested actions carried out was high. That indicates that people found the app useful.
-  \item \cite{Ring2016} is an agent that responds to users' affective states during virtual therapy sessions. Facial expressions and voices are measured during the session. 70\% of users affirmed that they felt understood by the agent. 50\% of them stated that the agent evoked emotional responses in them during the interactions.
+  \item \cite{Ring2016} suggests an agent that responds to users' affective states during virtual therapy sessions. Facial expressions and voices are measured during the session. 70\% of users affirmed that they felt understood by the agent. 50\% of them stated that the agent evoked emotional responses in them during the interactions.
 \end{itemize}
 
 \subsubsection{Challenges related to health conversational agents}
