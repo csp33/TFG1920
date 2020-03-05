@@ -3,6 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{graphicx}
+\usepackage{pifont}
 \usepackage{color}
 \usepackage{xcolor}
 \usepackage{colortbl}
@@ -19,6 +20,7 @@
 \usepackage{multicol}
 \usepackage{float}
 \usepackage{amsfonts}
+\usepackage[usestackEOL]{stackengine}
 \usepackage{titling}
 \usepackage{soul}
 \usepackage{pgfplots}
@@ -26,7 +28,11 @@
 \usepackage{listings}
 \usepackage{array}
 \usepackage[framemethod=tikz]{mdframed}
-
+\usepackage{footnote}
+\makesavenoteenv{tabular}
+\makesavenoteenv{table}
+\newcommand{\greentick}{\textcolor{green}{\ding{52}}}
+\newcommand{\redcross}{\textcolor{red}{\ding{55}}}
 \graphicspath{ {./img/}}
 \makeatletter
 \def\input@path{{input/}}
@@ -65,41 +71,36 @@
 \newpage
 \tableofcontents{}
 \newpage
-\listoffigures
-\thispagestyle{empty}
-\newpage
+%\listoffigures
+%\thispagestyle{empty}
+%\newpage
 
 \section{Introduction}
-
-\textcolor{red}{SHOREY DECIR QUÉ HACE UN POCO}
 
 \subsection{Context}
 
 Mental disorders are very common in our society. According to \cite{Bandelow2015}, almost 34\% of the population suffer from anxiety at least once in their lives. They are difficult to be diagnosed and properly treated. Most intervention programs do not last as much as they should and doctors have a very high workload, so patients need to wait for a long time before being advised by a doctor. In addition, although having a mental disease is very common, it is still a taboo subject whose stigma makes them even more difficult to be diagnosed and treated, as \cite{Davies2000} states.\\
 
-In addition, people do not go to the doctor every time something happens, so there is not a continuous traceability of patients' health status. This causes a lot of relevant data not to be retrieved. This data could be suitable to perform more specific and personal medical analysis. Having a coach that regularly interacts with the patient as well as extracts data from his or her responses would take advantage of this information.
+In addition, people do not go to the doctor every time something happens, so there is not a continuous traceability of patients' health status. This causes a lot of relevant data not to be retrieved. This data could be suitable to perform more specific and personal medical analysis. Having a coach that regularly interacts with the person with a mental disorder as well as extracts data from his or her responses would take advantage of this information.
 
 
 \subsection{Motivation}
 
 Nowadays, technology is becoming increasingly integrated in our lives. Specifically, smartphones have became a daily basis used tool. People read the news, check the weather, chat with their relatives and friends, etc. using smartphones. Modern chat applications (such as Telegram \footnote{https://telegram.org/} allow people to create bots that can interact with them like if there was a person on the other side. These chatbots are increasingly becoming popular amongst people because they cover many functionalities, from tracking shipments to playing games and reminding stuff. Telegram bots do not require another app to be installed in the client's phone, so the client can save storage space is saved.\\
 
-As we previously discussed, mental disorders are taboo, so having a bot you could talk with about how was your day, feelings, etc. could lead to an easier way of diagnosing them because chat conversations are seen as ''natural'' by society. In addition, the bot would chat with the patient in a natural way thanks to Natural Language Processing. This will help the patient not to consider the coach a doctor, making easier to tell it how he or she feels.
+As we previously discussed, mental disorders are taboo, so having a bot you could talk with about how was your day, feelings, etc. could lead to an easier way of diagnosing them because chat conversations are seen as ''natural'' by society. In addition, the bot would chat with the patient in a natural way thanks to Natural Language Processing. This will help the person with a mental disorder not to consider the coach a doctor, making easier to tell it how he or she feels.
 
 \newpage
 
 \subsection{Objectives}
 
-\textcolor{red}{CAMbiar  patient por people with mental disorders.}
-\textcolor{red}{venderlo como conversational agent as a sensor, mide información sobre comportamiento de una persona dada. ESTE ES EL OBJETIVO. lo del doctor es trabajo que se puede derivar de ahí, eso no va a los objetivos.}
-\textcolor{red}{segundo objetivo secundario: lo hago con contenedores porque blabla}
 \begin{itemize}
-  \item \textbf{Main goal}: to develop a chatbot able to interact with a patient in a natural way. \textcolor{red}{analyze person behaviour} This chatbot will retrieve data from his or her attitude and responses and generate a report with this information to be sent to the patient's doctor.
+  \item \textbf{Main goal}: to develop a conversational agent as a sensor which will be able to interact with a person with a mental disorder in a natural way and analise his or her behaviour. This virtual assistant will retrieve data from the subject's attitude and responses and generate a report with this information.
   \item \textbf{Secondary goals}:
     \begin{itemize}
-      \item DISEÑAR ARQUITECTURA FLEXIBLE Y ESCALABLE QUE PERMITA AÑADIR FUNCIONALIDAD A LOS CHATBOTS
-      \item IMPLEMENTAR UN CHATBOT QUE PERMITA BLABLA , otro: -- Design an architecture based on containers to host the chatbot modules.
-      \item Test a beta version of the chatbot in real people and analyse the retrieved data.
+      \item To design a flexible and scalable architecture to add functionality to the conversational agent.
+      \item To design an architecture based on containers to host the different chatbot modules
+      \item To test a beta version of the assistant in real people and analyse the retrieved data as well as target audience's feelings about it.
     \end{itemize}
 \end{itemize}
 
@@ -126,26 +127,71 @@ Finally, the last one, \textbf{Conclussions} analyses the initial objectives of 
 
 Chatbots can be applied to many health domains. For example, \cite{Alesanco2017185} proposes an agent that provides help to perform dermatological medicament prescriptions. \cite{BennetPraba20193470} takes care about nutrition by proposing a chatbot to motivate patients to maintain weight. Another example of conversational interface oriented to health is \cite{Falala-Sechet2019236}. This paper is about establishing a dialogue with patients to help them go through difficult situations that can affect their psychological status.\\
 
-Chat agents can not only be classified according to the area they area applied to, but also according to the objective public. We can distinguish chatbots to help students learn, such as \cite{Lopez2008194} proposal, that offers a simulation of a real patient that presents several symptoms so that students have to interview it and make a diagnostic as a doctor would do in real life. Other interesting project is \cite{Shorey2019e14658}, that intends to improve communication between patients and hospital workers.\\
+Chat agents can not only be classified according to the area they area applied to, but also according to the objective public. We can distinguish chatbots to help students learn, such as \cite{Lopez2008194} proposal, that offers a simulation of a real patient that presents several symptoms so that students have to interview it and make a diagnostic as a doctor would do in real life. Other interesting project is \cite{Shorey2019e14658}, that intends to improve communication between patients and hospital workers by making virtual patients simulate clinical scenarios so that undergraduates could practise with real situations instead of standard ones.\\
 
-There are also chatbots aimed to help doctors do their work. For example, \cite{Ni201738} offers an agent that interviews patients before the doctor does. Mandy elaborates a diagnostic based on several questions about patients symptoms and sends it to the doctor so that he can save that time. As professional treatments do not last as much, complements such as \cite{DAlfonso2017} are used. They offer a long-term treatment after the professional one so that the patient's progress is not lost. \\
+There are also chatbots aimed to help doctors do their work. For example, \cite{Ni201738} offers an agent that interviews sick people before the doctor does. Mandy elaborates a diagnostic based on several questions about patients symptoms and sends it to the doctor so that he can save that time. As professional treatments do not last as much, complements such as \cite{DAlfonso2017} are used. They offer a long-term treatment after the professional one so that the patient's progress is not lost. \\
 
 Last but not least, virtual agents can be aimed to help patients. For example, \cite{Harilal2020349} is a counsellor that helps patients with depression by establishing empathetic conversations with them. \cite{Roca2020954} suggests an agent that offers help to people by reminding the intake of their medication, sending notifications to caregivers, providing summaries, etc.
 
 
 \subsubsection{Dialogue}
 
-\textcolor{red}{Si el chatbot es coach (te ayuda a conseguir lo que quieres) o counseling (main goal: que te des cuenta de las cosas tú mismo. Te ayudan a identificar y resolver problemas). También si usa voz, texto o ambas}
-\subsubsection{Technology}
+\textcolor{red}{Otra subsección hablando de cómo se genera el diálogo (machine learning, a mano, etc.) y como se reciben las respuestas (se limita la entrada, se traducen a ontologías, etc.)}
 
-\textcolor{red}{Añadir aquí una discusión con las plataformas que existen, número de usuarios, si tienen API para implementar bots, etc.}
+Virtual assistants can be classified attending to their main goal: being a coach (they help you to get what you want) or a counselor (help you to identify and solve problems). For example, \cite{HUDLICKA2013160} presents a conversational agent that assists people while trying to mindfulnessly meditate by \textcolor{red}{explicar un poco qué hace}. \textcolor{red}{ Añadir un par de coaches más y lo mismo con counselors}.\\
+
+They can use different methods to communicate with their audience: text, voice or both. If we focus on speech-enabled conversational agents, we can distinguish \cite{Maharjan2019929}, which proposes a smart speaker that regularly asks its audience about their sleep quality, mood and physical activity. By analysing the given responses and their tone, volume and  intonation the agent is able to extract useful information useful for detecting markers of a possible mental ilness. \cite{Yasavur2014381} suggests a virtual therapist that gives brief speech interventions (3-5 minutes) aimed to let a person's alcohol consumption up and make him or her be aware of the problem.\\
+
+On the other hand, there also exists \textcolor{red}{hablar de text based chatbots}\\
+
+Finally, the most popular virtual assistants are multimodal (they both admit text and speech communication). \textcolor{red}{ejemplos de chatbots multimodales}
 
 A review of each of the previous sections can be seen in \cite{Montenegro201956}
+
+\newpage
+
+\subsubsection{Technology}
+
+After performing some research, the following table was ellaborated:
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{Platform} & \addstackgap{\textbf{\shortstack{Number of daily \\ active users}}} & \textbf{Free API to implement chatbots}  \\
+    \hline
+    Facebook Messenger \footnote{https://www.facebook.com/messenger/} & 1.66 billion &  \greentick \\
+    \hline
+    Whatsapp \footnote{https://www.whatsapp.com/} & 1.5 billion & \redcross \\
+    \hline
+    WeChat \footnote{https://www.wechat.com/} & 1.083 billion & \greentick  \\
+    \hline
+    Telegram \footnote{https://telegram.org/} & 0.2 billion & \greentick \\
+    \hline
+    Kik \footnote{https://www.kik.com/} & 0.015 billion & \greentick \\
+    \hline
+    Discord \footnote{https://discordapp.com/} & 0.014 billion & \greentick \\
+    \hline
+    Slack \footnote{https://slack.com/} & 0.012 billion &  \greentick \\
+    \hline
+    Viber \footnote{https://www.viber.com/} & 0.008 billion &  \greentick \\
+    \hline
+    Line \footnote{https://line.me/} & 0.00723 billion & \greentick  \\
+    \hline
+  \end{tabular}
+  \caption{Comparison between different chat applications (2019)}
+\end{table}
+
+We can see that Whatsapp, which is the most used messaging app, has no free API to develop conversational agents (the one it has it oriented to business). As opposed, the rest of the widely used chat applications offer an API for programmers to build chatbots in an easy way. In this project, Telegram is the chosen app because its API provides more customization than Facebook Messenger and the audience target is Spain, whereas Wechat is mostly used in Asia. \textcolor{red}{también porque proporciona más privacidad y así los usuarios se sienten más cómodos.}
+
+\newpage
+
 \subsubsection{Number of publications related to chatbots}
+
+\textcolor{red}{Hacer más queries y más específicas. Sustituir chatbot por chatbot OR "conversational agent"}
 
 Several queries were performed on \textit{scopus.com} to check the number of articles per year related to chatbots and their applications in health. The obtained results were the following ones:
 
-\textcolor{red}{IDEA: AÑADIR GRÁFICA SUPERPUESTA EN OTRO COLOR CON LOS RESULTADOS EN GOOGLE SCHOLAR + LEYENDA. Añadir también queries más específicas con el área de aplicación, usuario final, etc.}
 \begin{figure}[H]
   \begin{subfigure}[t]{0.3\textwidth}
     \centering
@@ -191,28 +237,10 @@ We can observe that all of them show a considerable increasing number of article
 
 
 
-
-
-
-
 \subsubsection{Effectiveness of health conversational agents}
 
-Health coaches can be really helpful, as we can see in the following publications:
+Health coaches can be really helpful. For example, \cite{Breso2016297} proposes a platform to identify and provide early intervention for symptoms of depression and suicide. Its usability percentage was 75.7\% and its accuracy, 70.9\%. Another example is \cite{Hirano2017}, which offers preventive therapy for mental healthcare. The audience' mental health punctuation significantly improved after using the application. Moreover, the usage rate and the number of suggested actions carried out was high. That indicates that people found the app useful. By last, \cite{Ring2016} suggests an agent that responds to users' affective states during virtual therapy sessions. Facial expressions and voices are measured during the session. 70\% of users affirmed that they felt understood by the agent. 50\% of them stated that the agent evoked emotional responses in them during the interactions.
 
-\begin{itemize}
-  \item \cite{Breso2016297} proposes a platform to identify and provide early intervention for symptoms of depression and suicide. Its usability percentage was 75.7\% and its accuracy, 70.9\%
-  \item \cite{Hirano2017} offers preventive therapy for mental healthcare. The users' mental health punctuation significantly improved after using the application. Moreover, the usage rate and the number of suggested actions carried out was high. That indicates that people found the app useful.
-  \item \cite{Ring2016} suggests an agent that responds to users' affective states during virtual therapy sessions. Facial expressions and voices are measured during the session. 70\% of users affirmed that they felt understood by the agent. 50\% of them stated that the agent evoked emotional responses in them during the interactions.
-\end{itemize}
-
-\subsubsection{Challenges related to health conversational agents}
-
-Challenges related to health chatbots can be classified into five categories:
-\begin{itemize}
-  \item Generation and understanding of dialogue. Chatbots should be able to understand users in a natural way, taking into account the context of the conversation, voice, ambiguities, etc. and elaborate a question to continue the conversation in a natural way.
-  \item Integrate chatbots with other technologies, such as machine learning algorithms to adapt themselves to the user.
-  \item Adaptation of chatbots for elder people. They should be simple so that everyone can take advantage of their benefits.
-\end{itemize}
 
 \section{Methodology}
 
