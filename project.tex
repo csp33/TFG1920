@@ -100,7 +100,8 @@ As we previously discussed, mental disorders are taboo, so having a bot you coul
   \item \textbf{Secondary goals}:
     \begin{itemize}
       \item To design a flexible and scalable architecture to add functionality to the conversational agent.
-      \item To design an architecture based on containers to host the different chatbot modules
+      \item To design an architecture based on containers to host the different chatbot modules.
+      \item To implement a conversational agent that covers the previous goals.
       \item To test a beta version of the assistant in real people and analyse the retrieved data as well as target audience's feelings about it.
     \end{itemize}
 \end{itemize}
@@ -122,9 +123,9 @@ Finally, the last one, \textbf{Conclussions} analyses the initial objectives of 
 
 \newpage
 
-\subsection{State of the art}
+\section{State of the art}
 
-\subsubsection{Health domains}
+\subsection{Health domains}
 
 Chatbots can be applied to many health domains. For example, \cite{Alesanco2017185} proposes an agent that provides help to perform dermatological medicament prescriptions. \cite{BennetPraba20193470} takes care about nutrition by proposing a chatbot to motivate patients to maintain weight. Another example of conversational interface oriented to health is \cite{Falala-Sechet2019236}. This paper is about establishing a dialogue with patients to help them go through difficult situations that can affect their psychological status.\\
 
@@ -135,23 +136,22 @@ There are also chatbots aimed to help doctors do their work. For example, \cite{
 Last but not least, virtual agents can be aimed to help patients. For example, \cite{Harilal2020349} is a counsellor that helps patients with depression by establishing empathetic conversations with them. \cite{Roca2020954} suggests an agent that offers help to people by reminding the intake of their medication, sending notifications to caregivers, providing summaries, etc.
 
 
-\subsubsection{Dialogue}
+\subsection{Dialogue}
 
-\textcolor{red}{Otra subsección hablando de cómo se genera el diálogo (machine learning, a mano, etc.) y como se reciben las respuestas (se limita la entrada, se traducen a ontologías, etc.)}
+Virtual assistants can be classified attending to their main goal. Coaches help the user to get what he wants. For example, \cite{HUDLICKA2013160} presents a coach that assists people while trying to meditate by motivating them to do it. The paper's results showed that using the agent was more effective in helping users to establish a regular meditation habit. \cite{Guo2020} offers another coach that asseses user's in their workouts to improve their postural hygiene by using wearables as sensors. Conversational agents can also be counselors (they help the user to identify and solve problems). The research carried out by \cite{Drislane2020158} proves that counselors can be really helpful when trying to reduce alcohol and drugs consumption amongst users. \cite{Yasavur2014381} suggests a virtual therapist that gives brief speech interventions (3-5 minutes) aimed to let a person's alcohol consumption up and make him or her be aware of the problem. \\
 
-Virtual assistants can be classified attending to their main goal: being a coach (they help you to get what you want) or a counselor (help you to identify and solve problems). For example, \cite{HUDLICKA2013160} presents a conversational agent that assists people while trying to x meditate by \textcolor{red}{explicar un poco qué hace}. \textcolor{red}{ Añadir un par de coaches más y lo mismo con counselors}.\\
+They can use different methods to communicate with their audience: text, voice or both. If we focus on speech-enabled conversational agents, we can distinguish \cite{Maharjan2019929}, which proposes a smart speaker that regularly asks its audience about their sleep quality, mood and physical activity. By analysing the given responses and their tone, volume and  intonation the agent is able to extract useful information useful for detecting markers of a possible mental ilness. In text-based chatbots, the user's input can be free (the agent will translate it to an ontology to understand it) or limited (a custom keyboard with fixed options will be shown or the agent will ask the user to enter a valid option). Finally, the most popular virtual assistants are multimodal (they both admit text and speech communication).
 
-They can use different methods to communicate with their audience: text, voice or both. If we focus on speech-enabled conversational agents, we can distinguish \cite{Maharjan2019929}, which proposes a smart speaker that regularly asks its audience about their sleep quality, mood and physical activity. By analysing the given responses and their tone, volume and  intonation the agent is able to extract useful information useful for detecting markers of a possible mental ilness. \cite{Yasavur2014381} suggests a virtual therapist that gives brief speech interventions (3-5 minutes) aimed to let a person's alcohol consumption up and make him or her be aware of the problem.\\
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.2]{custom_keyboard.jpg}
+  \caption{Example of a custom keyboard for a conversational agent}{Reprinted from https://core.telegram.org/bots}
+\end{figure}
 
-On the other hand, there also exist text-based chatbots. For example \textcolor{red}{ ejemplos}. The user input can be free (the agent will translate it to an ontology to understand it) or limited (a custom keyboard with fixed options will be shown).
 
-Finally, the most popular virtual assistants are multimodal (they both admit text and speech communication). \textcolor{red}{ejemplos de chatbots multimodales}
+A review of each of the previous sections can be seen in \cite{Montenegro201956}.
 
-A review of each of the previous sections can be seen in \cite{Montenegro201956}
-
-\newpage
-
-\subsubsection{Technology}
+\subsection{Technology}
 
 After performing some research, the following table was elaborated:
 
@@ -183,13 +183,67 @@ After performing some research, the following table was elaborated:
   \caption{Comparison between different chat applications (2019)}
 \end{table}
 
-We can see that Whatsapp, which is the most used messaging app, has no free API to develop conversational agents (the one it has it oriented to business). As opposed, the rest of the widely used chat applications offer an API for programmers to build chatbots in an easy way. In this project, Telegram is the chosen app because its API provides more customization than Facebook Messenger and the audience target is Spain, whereas Wechat is mostly used in Asia. Appart from that, people with mental disorders usually don't feel confortable to talk about their problem. As Telegram offers more privacy than other chat applications, people will feel safer chatting about their ilness.
-
 \newpage
 
-\subsubsection{Number of publications related to chatbots}
+We can see that Whatsapp, which is the most used messaging app, has no free API to develop conversational agents (the one it has it oriented to business). As opposed, the rest of the widely used chat applications offer an API for programmers to build chatbots in an easy way. In this project, Telegram is the chosen app because its API provides more customization than Facebook Messenger and the audience target is Spain, whereas Wechat is mostly used in Asia. Appart from that, people with mental disorders usually don't feel confortable to talk about their problem. As Telegram offers more privacy than other chat applications, people will feel safer chatting about their ilness.
 
-\textcolor{red}{Hacer más queries y más específicas. Sustituir chatbot por chatbot OR "conversational agent"}
+\textcolor{red}{sentimental analysis on twitter social-searcher.com}
+\pgfplotsset{
+    calculate offset/.code={
+        \pgfkeys{/pgf/fpu=true,/pgf/fpu/output format=fixed}
+        \pgfmathsetmacro\testmacro{(\pgfplotspointmeta *10^\pgfplots@data@scale@trafo@EXPONENT@y)*\pgfplots@y@veclength)}
+        \pgfkeys{/pgf/fpu=false}
+    },
+    every node near coord/.style={
+        /pgfplots/calculate offset,
+        yshift=-\testmacro
+    },
+}
+\pgfplotstableread{
+0 35569 8842    134984
+1 30428 4689    34077
+2 32920 6207    73787
+3 16462 7562    23496
+4 12315 8572    16565
+5 76572 19572   26030
+}\dataset
+\begin{tikzpicture}
+\begin{axis}[ybar,
+        width=15cm,
+        height=8cm,
+        ymin=0,
+        ymax=150000,
+        ylabel={Y-Label},
+        xtick=data,
+        xticklabels = {
+            Category 1,
+            Category 2,
+            Category 3,
+            Category 4,
+            Category 5,
+            Category 6
+        },
+        xticklabel style={yshift=-8ex},
+        major x tick style = {opacity=0},
+        minor x tick num = 1,
+        minor tick length=2ex,
+        every node near coord/.append style={
+                anchor=east,
+                rotate=90
+        }
+        ]
+\addplot[draw=black,fill=black!20, nodes near coords=Data 1] table[x index=0,y index=1] \dataset; %Data1
+\addplot[draw=black,fill=black!40, nodes near coords=Data 2] table[x index=0,y index=2] \dataset; %Data2
+\addplot[draw=black,fill=black!60, nodes near coords=Data 3] table[x index=0,y index=3] \dataset; %Data3
+\end{axis}
+ \end{tikzpicture}
+ % symbolic x coords={Facebook \newline Messenger, Whatsapp, WeChat, Telegram, Kik, Discord, Slack, Viber, Line}
+
+
+\end{document}
+\subsection{Number of publications related to chatbots}
+
+\textcolor{red}{Última query}
 
 Several queries were performed on \textit{scopus.com} to check the number of articles per year related to chatbots and their applications in health. The obtained results were the following ones:
 
@@ -197,8 +251,8 @@ Several queries were performed on \textit{scopus.com} to check the number of art
   \begin{subfigure}[t]{0.3\textwidth}
     \centering
     \begin{tikzpicture}
-      \begin{axis}[title=Result of 'chatbot' query, ytick distance={50}]
-        \addplot table {data/chatbot_query_results.dat};
+      \begin{axis}[title=\shortstack{chatbot OR "conversational agent"}, ytick distance={100}]
+        \addplot table {data/chatbot_or_ca_query_results.dat};
       \end{axis}
     \end{tikzpicture}
   \end{subfigure}
@@ -206,8 +260,9 @@ Several queries were performed on \textit{scopus.com} to check the number of art
   \begin{subfigure}[t]{0.3\textwidth}
     \centering
     \begin{tikzpicture}
-      \begin{axis}[title=Result of 'chatbot AND assistant' query, ytick distance={10}]
-        \addplot table {data/chatbot_and_assistant_query_results.dat};
+      \begin{axis}[title=\footnotesize{\shortstack{(chatbot OR "conversational agent")\\AND\\(coach OR counselor OR assistant)}},
+                   ytick distance={15}]
+        \addplot table {data/chatbot_or_ca_and_coach_or_counselor_or_assistant_query_results.dat};
       \end{axis}
     \end{tikzpicture}
   \end{subfigure}
@@ -217,8 +272,8 @@ Several queries were performed on \textit{scopus.com} to check the number of art
   \begin{subfigure}[t]{0.3\textwidth}
     \centering
     \begin{tikzpicture}
-      \begin{axis}[title=Result of 'chatbot AND health' query, ytick distance={10}]
-        \addplot table {data/chatbot_and_health_query_results.dat};
+      \begin{axis}[title=\footnotesize{\shortstack{(chatbot OR "conversational agent")\\AND\\(coach OR counselor OR assistant)\\AND\\health}}, ytick distance={5}]
+        \addplot table {data/chatbot_or_ca_and_coach_or_counselor_or_assistant_and_health_query_results.dat};
       \end{axis}
     \end{tikzpicture}
   \end{subfigure}
@@ -234,11 +289,11 @@ Several queries were performed on \textit{scopus.com} to check the number of art
   \caption{Search results of different queries performed in \textit{scopus.com}}
 \end{figure}
 
-We can observe that all of them show a considerable increasing number of articles and papers related to chatbots.
+We can observe that, in the last 5 years, all of them show a considerable increasing number of articles and papers related to virtual assistants.
 
 
 
-\subsubsection{Effectiveness of health conversational agents}
+\subsection{Effectiveness of health conversational agents}
 
 Health coaches can be really helpful. For example, \cite{Breso2016297} proposes a platform to identify and provide early intervention for symptoms of depression and suicide. Its usability percentage was 75.7\% and its accuracy, 70.9\%. Another example is \cite{Hirano2017}, which offers preventive therapy for mental healthcare. The audience' mental health punctuation significantly improved after using the application. Moreover, the usage rate and the number of suggested actions carried out was high. That indicates that people found the app useful. By last, \cite{Ring2016} suggests an agent that responds to users' affective states during virtual therapy sessions. Facial expressions and voices are measured during the session. 70\% of users affirmed that they felt understood by the agent. 50\% of them stated that the agent evoked emotional responses in them during the interactions.
 
