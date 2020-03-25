@@ -244,3 +244,5 @@ TSWLatexianTemp*
 # PDF
 
 *.pdf
+
+.cache/
