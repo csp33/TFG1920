@@ -45,7 +45,17 @@
   breaklines=true,
   postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
 }
-
+\lstdefinelanguage{docker-compose}{
+  keywords={image, environment, ports, container_name, ports, volumes, links},
+  keywordstyle=\color{blue}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
 
 \makeindex
 
@@ -125,125 +135,7 @@ Finally, the last one, \textbf{Conclussions} analyses the initial objectives of 
 
 \section{State of the art}
 
-\subsection{Health domains}
-
-Chatbots can be applied to many health domains. For example, \cite{Alesanco2017185} proposes an agent that provides help to perform dermatological medicament prescriptions. \cite{BennetPraba20193470} takes care about nutrition by proposing a chatbot to motivate patients to maintain weight. Another example of conversational interface oriented to health is \cite{Falala-Sechet2019236}. This paper is about establishing a dialogue with patients to help them go through difficult situations that can affect their psychological status.\\
-
-Chat agents can not only be classified according to the area they area applied to, but also according to the objective public. We can distinguish chatbots to help students learn, such as \cite{Lopez2008194} proposal, that offers a simulation of a real patient that presents several symptoms so that students have to interview it and make a diagnostic as a doctor would do in real life. Other interesting project is \cite{Shorey2019e14658}, that intends to improve communication between patients and hospital workers by making virtual patients simulate clinical scenarios so that undergraduates could practise with real situations instead of standard ones.\\
-
-There are also chatbots aimed to help doctors do their work. For example, \cite{Ni201738} offers an agent that interviews sick people before the doctor does. Mandy elaborates a diagnostic based on several questions about patients symptoms and sends it to the doctor so that he can save that time. As professional treatments do not last as much, complements such as \cite{DAlfonso2017} are used. They offer a long-term treatment after the professional one so that the patient's progress is not lost. \\
-
-Last but not least, virtual agents can be aimed to help patients. For example, \cite{Harilal2020349} is a counsellor that helps patients with depression by establishing empathetic conversations with them. \cite{Roca2020954} suggests an agent that offers help to people by reminding the intake of their medication, sending notifications to caregivers, providing summaries, etc.
-
-
-\subsection{Dialogue}
-
-Virtual assistants can be classified attending to their main goal. Coaches help the user to get what he wants. For example, \cite{HUDLICKA2013160} presents a coach that assists people while trying to meditate by motivating them to do it. The paper's results showed that using the agent was more effective in helping users to establish a regular meditation habit. \cite{Guo2020} offers another coach that asseses user's in their workouts to improve their postural hygiene by using wearables as sensors. Conversational agents can also be counselors (they help the user to identify and solve problems). The research carried out by \cite{Drislane2020158} proves that counselors can be really helpful when trying to reduce alcohol and drugs consumption amongst users. \cite{Yasavur2014381} suggests a virtual therapist that gives brief speech interventions (3-5 minutes) aimed to let a person's alcohol consumption up and make him or her be aware of the problem. \\
-
-They can use different methods to communicate with their audience: text, voice or both. If we focus on speech-enabled conversational agents, we can distinguish \cite{Maharjan2019929}, which proposes a smart speaker that regularly asks its audience about their sleep quality, mood and physical activity. By analysing the given responses and their tone, volume and  intonation the agent is able to extract useful information useful for detecting markers of a possible mental ilness. In text-based chatbots, the user's input can be free (the agent will translate it to an ontology to understand it) or limited (a custom keyboard with fixed options will be shown or the agent will ask the user to enter a valid option). Finally, the most popular virtual assistants are multimodal (they both admit text and speech communication).
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.2]{custom_keyboard.jpg}
-  \caption{Example of a custom keyboard for a conversational agent}{Reprinted from https://core.telegram.org/bots}
-\end{figure}
-
-
-A review of each of the previous sections can be seen in \cite{Montenegro201956}.
-
-\subsection{Technology}
-
-After performing some research, the following table was elaborated:
-
-\begin{table}[h!]
-  \centering
-  \begin{tabular}{|c|c|c|}
-    \hline
-    \textbf{Platform} & \addstackgap{\textbf{\shortstack{Number of daily \\ active users}}} & \textbf{Free API to implement chatbots}  \\
-    \hline
-    \cite{FacebookMessenger} & 1.66 billion &  \greentick \\
-    \hline
-    \cite{Whatsapp} & 1.5 billion & \redcross \\
-    \hline
-    \cite{WeChat} & 1.083 billion & \greentick  \\
-    \hline
-    \cite{Telegram} & 0.2 billion & \greentick \\
-    \hline
-    \cite{Kik} & 0.015 billion & \greentick \\
-    \hline
-    \cite{Discord} & 0.014 billion & \greentick \\
-    \hline
-    \cite{Slack} & 0.012 billion &  \greentick \\
-    \hline
-    \cite{Viber} & 0.008 billion &  \greentick \\
-    \hline
-    \cite{Line} & 0.00723 billion & \greentick  \\
-    \hline
-  \end{tabular}
-  \caption{Comparison between different chat applications (2019)}
-\end{table}
-
-\newpage
-
-We can see that Whatsapp, which is the most used messaging app, has no free API to develop conversational agents (the one it has it oriented to business). As opposed, the rest of the widely used chat applications offer an API for programmers to build chatbots in an easy way. In this project, Telegram is the chosen app because its API provides more customization than Facebook Messenger and the audience target is Spain, whereas Wechat is mostly used in Asia. Appart from that, people with mental disorders usually don't feel confortable to talk about their problem. As Telegram offers more privacy than other chat applications, people will feel safer chatting about their ilness.
-
-\textcolor{red}{sentimental analysis on twitter social-searcher.com}
-\pgfplotsset{
-    calculate offset/.code={
-        \pgfkeys{/pgf/fpu=true,/pgf/fpu/output format=fixed}
-        \pgfmathsetmacro\testmacro{(\pgfplotspointmeta *10^\pgfplots@data@scale@trafo@EXPONENT@y)*\pgfplots@y@veclength)}
-        \pgfkeys{/pgf/fpu=false}
-    },
-    every node near coord/.style={
-        /pgfplots/calculate offset,
-        yshift=-\testmacro
-    },
-}
-\pgfplotstableread{
-0 35569 8842    134984
-1 30428 4689    34077
-2 32920 6207    73787
-3 16462 7562    23496
-4 12315 8572    16565
-5 76572 19572   26030
-}\dataset
-\begin{tikzpicture}
-\begin{axis}[ybar,
-        width=15cm,
-        height=8cm,
-        ymin=0,
-        ymax=150000,
-        ylabel={Y-Label},
-        xtick=data,
-        xticklabels = {
-            Category 1,
-            Category 2,
-            Category 3,
-            Category 4,
-            Category 5,
-            Category 6
-        },
-        xticklabel style={yshift=-8ex},
-        major x tick style = {opacity=0},
-        minor x tick num = 1,
-        minor tick length=2ex,
-        every node near coord/.append style={
-                anchor=east,
-                rotate=90
-        }
-        ]
-\addplot[draw=black,fill=black!20, nodes near coords=Data 1] table[x index=0,y index=1] \dataset; %Data1
-\addplot[draw=black,fill=black!40, nodes near coords=Data 2] table[x index=0,y index=2] \dataset; %Data2
-\addplot[draw=black,fill=black!60, nodes near coords=Data 3] table[x index=0,y index=3] \dataset; %Data3
-\end{axis}
- \end{tikzpicture}
- % symbolic x coords={Facebook \newline Messenger, Whatsapp, WeChat, Telegram, Kik, Discord, Slack, Viber, Line}
-
-
-\end{document}
 \subsection{Number of publications related to chatbots}
-
-\textcolor{red}{Última query}
 
 Several queries were performed on \textit{scopus.com} to check the number of articles per year related to chatbots and their applications in health. The obtained results were the following ones:
 
@@ -267,22 +159,13 @@ Several queries were performed on \textit{scopus.com} to check the number of art
     \end{tikzpicture}
   \end{subfigure}
 
-  \vspace{1cm}
+  \vspace{0.5cm}
 
-  \begin{subfigure}[t]{0.3\textwidth}
+  \begin{subfigure}{\linewidth}
     \centering
     \begin{tikzpicture}
       \begin{axis}[title=\footnotesize{\shortstack{(chatbot OR "conversational agent")\\AND\\(coach OR counselor OR assistant)\\AND\\health}}, ytick distance={5}]
         \addplot table {data/chatbot_or_ca_and_coach_or_counselor_or_assistant_and_health_query_results.dat};
-      \end{axis}
-    \end{tikzpicture}
-  \end{subfigure}
-  \hspace{3cm}
-  \begin{subfigure}[t]{0.3\textwidth}
-    \centering
-    \begin{tikzpicture}
-      \begin{axis}[title=Result of 'conversational agent' query, ytick distance={50}]
-        \addplot table {data/conversational_agent_query_results.dat};
       \end{axis}
     \end{tikzpicture}
   \end{subfigure}
@@ -292,15 +175,129 @@ Several queries were performed on \textit{scopus.com} to check the number of art
 We can observe that, in the last 5 years, all of them show a considerable increasing number of articles and papers related to virtual assistants.
 
 
+\subsection{Health application domains}
 
-\subsection{Effectiveness of health conversational agents}
+Chatbots can be applied to many health domains. For example, \cite{Alesanco2017185} proposes an agent that provides help to perform dermatological medicament prescriptions. \cite{BennetPraba20193470} takes care about nutrition by proposing a chatbot to motivate patients to maintain weight. Another example of conversational interface oriented to health is \cite{Falala-Sechet2019236}. This paper is about establishing a dialogue with patients to help them go through difficult situations that can affect their psychological status.\\
+
+Chat agents can not only be classified according to the area they area applied to, but also according to the objective public. We can distinguish chatbots to help students learn, such as \cite{Lopez2008194} proposal, that offers a simulation of a real patient that presents several symptoms so that students have to interview it and make a diagnostic as a doctor would do in real life. Other interesting project is \cite{Shorey2019e14658}, that intends to improve communication between patients and hospital workers by making virtual patients simulate clinical scenarios so that undergraduates could practise with real situations instead of standard ones.\\
+
+There are also chatbots aimed to help doctors do their work. For example, \cite{Ni201738} offers an agent that interviews sick people before the doctor does. Mandy elaborates a diagnostic based on several questions about patients symptoms and sends it to the doctor so that he can save that time. As professional treatments do not last as much, complements such as \cite{DAlfonso2017} are used. They offer a long-term treatment after the professional one so that the patient's progress is not lost. \\
+
+Virtual agents can be also aimed to help patients. For example, \cite{Harilal2020349} is a counsellor that helps patients with depression by establishing empathetic conversations with them. \cite{Roca2020954} suggests an agent that offers help to people by reminding the intake of their medication, sending notifications to caregivers, providing summaries, etc.
 
 Health coaches can be really helpful. For example, \cite{Breso2016297} proposes a platform to identify and provide early intervention for symptoms of depression and suicide. Its usability percentage was 75.7\% and its accuracy, 70.9\%. Another example is \cite{Hirano2017}, which offers preventive therapy for mental healthcare. The audience' mental health punctuation significantly improved after using the application. Moreover, the usage rate and the number of suggested actions carried out was high. That indicates that people found the app useful. By last, \cite{Ring2016} suggests an agent that responds to users' affective states during virtual therapy sessions. Facial expressions and voices are measured during the session. 70\% of users affirmed that they felt understood by the agent. 50\% of them stated that the agent evoked emotional responses in them during the interactions.
 
+\newpage
+\subsection{Conversational agents types and communication formats}
+
+Virtual assistants can be classified attending to their main goal. Coaches help the user to get what he wants. For example, \cite{HUDLICKA2013160} presents a coach that assists people while trying to meditate by motivating them to do it. The paper's results showed that using the agent was more effective in helping users to establish a regular meditation habit. \cite{Guo2020} offers another coach that asseses user's in their workouts to improve their postural hygiene by using wearables as sensors. Conversational agents can also be counselors (they help the user to identify and solve problems). The research carried out by \cite{Drislane2020158} proves that counselors can be really helpful when trying to reduce alcohol and drugs consumption amongst users. \cite{Yasavur2014381} suggests a virtual therapist that gives brief speech interventions (3-5 minutes) aimed to let a person's alcohol consumption up and make him or her be aware of the problem. \\
+
+They can use different methods to communicate with their audience: text, voice or both. If we focus on speech-enabled conversational agents, we can distinguish \cite{Maharjan2019929}, which proposes a smart speaker that regularly asks its audience about their sleep quality, mood and physical activity. By analysing the given responses and their tone, volume and  intonation the agent is able to extract useful information useful for detecting markers of a possible mental ilness. In text-based chatbots, the user's input can be free (the agent will translate it to an ontology to understand it) or limited (a custom keyboard with fixed options will be shown or the agent will ask the user to enter a valid option). Finally, the most popular virtual assistants are multimodal (they both admit text and speech communication).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.2]{custom_keyboard.jpg}
+  \caption{Example of a custom keyboard for a conversational agent}{Reprinted from https://core.telegram.org/bots}
+\end{figure}
+
+
+A review of each of the previous sections can be seen in \cite{Montenegro201956}.
+\newpage
+\subsection{Technology}
+
+After performing some research, the following table was elaborated:
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    \textbf{Platform} & \addstackgap{\textbf{\shortstack{Number of daily \\ active users}}} & \textbf{Free API to implement chatbots}  \\
+    \hline
+    \cite{FacebookMessenger} & 1.66 billion &  \greentick  \\
+    \hline
+    \cite{Whatsapp} & 1.5 billion & \redcross \\
+    \hline
+    \cite{WeChat} & 1.083 billion & \greentick  \\
+    \hline
+    \cite{Telegram} & 0.2 billion & \greentick \\
+    \hline
+    \cite{Kik} & 0.015 billion & \greentick \\
+    \hline
+    \cite{Discord} & 0.014 billion & \greentick \\
+    \hline
+    \cite{Slack} & 0.012 billion &  \greentick \\
+    \hline
+    \cite{Viber} & 0.008 billion &  \greentick \\
+    \hline
+    \cite{Line} & 0.00723 billion & \greentick  \\
+    \hline
+  \end{tabular}
+  \caption{Comparison between different chat applications (2019)}
+\end{table}
+
+
+We can see that Whatsapp, which is the most used messaging app, has no free API to develop conversational agents (the one it has it oriented to business). As opposed, the rest of the widely used chat applications offer an API for programmers to build chatbots in an easy way. \\
+
+A key aspect on social networks is the privacy they ensure. \cite{Kosinski5802} shows that Facbook's likes can be helpful to predict people's sensitive attributes such as age, gender or happiness. \cite{Rastogi17} affirms that Whatsapp's end-to-end encryption methods are not secure enough as metadata can reveal private information. On the other hand, \cite{Sutikno16} states that Telegram provides more privacy protection than other apps. One of its main features is that users can create and customize an username so that they don't have to exchange phone numbers to chat (such as in Whatsapp).
+
+
+\newpage
 
 \section{Methodology}
 
 \subsection{Design}
+
+\subsubsection{Requirements}
+\textcolor{red}{hablar de moscow y en qué consiste}
+\begin{itemize}
+  \item Must
+    \begin{itemize}
+      \item analyse user's behaviour.
+      \item generate a report based on retrieved data.
+      \item able to chat with the user in English and Spanish
+      \item be available in Telegram.
+      \item be scalable
+      \item provide modular architecture
+      \item provide REST architecture for all services
+      \item ''talk'' in a coherent way.
+      \item decir a qué hora puede hablar y a cual no (ahora mismo no puedo; te hablo en media hora?)
+    \end{itemize}
+  \item Should
+    \begin{itemize}
+      \item Develop a conversational agent that ensures that user's data is not shared with third parties.
+      \item be free
+      \item be open source
+      \item provide an API to implement other specialists (nutritionist, etc.)
+      \item be multimodal (audio + text msg)
+    \end{itemize}
+  \item Could
+    \begin{itemize}
+      \item chat with the user in more languages.
+      \item allow videomsg
+      \item can be added to groups
+      \item high availability
+    \end{itemize}
+  \item Won't
+    \begin{itemize}
+      \item be available in other platform
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Architecture}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.5]{docker-compose.png}
+  \caption{Container architecture}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \lstinputlisting[language=docker-compose]{chatbot/docker-compose.yml}
+  \caption{\emph{docker-compose.yml} file contents}
+\end{figure}
+
+
 
 \subsection{Implementation}
 

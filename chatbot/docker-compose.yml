@@ -1,0 +1,20 @@
+version: '2.0'
+services:
+  chatbot:
+    image: centos7-python36
+    depends_on:
+      - audio_trascriptor
+      - ontology_translator
+    links:
+      - audio_trascriptor
+      - ontology_translator
+
+  audio_trascriptor:
+    image: centos7-python36
+    ports:
+      - "5000:5000"
+
+  ontology_translator:
+    image: centos7-python36
+    ports:
+      - "6000:6000"
