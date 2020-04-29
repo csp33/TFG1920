@@ -13,6 +13,7 @@
 \usepackage{subcaption}
 \usepackage{adjustbox}
 \usepackage{url}
+\usepackage{svg}
 \usepackage{multirow}
 \usepackage[hidelinks]{hyperref}
 \usepackage{caption}
@@ -39,6 +40,13 @@
 \def\input@path{{input/}}
 \makeatother
 \selectlanguage{english}
+%\usepackage{fancyhdr}
+%\pagestyle{fancy}
+\usepackage[
+    type={CC},
+    modifier={by-nc-sa},
+    version={4.0},
+]{doclicense}
 
 
 \lstset{
@@ -85,9 +93,11 @@
 %\listoffigures
 %\thispagestyle{empty}
 %\newpage
-
+%\rhead{}
+%\lhead{}
+%\renewcommand{\headrulewidth}{0pt}
+%\renewcommand{\footrulewidth}{0pt}
 \section{Introduction}
-
 \subsection{Context}
 
 Mental disorders are very common in our society. According to \cite{Bandelow2015}, almost 34\% of the population suffer from anxiety at least once in their lives. They are difficult to be diagnosed and properly treated. Most intervention programs do not last as much as they should and doctors have a very high workload, so patients need to wait for a long time before being advised by a doctor. In addition, although having a mental disease is very common, it is still a taboo subject whose stigma makes them even more difficult to be diagnosed and treated, as \cite{Davies2000} states.\\
@@ -97,33 +107,33 @@ In addition, people do not go to the doctor every time something happens, so the
 
 \subsection{Motivation}
 
-Nowadays, technology is becoming increasingly integrated in our lives. Specifically, smartphones have became a daily basis used tool. People read the news, check the weather, chat with their relatives and friends, etc. using smartphones. Modern chat applications (such as \cite{Telegram} allow people to create bots that can interact with them like if there was a person on the other side. These chatbots are increasingly becoming popular amongst people because they cover many functionalities, from tracking shipments to playing games and reminding stuff. Telegram bots do not require another app to be installed in the client's phone, so the client can save storage space is saved.\\
+Nowadays, technology is becoming increasingly integrated in our lives. Specifically, smartphones have became a daily basis used tool. People read the news, check the weather, chat with their relatives and friends, etc. using smartphones. Modern chat applications (such as \cite{Telegram} allow people to create bots that can interact with them like if there was a person on the other side. These chatbots are increasingly becoming popular amongst people because they cover many functionalities, from tracking shipments to playing games and reminding stuff. Telegram bots do not require another app to be installed in the client's phone, so the client can save storage space.\\
 
-As we previously discussed, mental disorders are taboo, so having a bot you could talk with about how was your day, feelings, etc. could lead to an easier way of diagnosing them because chat conversations are seen as ''natural'' by society. In addition, the bot would chat with the patient in a natural way thanks to Natural Language Processing. This will help the person with a mental disorder not to consider the coach a doctor, making easier to tell it how he or she feels.
+As we previously discussed, mental disorders are taboo, so having a bot you could talk with about how was your day, feelings, etc. could lead to an easier way of diagnosing them because chat conversations are seen as ''natural'' by society. The conversational agent will ask the patient a batch of questions (previously defined by his/her doctor) and show the data to the specialist so that the diagnosis can be more precise.
 
 \newpage
 
 \subsection{Objectives}
 
 \begin{itemize}
-  \item \textbf{Main goal}: to develop a conversational agent as a sensor which will be able to interact with a person with a mental disorder in a natural way and analise his or her behaviour. This virtual assistant will retrieve data from the subject's attitude and responses and generate a report with this information.
+  \item \textbf{Main goal}: to develop a conversational agent as a sensor which will be able to interact with a person with a mental disorder in a natural way and ask questions defined by specialists.
   \item \textbf{Secondary goals}:
     \begin{itemize}
+      \item To design a graphical web interface where doctors can consult their patient's data.
       \item To design a flexible and scalable architecture to add functionality to the conversational agent.
-      \item To design an architecture based on containers to host the different chatbot modules.
-      \item To implement a conversational agent that covers the previous goals.
+      \item To design an architecture based on containers to host the different system modules.
+      \item To implement a system that covers the previous goals.
       \item To test a beta version of the assistant in real people and analyse the retrieved data as well as target audience's feelings about it.
     \end{itemize}
 \end{itemize}
 
 \subsection{Structure}
-\textcolor{red}{FIX EN QUÉ SE DIVIDE ESTADO DEL ARTE CUANDO ESTÉ TERMINADO}
 
-The first chapter of this project offers an introduction to the context in which the main goal is intended to be developed. That section also contains an analysis of related papers. This analysis is divided into three main categories (health domains, dialogue and architecture) and a research about the popularity of chatbots.\\
+The first chapter of this project offers an introduction to the context in which the main goal is intended to be developed. That section also contains an analysis of related papers. This section is divided into four main categories (health application domains, conversational agents types, communication format and architecture) and a research about the popularity of chatbots.\\
 
-The second one (\textbf{Methodology}) contains the proper requisites design. architecture, programming language and frameworks that are intended to be used in the chatbot development, as well as its the most important modules and some code snippets to illustrate its functionality.\\
+The second one (\textbf{Methodology}) contains the proper requisites design. architecture, programming language and frameworks that are intended to be used in the system development, as well as its the most important modules and some code snippets to illustrate its functionality.\\
 
-The third one, \textbf{Evaluation}, shows the results of the chatbot testing amongst real people and the obtained results in an objective way.\\
+The third one, \textbf{Evaluation}, shows the results of the application testing amongst real people and the obtained results in an objective way.\\
 
 The fourth chapter, \textbf{Discussion}, analyses the results obtained in the third chapter.\\
 
@@ -248,54 +258,42 @@ A key aspect on social networks is the privacy they ensure. \cite{Kosinski5802} 
 \subsection{Design}
 
 \subsubsection{Requirements}
-\textcolor{red}{hablar de moscow y en qué consiste}
+MoSCoW prioritization method \cite{moscow} will be used to classify the requirements of this project. MoSCoW is an acronym for ''\textbf{M}ust have, \textbf{S}hould have, \textbf{C}ould have and \textbf{W}on't have', categories in which requirements are divided.
 \begin{itemize}
-  \item Must
+  \item \emph{Must have} requirements. They are critical to the success of the project.
     \begin{itemize}
-      \item analyse user's behaviour.
-      \item generate a report based on retrieved data.
-      \item able to chat with the user in English and Spanish
-      \item be available in Telegram.
-      \item be scalable
-      \item provide modular architecture
-      \item provide REST architecture for all services
-      \item ''talk'' in a coherent way.
-      \item decir a qué hora puede hablar y a cual no (ahora mismo no puedo; te hablo en media hora?)
+      \item The conversational agent must analyse the user's behaviour.
+      \item The system must provide an interface to show the retrieved data.
+      \item The system must support modularity.
     \end{itemize}
-  \item Should
+  \item \emph{Should have} requirements. These are important requirements, but not necessary for  the system release.
     \begin{itemize}
-      \item Develop a conversational agent that ensures that user's data is not shared with third parties.
-      \item be free
-      \item be open source
-      \item provide an API to implement other specialists (nutritionist, etc.)
-      \item be multimodal (audio + text msg)
+      \item The system should be under a CC BY-NC-SA \cite{CC} license.
+      \item The application should allow the doctors to add, modify and delete questions.
+      \item The conversational agent should support audio and text messages.
+      \item The application should generate plots to show the collected data.
     \end{itemize}
-  \item Could
+  \item \emph{Could have} requirements. Desirable requirements that could improve user's experience or satisfaction. Will be included if there is time at the end of the development.
     \begin{itemize}
-      \item chat with the user in more languages.
-      \item allow videomsg
-      \item can be added to groups
-      \item high availability
+      \item The system could be translated to other languages.
+      \item The bot could support videomessages.
+      \item The conversational agent could support groups.
     \end{itemize}
-  \item Won't
+  \item \emph{Won't have} requirements. They are inappropiate or the least important ones, so they are not included in the project.
     \begin{itemize}
-      \item be available in other platform
+      \item The application won't be cross-platform.
+      \item The system won't share the retrieved data with third parties.
     \end{itemize}
 \end{itemize}
 
 \subsubsection{Architecture}
-
+The proposed system will implement the following architecture:
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.5]{docker-compose.png}
-  \caption{Container architecture}
+  \includegraphics[width=\textwidth]{architecture.jpg}
+  \caption{HOW-R-U architecture}
 \end{figure}
-
-\begin{figure}[H]
-  \centering
-  \lstinputlisting[language=docker-compose]{chatbot/docker-compose.yml}
-  \caption{\emph{docker-compose.yml} file contents}
-\end{figure}
+\textcolor{red}{Explicar el diagrama (las cajas son módulos, los cuadrados componentes, discontinuos los opcionales, etc.)}
 
 
 
@@ -313,8 +311,9 @@ A key aspect on social networks is the privacy they ensure. \cite{Kosinski5802} 
 
 \section{Conclusions}
 
-
 \newpage
 \bibliographystyle{apacite}
 \bibliography{refs}
+\doclicenseThis
+
 \end{document}
