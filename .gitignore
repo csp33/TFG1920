@@ -244,6 +244,7 @@ TSWLatexianTemp*
 # PDF
 
 *.pdf
-
+*.pyc
 .cache/
 .idea/
+howru/config/bot_config.py

@@ -1,0 +1,20 @@
+version: "3.1"
+services:
+  psychologist-bot:
+    image: psychologist-bot
+    links:
+        - mongo-dbs:mongo-dbs
+    volumes:
+        - ~/Documents/TFG1920/howru/:/opt/chatbot
+    restart: always
+  mongo-dbs:
+    image: mongo:4.2.6
+    ports:
+      - "27017:27017"
+    restart: always
+  mongo-populator:
+    image: mongo-populator
+    links:
+      - mongo-dbs
+  #web-interface:
+

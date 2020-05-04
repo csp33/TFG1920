@@ -1,0 +1,4 @@
+{
+  "host": "mongo-dbs",
+  "port": 27017
+}
