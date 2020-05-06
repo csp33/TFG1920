@@ -3,7 +3,6 @@
     "_id": "2222222222",
     "name": "test_patient",
     "picture": "",
-    "country": "ES",
     "gender": "Male",
     "language": "EN"
   }

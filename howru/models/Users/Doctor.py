@@ -1,15 +1,15 @@
-from models.User import User
+from models.Users.User import User
 
 
-class Patient(User):
-    def __init__(self, name=None, identifier=None, picture=None, country=None, gender=None,
+class Doctor(User):
+    def __init__(self, name=None, identifier=None, picture=None, gender=None, email=None,
                  language=None, load_from_db=False):
+        self.email = email
         super().__init__(name=name,
                          identifier=identifier,
                          picture=picture,
-                         country=country,
                          gender=gender,
                          language=language,
-                         role="Patient",
-                         collection_name='patients',
+                         role="Doctor",
+                         collection_name='doctors',
                          load_from_db=load_from_db)

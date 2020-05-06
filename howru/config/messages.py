@@ -5,7 +5,6 @@ messages = {
     "ES": {
         "choose_gender": "Por favor escoge tu género:",
         "choose_pic": "Por favor, envía una foto tuya o pulsa /skip si no quieres.",
-        "choose_country": "Por favor indica tu país",
         "registration_ok": "Te has registrado correctamente en el sistema.",
         "exit_configurator": "Saliendo del menú de configuración...",
         "select_config": "Elige la configuración que deseas cambiar. Puedes pulsar /cancel en cualquier momento para volver atrás o /exit para salir.",
@@ -22,11 +21,11 @@ messages = {
         "current_language": "Tu idioma actual es ",
         "change_language": "Introduce tu nuevo idioma:",
         "language_updated": "Tu idioma se ha actualizado.",
+        "show_profile": "Estos son los datos de tu perfil:\n<b>Nombre</b>: {}\n<b>Género</b>: {}\n<b>Idioma</b>: {}"
     },
     "EN": {
         "choose_gender": "Please choose your gender:",
         "choose_pic": "Please send a photo of yourself or send /skip if you don\'t want to.",
-        "choose_country": "Please write your county name.",
         "registration_ok": "You have been successfully registered into the system.",
         "exit_configurator": "Leaving configuration menu...",
         "select_config": "Choose the configuration you want to change. You can press /cancel anytime to cancel the current operation or /exit to exit.",
@@ -42,6 +41,7 @@ messages = {
         "gender_updated": updated_template.format('gender'),
         "current_language": current_template.format('language'),
         "change_language": new_template.format('language'),
-        "language_updated": updated_template.format('language')
+        "language_updated": updated_template.format('language'),
+        "show_profile": "These are your profile data:\n<b>Name</b>: {}\n<b>Gender</b>: {}\n<b>Language</b>: {}"
     }
 }

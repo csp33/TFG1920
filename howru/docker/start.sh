@@ -1,3 +1,3 @@
 #!/bin/zsh
 ./build_images.sh;
-docker-compose up -d
+docker-compose -p "howru" up -d

@@ -5,6 +5,7 @@ from telegram.ext import Updater
 from config import bot_config
 from handlers.start_handler import start_handler
 from handlers.config_handler import config_handler
+from handlers.question_handler import question_handler
 
 
 def main():
@@ -12,7 +13,7 @@ def main():
     # Initialize bot
     updater = Updater(token=bot_config.TOKEN, use_context=True)
     dispatcher = updater.dispatcher
-    handlers = [start_handler, config_handler]
+    handlers = [start_handler, config_handler, question_handler]
     # Add handlers to dispatcher
     for handler in handlers:
         dispatcher.add_handler(handler)

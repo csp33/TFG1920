@@ -1,8 +1,8 @@
-from telegram import ReplyKeyboardRemove, ChatAction
-from telegram.ext import ConversationHandler, CommandHandler, MessageHandler, Filters
+from telegram import ReplyKeyboardRemove, ParseMode
+from telegram.ext import ConversationHandler, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 
 from models import keyboards
-from models.Patient import Patient
+from models.Users.Patient import Patient
 from log.logger import logger
 from config.messages import messages
 
@@ -34,7 +34,6 @@ class ConfigHandler(object):
     def ask_profile_pic(self, update, context):
         # Send current picture
         picture_path = self.patient.picture
-        logger.error(picture_path)
         update.message.reply_text(messages[self.patient.language]['current_picture'],
                                   reply_markup=ReplyKeyboardRemove())
         update.message.reply_photo(open(picture_path, 'rb'))
@@ -87,11 +86,17 @@ class ConfigHandler(object):
         return PROCESS_LANGUAGE
 
     def process_language(self, update, context):
-        language = update.message.text
-        self.patient.language = language
-        logger.info(f'User {self.user.username} name {self.patient.name} id {self.user.id} changed language to {language}')
+        self.patient.language = update.message.text
+        logger.info(
+            f'User {self.user.username} name {self.patient.name} id {self.user.id} changed language to {self.patient.language}')
         update.message.reply_text(messages[self.patient.language]['language_updated'])
         return self.config_menu(update, context)
+
+    def view_profile(self, update, context):
+        message = messages[self.patient.language]['show_profile'].format(self.patient.name, self.patient.gender, self.patient.language)
+        update.message.reply_text(message, parse_mode=ParseMode.HTML)
+        return CHOOSING
+
 
     def cancel(self, update, context):
         logger.info(
@@ -114,14 +119,16 @@ config_handler = ConversationHandler(
                    MessageHandler(Filters.regex('^(Cambiar nombre|Change name)$'), instance.ask_change_name),
                    MessageHandler(Filters.regex('^(Cambiar género|Change gender)$'), instance.ask_change_gender),
                    MessageHandler(Filters.regex(f'^(Cambiar idioma|Change language)$'),
-                                  instance.ask_change_language)
+                                  instance.ask_change_language),
+                   MessageHandler(Filters.regex(f'^(Ver mi perfil|View my profile)$'),
+                                  instance.view_profile)
                    ],
         PROCESS_GENDER: [
             MessageHandler(Filters.regex('^(Male|Female|Other|Masculino|Femenino|Otro)$'), instance.process_gender)],
         PROCESS_PROFILE_PIC: [MessageHandler(Filters.photo, instance.process_profile_pic)],
         PROCESS_NAME: [MessageHandler(Filters.text, instance.process_name)],
         PROCESS_LANGUAGE: [MessageHandler(Filters.regex(f'^({keyboards.flag("es")}|{keyboards.flag("gb")})$'),
-                                           instance.process_language)]
+                                          instance.process_language)]
     },
     fallbacks=[CommandHandler('cancel', instance.cancel),
                CommandHandler('exit', instance._exit)]

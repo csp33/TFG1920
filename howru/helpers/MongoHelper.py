@@ -3,7 +3,7 @@ import ujson as json
 from log.logger import logger
 ROUTES_FILE_PATH = '/etc/chatbot/cfg/routes.json'
 class MongoHelper(object):
-    def __init__(self, collection, db='chatbot_users'):
+    def __init__(self, collection, db):
         # Load parameters from routes file
         try:
             with open(ROUTES_FILE_PATH) as routes_file:
@@ -22,6 +22,9 @@ class MongoHelper(object):
 
     def search(self, query={}):
         return self.db[self.collection].find(query)
+
+    def search_one(self, query={}):
+        return self.db[self.collection].find_one(query)
 
     def get_document_by_id(self, identifier):
         return self.search({'_id': identifier})[0]
