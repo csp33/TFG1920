@@ -1,2 +1,2 @@
 #!/bin/zsh
-docker-compose down --remove-orphans --rmi local --volumes
+docker-compose -p "howru" down --remove-orphans --rmi local --volumes

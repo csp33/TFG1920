@@ -1,9 +1,9 @@
 [
   {
-    "_id": "555555",
+    "_id": {"$oid":"5eb402cdcc7536407f3682be"},
     "answer_date": {"$date":"2020-05-05T16:48:00.000Z"},
     "response": "response",
-    "question_id": "444444",
+    "question_id": {"$oid":"5eb40ba0cc7536407f3682c8"},
     "patient_id": "2222222222",
     "doctor_id": "1111111111"
   }

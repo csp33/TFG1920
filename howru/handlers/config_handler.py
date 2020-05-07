@@ -1,12 +1,12 @@
 from telegram import ReplyKeyboardRemove, ParseMode
-from telegram.ext import ConversationHandler, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
+from telegram.ext import ConversationHandler, CommandHandler, MessageHandler, Filters
 
+from config.messages import messages
+from log.logger import logger
 from models import keyboards
 from models.Users.Patient import Patient
-from log.logger import logger
-from config.messages import messages
 
-PROCESS_PROFILE_PIC, PROCESS_NAME, PROCESS_GENDER, CHOOSING, PROCESS_LANGUAGE = range(5)
+PROCESS_PROFILE_PIC, PROCESS_NAME, PROCESS_GENDER, CHOOSING, PROCESS_LANGUAGE, PROCESS_DELETE_USER = range(6)
 
 
 class ConfigHandler(object):
@@ -93,10 +93,25 @@ class ConfigHandler(object):
         return self.config_menu(update, context)
 
     def view_profile(self, update, context):
-        message = messages[self.patient.language]['show_profile'].format(self.patient.name, self.patient.gender, self.patient.language)
+        message = messages[self.patient.language]['show_profile'].format(self.patient.name, self.patient.gender,
+                                                                         self.patient.language)
         update.message.reply_text(message, parse_mode=ParseMode.HTML)
         return CHOOSING
 
+    def ask_delete_user(self, update, context):
+        logger.info(
+            f'User {self.user.username} name {self.user.first_name} id {self.user.id} wants to delete his account.')
+        update.message.reply_text(messages[self.patient.language]['delete_user'],
+                                  reply_markup=keyboards.delete_user_keyboard[self.patient.language])
+        return PROCESS_DELETE_USER
+
+    def process_delete_user(self, update, context):
+        logger.info(
+            f'User {self.user.username} name {self.user.first_name} id {self.user.id} deleted his account.')
+        self.patient.delete_from_db()
+        update.message.reply_text(messages[self.patient.language]['deleted_user'],
+                                  reply_markup=keyboards.start_keyboard)
+        return ConversationHandler.END
 
     def cancel(self, update, context):
         logger.info(
@@ -121,14 +136,18 @@ config_handler = ConversationHandler(
                    MessageHandler(Filters.regex(f'^(Cambiar idioma|Change language)$'),
                                   instance.ask_change_language),
                    MessageHandler(Filters.regex(f'^(Ver mi perfil|View my profile)$'),
-                                  instance.view_profile)
+                                  instance.view_profile),
+                   MessageHandler(Filters.regex(f'^(Eliminar usuario|Delete user)$'),
+                                  instance.ask_delete_user)
                    ],
         PROCESS_GENDER: [
             MessageHandler(Filters.regex('^(Male|Female|Other|Masculino|Femenino|Otro)$'), instance.process_gender)],
         PROCESS_PROFILE_PIC: [MessageHandler(Filters.photo, instance.process_profile_pic)],
         PROCESS_NAME: [MessageHandler(Filters.text, instance.process_name)],
         PROCESS_LANGUAGE: [MessageHandler(Filters.regex(f'^({keyboards.flag("es")}|{keyboards.flag("gb")})$'),
-                                          instance.process_language)]
+                                          instance.process_language)],
+        PROCESS_DELETE_USER: [MessageHandler(Filters.regex(f'^(Sí, eliminar mi usuario|Yes, delete my user)$'),
+                                             instance.process_delete_user)]
     },
     fallbacks=[CommandHandler('cancel', instance.cancel),
                CommandHandler('exit', instance._exit)]

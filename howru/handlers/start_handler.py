@@ -19,6 +19,7 @@ class StartHandler(object):
         self.patient = Patient(name=self.user.first_name, identifier=self.user.id)
         # Check that user is not registered
         if self.patient.exists():
+            logger.error(self.patient.__dict__)
             logger.info(
                 f'User {self.user.username} name {self.user.first_name} id {self.user.id} tried to register again.')
             update.message.reply_text(text=messages[self.patient.language]['already_exists'])
@@ -51,7 +52,7 @@ class StartHandler(object):
 
     def picture(self, update, context):
         photo_file = update.message.photo[-1].get_file()
-        pic_name = f'pics/{self.user.id}.jpg'
+        pic_name = f'pics/{self.user.id}..jpg'
         photo_file.download(pic_name)
         logger.info(
             f'User {self.user.username} name {self.user.first_name} {self.user.last_name} id {self.user.id} sent picture {pic_name}')
@@ -63,7 +64,6 @@ class StartHandler(object):
         logger.info(
             f'User {self.user.username} name {self.user.first_name} id {self.user.id} did not send a picture, using default')
         self.patient.picture = f'pics/default_profile_picture.png'
-        self.finish(update, context)
         return self.finish(update, context)
 
     def finish(self, update, context):
@@ -78,13 +78,10 @@ instance = StartHandler()
 start_handler = ConversationHandler(
     entry_points=[CommandHandler('start', instance.start)],
     states={
-        LANGUAGE: [
-            MessageHandler(Filters.regex(f'^({keyboards.flag("es")}|{keyboards.flag("gb")})$'), instance.language)],
+        LANGUAGE: [MessageHandler(Filters.regex(f'^({keyboards.flag("es")}|{keyboards.flag("gb")})$'),
+                                  instance.language)],
         GENDER: [MessageHandler(Filters.regex('^(Male|Female|Other|Masculino|Femenino|Otro)$'), instance.gender)],
-        PICTURE: [
-            MessageHandler(Filters.photo, instance.picture),
-            CommandHandler('skip', instance.skip_picture)
-        ]
+        PICTURE: [MessageHandler(Filters.photo, instance.picture), CommandHandler('skip', instance.skip_picture)]
     },
     fallbacks=[]
 )

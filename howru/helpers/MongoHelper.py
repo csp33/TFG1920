@@ -1,5 +1,7 @@
 import pymongo
 import ujson as json
+from bson import ObjectId
+
 from log.logger import logger
 ROUTES_FILE_PATH = '/etc/chatbot/cfg/routes.json'
 class MongoHelper(object):

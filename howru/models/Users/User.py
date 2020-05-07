@@ -8,15 +8,15 @@ from models.keyboards import flag
 class User(object):
     def __init__(self, name, identifier, picture, gender, role, language, collection_name, load_from_db):
         self.db = MongoHelper(db='users', collection=collection_name)
-        self._identifier = str(identifier) if identifier else bson.ObjectId()
+        self._identifier = str(identifier)
         self.role = role
         if load_from_db:
             self.load_from_db()
         else:
-            self._name = name
-            self._picture = picture
-            self._gender = gender
-            self._language = language
+            self._name = str(name)
+            self._picture = str(picture)
+            self._gender = str(gender)
+            self._language = str(language)
 
     def to_dict(self):
         return {
@@ -52,6 +52,9 @@ class User(object):
     def update_field(self, field, value):
         self.db.update_document(self.identifier, {'$set': {field: value}})
 
+    def delete_from_db(self):
+        return self.db.delete_document_by_id(self.identifier)
+
     @property
     def identifier(self):
         return self._identifier
@@ -66,7 +69,7 @@ class User(object):
 
     @name.setter
     def name(self, value):
-        self._name = value
+        self._name = str(value)
         self.update_field('name', self._name)
 
     @property
@@ -75,7 +78,7 @@ class User(object):
 
     @picture.setter
     def picture(self, value):
-        self._picture = value
+        self._picture = str(value)
         self.update_field('picture', self._picture)
 
     @property

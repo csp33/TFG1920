@@ -5,18 +5,17 @@ from log.logger import logger
 
 
 class Question(object):
-    def __init__(self, identifier, text=None, responses=None, creator_id=None, patient_ids=None, public=None, load_from_db=None, language=None):
+    def __init__(self, identifier, text=None, responses=None, creator_id=None, public=None, load_from_db=None, language=None):
         self.db = MongoHelper(collection='questions', db='questions')
         self._identifier = str(identifier) if identifier else bson.ObjectId()
         if load_from_db:
             self.load_from_db()
         else:
-            self._text = text
-            self._responses = responses
-            self._creator_id = creator_id
-            self._patient_ids = patient_ids
-            self._public = public
-            self._language = language
+            self._text = str(text)
+            self._responses = responses if isinstance(responses, list) else [str(responses)]
+            self._creator_id = bson.ObjectId(creator_id)
+            self._public = str(public)
+            self._language = str(language)
 
 
     def to_dict(self):
@@ -25,7 +24,6 @@ class Question(object):
             'text': self._text,
             'responses': self._responses,
             'creator_id': self._creator_id,
-            'patient_ids': self._patient_ids,
             'public': self._public,
             'language': self._language
         }
@@ -40,7 +38,7 @@ class Question(object):
 
     def load_from_db(self):
         try:
-            doc = self.db.get_document_by_id(self.identifier)
+            doc = self.db.get_document_by_id(bson.ObjectId(self.identifier))
             self.from_dict(doc)
         except:
             logger.exception(f'Unable to retrieve question {self.identifier} from DB.')
@@ -51,7 +49,6 @@ class Question(object):
         self._responses = doc['responses']
         self._creator_id = doc['creator_id']
         self._language = doc['language']
-        self._patient_ids = doc['patient_ids']
         self._public = doc['public']
 
     def update_field(self, field, value):
@@ -70,7 +67,7 @@ class Question(object):
         return self._text
     @text.setter
     def text(self, value):
-        self._text = value
+        self._text = str(value)
         self.update_field('text', value)
 
     @property
@@ -78,7 +75,10 @@ class Question(object):
         return self._responses
     @responses.setter
     def responses(self, value):
-        self._responses = value
+        if isinstance(value, list):
+            self._responses = value
+        else:
+            self._responses = [str(value)]
         self.update_field('responses', value)
 
     @property
@@ -89,13 +89,6 @@ class Question(object):
         self._creator_id = value
         self.update_field('creator_id', value)
 
-    @property
-    def patient_ids(self):
-        return self._patient_ids
-    @patient_ids.setter
-    def patient_ids(self, value):
-        self._patient_ids = value
-        self.update_field('patient_ids', value)
     @property
     def public(self):
         return self._public

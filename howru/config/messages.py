@@ -21,7 +21,10 @@ messages = {
         "current_language": "Tu idioma actual es ",
         "change_language": "Introduce tu nuevo idioma:",
         "language_updated": "Tu idioma se ha actualizado.",
-        "show_profile": "Estos son los datos de tu perfil:\n<b>Nombre</b>: {}\n<b>Género</b>: {}\n<b>Idioma</b>: {}"
+        "show_profile": "Estos son los datos de tu perfil:\n<b>Nombre</b>: {}\n<b>Género</b>: {}\n<b>Idioma</b>: {}",
+        "delete_user": "¿Estás seguro de que deseas borrar tu usuario?\nAún puedes pulsar /cancel para volver atrás o /exit para salir de la configuración.",
+        "deleted_user": "Usuario eliminado. Pulsa el botón de abajo para volver a registrarte.",
+        "finish_answering": "Esas son todas las preguntas por hoy. Gracias!"
     },
     "EN": {
         "choose_gender": "Please choose your gender:",
@@ -42,6 +45,9 @@ messages = {
         "current_language": current_template.format('language'),
         "change_language": new_template.format('language'),
         "language_updated": updated_template.format('language'),
-        "show_profile": "These are your profile data:\n<b>Name</b>: {}\n<b>Gender</b>: {}\n<b>Language</b>: {}"
+        "show_profile": "These are your profile data:\n<b>Name</b>: {}\n<b>Gender</b>: {}\n<b>Language</b>: {}",
+        "delete_user": "Are you sure you want to delete your user?\nYou can still press /cancel to go to the previous menu or /exit to leave the configuration.",
+        "deleted_user": "Your user has been deleted. Press the button below to register again.",
+        "finish_answering": "You finished answering today's questions. Thanks!"
     }
 }

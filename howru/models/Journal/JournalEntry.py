@@ -7,14 +7,14 @@ from log.logger import logger
 class JournalEntry(object):
     def __init__(self, identifier, question_id, patient_id, doctor_id, collection_name, load_from_db):
         self.type = collection_name
-        self.db = MongoHelper(db='users', collection=self.type)
-        self._identifier = str(identifier) if identifier else bson.ObjectId()
+        self.db = MongoHelper(db='journal', collection=self.type)
+        self._identifier = bson.ObjectId(identifier) if identifier else bson.ObjectId()
         if load_from_db:
             self.load_from_db()
         else:
-            self._question_id = question_id
-            self._patient_id = patient_id
-            self._doctor_id = doctor_id
+            self._question_id = bson.ObjectId(question_id)
+            self._patient_id = str(patient_id)
+            self._doctor_id = str(doctor_id)
 
     def to_dict(self):
         return {
@@ -37,7 +37,7 @@ class JournalEntry(object):
 
     def load_from_db(self):
         try:
-            doc = self.db.get_document_by_id(self.identifier)
+            doc = self.db.get_document_by_id(bson.ObjectId(self.identifier))
             self.from_dict(doc)
         except:
             logger.exception(f'Unable to retrieve user {self.identifier} from DB.')
@@ -60,7 +60,7 @@ class JournalEntry(object):
 
     @question_id.setter
     def question_id(self, value):
-        self._question_id = value
+        self._question_id = bson.ObjectId(value)
         self.update_field('question_id', value)
 
     @property
@@ -69,7 +69,7 @@ class JournalEntry(object):
 
     @patient_id.setter
     def patient_id(self, value):
-        self._patient_id = value
+        self._patient_id = bson.ObjectId(value)
         self.update_field('patient_id', value)
 
     @property
@@ -78,7 +78,7 @@ class JournalEntry(object):
 
     @doctor_id.setter
     def doctor_id(self, value):
-        self._doctor_id = value
+        self._doctor_id = str(value)
         self.update_field('doctor_id', value)
 
     @property
@@ -91,6 +91,6 @@ class JournalEntry(object):
     # Language must be normalized
     @language.setter
     def language(self, value):
-        self._language = value
+        self._language = str(value)
         self.update_field('language', self._language)
 

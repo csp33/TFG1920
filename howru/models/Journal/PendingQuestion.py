@@ -6,7 +6,6 @@ class PendingQuestion(JournalEntry):
                  answering=None, load_from_db=False):
         self._answering = answering
         super().__init__(identifier=identifier, question_id=question_id, patient_id=patient_id, doctor_id=doctor_id,
-                         language=language,
                          collection_name='pending_questions', load_from_db=load_from_db)
 
     @property
@@ -17,3 +16,8 @@ class PendingQuestion(JournalEntry):
     def answering(self, value):
         self._answering = value
         self.update_field('answering', value)
+
+    def to_dict(self):
+        result = super().to_dict()
+        result['answering'] = self.answering
+        return result

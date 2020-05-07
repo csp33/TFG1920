@@ -1,11 +1,41 @@
 [
   {
-    "_id": "444444",
-    "text": "test_question_en",
-    "responses": ["r1en", "r2en"],
+    "_id": {
+      "$oid": "5eb4023bcc7536407f3682bc"
+    },
+    "text": "first_test_question",
+    "responses": [
+      "r1en",
+      "r2en"
+    ],
     "creator_id": "1111111111",
-    "patient_ids": ["2222222222"],
     "public": false,
     "language": "en"
+  },
+  {
+    "_id": {
+      "$oid": "5eb40ba0cc7536407f3682c9"
+    },
+    "text": "Third test question",
+    "responses": [
+      "r1es_2",
+      "r2es_2"
+    ],
+    "creator_id": "1111111111",
+    "public": false,
+    "language": "es"
+  },
+  {
+    "_id": {
+      "$oid": "5eb40ba0cc7536407f3682c8"
+    },
+    "text": "Second test question",
+    "responses": [
+      "r1es",
+      "r2es"
+    ],
+    "creator_id": "1111111111",
+    "public": false,
+    "language": "es"
   }
 ]

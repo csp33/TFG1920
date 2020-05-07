@@ -1,7 +1,7 @@
 [
   {
-    "_id": "6666666",
-    "question_id": "444444",
+    "_id": {"$oid":"5eb40297cc7536407f3682bd"},
+    "question_id": {"$oid":"5eb4023bcc7536407f3682bc"},
     "patient_id": "8251083",
     "doctor_id": "1111111111"
   }
