@@ -50,7 +50,6 @@ class User(object):
         self._language = doc['language']
 
     def update_field(self, field, value):
-        logger.error(f'updating field {field} with {value}')
         self.db.update_document(self.identifier, {'$set': {field: value}})
 
     def delete_from_db(self):

@@ -47,8 +47,7 @@ class QuestionHandler(object):
 
 instance = QuestionHandler()
 question_handler = ConversationHandler(
-    entry_points=[MessageHandler(Filters.text, instance.answer_question)],
-    states={
-    },
+    entry_points=[MessageHandler(~Filters.regex('^/...$'), instance.answer_question)],
+    states={},
     fallbacks=[]
 )

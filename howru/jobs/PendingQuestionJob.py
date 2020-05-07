@@ -27,7 +27,7 @@ class PendingQuestionJob(object):
                                      reply_markup=keyboards.get_custom_keyboard(question.responses))
             while not self.is_question_answered(task):
                 time.sleep(1)
-        message = messages[self.patient.language]['finish_answering'] if pending_questions.count() else \
+        message = messages[self.patient.language]['finish_answering'] if self.answered_questions_today() else \
         messages[self.patient.language]['no_questions']
 
         context.bot.send_message(chat_id=self.patient.identifier, text=message,
@@ -55,3 +55,13 @@ class PendingQuestionJob(object):
         return self.pending_db.search({
             'patient_id': self.patient.identifier
         })
+
+    def answered_questions_today(self):
+        now = datetime.now()
+        today = datetime(now.year, now.month, now.day)
+        tomorrow = today + timedelta(days=1)
+        return self.answered_db.count_documents(
+            {
+                'patient_id': self.patient.identifier,
+                'answer_date': {'$gte': today, '$lt': tomorrow}
+            })
