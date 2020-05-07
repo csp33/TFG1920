@@ -87,6 +87,7 @@ class User(object):
             self._language = doc['language']
         except:
             logger.exception(f'Unable to retrieve user {self.identifier} from DB.')
+            raise Exception
 
     def update_field(self, field, value):
         self.db.update_document(self.identifier, {'$set':{field: value}})

@@ -13,6 +13,8 @@ gender_keyboard = {
 }
 language_keyboard = ReplyKeyboardMarkup([[flag('es'), flag('gb')]])
 config_keyboard = {
-    'ES': ReplyKeyboardMarkup([['Cambiar imagen de perfil'], ['Cambiar nombre'], ["Cambiar género"], ['Establecer horario']]),
-    'EN': ReplyKeyboardMarkup([['Change profile picture'], ['Change name'], ["Change gender"], ['Set schedule']]),
+    'ES': ReplyKeyboardMarkup([['Cambiar imagen de perfil'], ['Cambiar nombre'], ["Cambiar género"], ['Cambiar idioma'],
+                               ['Establecer horario']]),
+    'EN': ReplyKeyboardMarkup(
+        [['Change profile picture'], ['Change name'], ["Change gender"], ['Change language'], ['Set schedule']]),
 }
