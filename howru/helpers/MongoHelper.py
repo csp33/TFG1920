@@ -1,9 +1,11 @@
 import pymongo
 import ujson as json
-from bson import ObjectId
 
 from log.logger import logger
+
 ROUTES_FILE_PATH = '/etc/chatbot/cfg/routes.json'
+
+
 class MongoHelper(object):
     def __init__(self, collection, db):
         # Load parameters from routes file
@@ -42,4 +44,3 @@ class MongoHelper(object):
 
     def update_document(self, doc_id, content):
         self.db[self.collection].update_one({'_id': doc_id}, content)
-

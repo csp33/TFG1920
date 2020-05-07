@@ -1,6 +1,6 @@
 import time
 from datetime import datetime, timedelta
-import pytz
+
 from telegram import ReplyKeyboardRemove
 
 from config.messages import messages
@@ -28,8 +28,8 @@ class PendingQuestionJob(object):
             while not self.is_question_answered(task):
                 time.sleep(1)
         message = messages[self.patient.language]['finish_answering'] if self.answered_questions_today() else \
-        messages[self.patient.language]['no_questions']
-
+            messages[self.patient.language]['no_questions']
+        logger.info(f'User {self.patient.name} id {self.patient.identifier} answered all the questions')
         context.bot.send_message(chat_id=self.patient.identifier, text=message,
                                  reply_markup=ReplyKeyboardRemove())
 

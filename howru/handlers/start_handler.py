@@ -1,4 +1,3 @@
-
 from telegram import ReplyKeyboardRemove
 from telegram.ext import ConversationHandler, CommandHandler, MessageHandler, Filters
 
@@ -70,15 +69,14 @@ class StartHandler(object):
 
     def schedule(self, update, context):
         schedule = update.message.text
-        logger.info(
-            f'User {self.user.username} id {self.user.id} chose schedule {schedule}')
+        logger.info(f'User {self.user.username} id {self.user.id} chose schedule {schedule}')
         self.patient.schedule = schedule
         return self.finish(update, context)
 
     def finish(self, update, context):
         self.patient.to_db()
         update.message.reply_text(messages[self.patient.language]['registration_ok'])
-        logger.info(f'Creating pending_questions job for user {self.user.username}')
+        logger.debug(f'Creating pending_questions job for user {self.user.username}')
         PendingQuestionJob(context, self.patient.identifier)
         return ConversationHandler.END
 
@@ -91,7 +89,7 @@ start_handler = ConversationHandler(
                                   instance.language)],
         GENDER: [MessageHandler(Filters.regex('^(Male|Female|Other|Masculino|Femenino|Otro)$'), instance.gender)],
         PICTURE: [MessageHandler(Filters.photo, instance.picture), CommandHandler('skip', instance.skip_picture)],
-        SCHEDULE : [MessageHandler(Filters.regex('^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$'), instance.schedule)]
+        SCHEDULE: [MessageHandler(Filters.regex('^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$'), instance.schedule)]
     },
     fallbacks=[]
 )

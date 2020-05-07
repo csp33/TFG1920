@@ -7,8 +7,8 @@ from log.logger import logger
 from models import keyboards
 from models.Users.Patient import Patient
 
-PROCESS_PROFILE_PIC, PROCESS_NAME, PROCESS_GENDER, CHOOSING, PROCESS_LANGUAGE, PROCESS_DELETE_USER, PROCESS_SCHEDULE = range(
-    7)
+PROCESS_PROFILE_PIC, PROCESS_NAME, PROCESS_GENDER, CHOOSING, PROCESS_LANGUAGE, PROCESS_DELETE_USER, PROCESS_SCHEDULE = \
+    range(7)
 
 
 class ConfigHandler(object):

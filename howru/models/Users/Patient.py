@@ -1,7 +1,3 @@
-from datetime import datetime
-
-import pytz
-
 from helpers import UTCTime
 from models.Users.User import User
 

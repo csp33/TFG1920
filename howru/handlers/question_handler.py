@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import pytz
 from telegram import ReplyKeyboardRemove
 from telegram.ext import ConversationHandler, MessageHandler, Filters
 

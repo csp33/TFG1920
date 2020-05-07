@@ -1,5 +1,3 @@
-import bson
-
 from helpers.MongoHelper import MongoHelper
 from log.logger import logger
 from models.keyboards import flag
@@ -114,4 +112,3 @@ class User(object):
     def language(self, value):
         self._language = 'ES' if value == flag('es') else 'EN'
         self.update_field('language', self._language)
-

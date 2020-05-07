@@ -93,4 +93,3 @@ class JournalEntry(object):
     def language(self, value):
         self._language = str(value)
         self.update_field('language', self._language)
-
