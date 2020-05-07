@@ -15,4 +15,4 @@ def get_utc_result(value, timezone='Europe/Madrid'):
 
 
 def to_locale(time, timezone='Europe/Madrid'):
-    return pytz.utc.localize(time).astimezone(pytz.timezone(timezone))
+    return time.replace(tzinfo=pytz.UTC).astimezone(pytz.timezone(timezone))

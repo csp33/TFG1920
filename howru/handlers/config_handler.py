@@ -97,7 +97,8 @@ class ConfigHandler(object):
 
     def view_profile(self, update, context):
         message = messages[self.patient.language]['show_profile'].format(self.patient.name, self.patient.gender,
-                                                                         self.patient.language, self.patient.schedule)
+                                                                         self.patient.language,
+                                                                         self.patient.schedule.strftime('%H:%M'))
         update.message.reply_text(message, parse_mode=ParseMode.HTML)
         return self.config_menu(update, context)
 
