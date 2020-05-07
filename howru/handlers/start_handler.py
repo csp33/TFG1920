@@ -19,7 +19,6 @@ class StartHandler(object):
         self.patient = Patient(name=self.user.first_name, identifier=self.user.id, username=self.user.username)
         # Check that user is not registered
         if self.patient.exists():
-            logger.error(self.patient.__dict__)
             logger.info(
                 f'User {self.user.username} id {self.user.id} tried to register again.')
             update.message.reply_text(text=messages[self.patient.language]['already_exists'])

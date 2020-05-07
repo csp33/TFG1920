@@ -6,16 +6,16 @@ from models.keyboards import flag
 class User(object):
     def __init__(self, name, identifier, username, picture, gender, role, language, collection_name, load_from_db):
         self.db = MongoHelper(db='users', collection=collection_name)
-        self._identifier = str(identifier)
-        self.role = role
+        self._identifier = str(identifier) if identifier else None
+        self.role = role if role else None
         if load_from_db:
             self.load_from_db()
         else:
-            self._name = str(name)
-            self._picture = str(picture)
-            self._gender = str(gender)
-            self._language = str(language)
-            self._username = str(username)
+            self._name = str(name) if name else None
+            self._picture = str(picture) if picture else None
+            self._gender = str(gender) if gender else None
+            self._language = str(language) if language else None
+            self._username = str(username) if username else None
 
     def to_dict(self):
         return {
