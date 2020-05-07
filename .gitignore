@@ -246,3 +246,4 @@ TSWLatexianTemp*
 *.pdf
 
 .cache/
+.idea/
