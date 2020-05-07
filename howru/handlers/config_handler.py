@@ -3,6 +3,7 @@ from telegram.ext import ConversationHandler, CommandHandler, MessageHandler, Fi
 
 from config.messages import messages
 from helpers import UTCTime
+from jobs.PendingQuestionJob import PendingQuestionJob
 from log.logger import logger
 from models import keyboards
 from models.Users.Patient import Patient
@@ -120,8 +121,10 @@ class ConfigHandler(object):
 
     def process_change_schedule(self, update, context):
         self.patient.schedule = update.message.text
+        for old_job in context.job_queue.get_jobs_by_name(f'{self.user.id}_pending_questions_job'):
+            old_job.schedule_removal()
+        PendingQuestionJob(context, self.patient.identifier)
         logger.debug(f'User {self.user.username} id {self.user.id} changed schedule to {self.patient.schedule}')
-        # TODO modify job...
         update.message.reply_text(messages[self.patient.language]['schedule_updated'])
         return self.config_menu(update, context)
 
