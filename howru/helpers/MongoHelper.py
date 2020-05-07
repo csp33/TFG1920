@@ -24,7 +24,7 @@ class MongoHelper(object):
         return self.db[self.collection].find(query)
 
     def get_document_by_id(self, identifier):
-        return self.search({'_id': identifier})
+        return self.search({'_id': identifier})[0]
 
     def delete_document_by_id(self, identifier):
         return self.delete_document_by_query({'_id': identifier})
@@ -34,4 +34,7 @@ class MongoHelper(object):
 
     def count_documents(self, query):
         return self.db[self.collection].count_documents(query)
+
+    def update_document(self, doc_id, content):
+        self.db[self.collection].update_one({'_id': doc_id}, content)
 
