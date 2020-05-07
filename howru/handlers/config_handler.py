@@ -23,13 +23,15 @@ class ConfigHandler(object):
 
     def config(self, update, context):
         self.user = update.message.from_user
-        logger.info(f'User {self.user.username} id {self.user.id} started the configurator')
+        logger.debug(f'User {self.user.username} id {self.user.id} started the configurator')
         try:
             self.patient = Patient(identifier=self.user.id, load_from_db=True)
         except Exception:
-            logger.info(f'User {self.user.username} id {self.user.id} was not registered')
+            logger.debug(
+                f'User {self.user.username} id {self.user.id} tried to start the configurator but was not registered')
             update.message.reply_text('You must register first by clicking /start\n'
-                                      'Debes registrarte primero pulsando /start.', reply_markup=ReplyKeyboardRemove())
+                                      'Debes registrarte primero pulsando /start.',
+                                      reply_markup=ReplyKeyboardRemove())
             return ConversationHandler.END
         return self.config_menu(update, context)
 
@@ -47,13 +49,13 @@ class ConfigHandler(object):
         pic_name = f'pics/{self.user.id}.jpg'
         photo_file.download(pic_name)
         self.patient.picture = pic_name
-        logger.info(f'User {self.user.username} id {self.user.id} changed profile picture')
+        logger.debug(f'User {self.user.username} id {self.user.id} changed profile picture')
         update.message.reply_text(messages[self.patient.language]['picture_updated'],
                                   reply_markup=ReplyKeyboardRemove())
         return self.config_menu(update, context)
 
     def ask_change_name(self, update, context):
-        logger.info(f'User {self.user.username} id {self.user.id} asked to change name')
+        logger.debug(f'User {self.user.username} id {self.user.id} asked to change name')
         update.message.reply_text(messages[self.patient.language]['current_name'] + self.patient.name)
         update.message.reply_text(messages[self.patient.language]['change_name'], reply_markup=ReplyKeyboardRemove())
         return PROCESS_NAME
@@ -62,12 +64,12 @@ class ConfigHandler(object):
         old_name = self.patient.name
         name = update.message.text
         self.patient.name = name
-        logger.info(f'User {self.user.username} old  name {old_name} id {self.user.id} changed name to {name}')
+        logger.debug(f'User {self.user.username} old  name {old_name} id {self.user.id} changed name to {name}')
         update.message.reply_text(messages[self.patient.language]['name_updated'])
         return self.config_menu(update, context)
 
     def ask_change_gender(self, update, context):
-        logger.info(f'User {self.user.username} id {self.user.id} asked to change gender')
+        logger.debug(f'User {self.user.username} id {self.user.id} asked to change gender')
         update.message.reply_text(messages[self.patient.language]['current_gender'] + self.patient.gender)
         update.message.reply_text(messages[self.patient.language]['change_gender'],
                                   reply_markup=keyboards.gender_keyboard[self.patient.language])
@@ -76,12 +78,12 @@ class ConfigHandler(object):
     def process_gender(self, update, context):
         gender = update.message.text
         self.patient.gender = gender
-        logger.info(f'User {self.user.username} name {self.patient.name} id {self.user.id} changed gender to {gender}')
+        logger.debug(f'User {self.user.username} id {self.user.id} changed gender to {gender}')
         update.message.reply_text(messages[self.patient.language]['gender_updated'])
         return self.config_menu(update, context)
 
     def ask_change_language(self, update, context):
-        logger.info(f'User {self.user.username} id {self.user.id} asked to change language')
+        logger.debug(f'User {self.user.username} id {self.user.id} asked to change language')
         update.message.reply_text(messages[self.patient.language]['current_language'] + self.patient.language)
         update.message.reply_text(messages[self.patient.language]['change_language'],
                                   reply_markup=keyboards.language_keyboard)
@@ -89,8 +91,7 @@ class ConfigHandler(object):
 
     def process_language(self, update, context):
         self.patient.language = update.message.text
-        logger.info(
-            f'User {self.user.username} name {self.patient.name} id {self.user.id} changed language to {self.patient.language}')
+        logger.debug(f'User {self.user.username} id {self.user.id} changed language to {self.patient.language}')
         update.message.reply_text(messages[self.patient.language]['language_updated'])
         return self.config_menu(update, context)
 
@@ -101,14 +102,13 @@ class ConfigHandler(object):
         return self.config_menu(update, context)
 
     def ask_delete_user(self, update, context):
-        logger.info(
-            f'User {self.user.username} id {self.user.id} wants to delete his account.')
+        logger.debug(f'User {self.user.username} id {self.user.id} wants to delete his account.')
         update.message.reply_text(messages[self.patient.language]['delete_user'],
                                   reply_markup=keyboards.delete_user_keyboard[self.patient.language])
         return PROCESS_DELETE_USER
 
     def ask_change_schedule(self, update, context):
-        logger.info(f'User {self.user.username} id {self.user.id} asked to change schedule')
+        logger.debug(f'User {self.user.username} id {self.user.id} asked to change schedule')
         schedule_dt = UTCTime.to_locale(self.patient.schedule)
         schedule = schedule_dt.strftime("%H:%M")
         update.message.reply_text(
@@ -119,27 +119,24 @@ class ConfigHandler(object):
 
     def process_change_schedule(self, update, context):
         self.patient.schedule = update.message.text
-        logger.info(
-            f'User {self.user.username} name {self.patient.name} id {self.user.id} changed schedule to {self.patient.schedule}')
+        logger.debug(f'User {self.user.username} id {self.user.id} changed schedule to {self.patient.schedule}')
         # TODO modify job...
         update.message.reply_text(messages[self.patient.language]['schedule_updated'])
         return self.config_menu(update, context)
 
     def process_delete_user(self, update, context):
-        logger.info(
-            f'User {self.user.username} id {self.user.id} deleted his account.')
+        logger.info(f'User {self.user.username} id {self.user.id} deleted his account.')
         self.patient.delete_from_db()
         update.message.reply_text(messages[self.patient.language]['deleted_user'],
                                   reply_markup=keyboards.start_keyboard)
         return ConversationHandler.END
 
     def cancel(self, update, context):
-        logger.info(
-            f'User {self.user.username} id {self.user.id} cancelled current operation.')
+        logger.debug(f'User {self.user.username} id {self.user.id} cancelled current operation.')
         return self.config_menu(update, context)
 
     def _exit(self, update, context):
-        logger.info(f'User {self.user.username} id {self.user.id} close the configurator.')
+        logger.debug(f'User {self.user.username} id {self.user.id} close the configurator.')
         update.message.reply_text(messages[self.patient.language]['exit_configurator'],
                                   reply_markup=ReplyKeyboardRemove())
         return ConversationHandler.END
