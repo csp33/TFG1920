@@ -21,3 +21,7 @@ class PendingQuestion(JournalEntry):
         result = super().to_dict()
         result['answering'] = self.answering
         return result
+
+    def from_dict(self, doc):
+        self._answering = doc['answering']
+        super().from_dict(doc)

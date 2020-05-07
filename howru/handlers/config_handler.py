@@ -2,11 +2,13 @@ from telegram import ReplyKeyboardRemove, ParseMode
 from telegram.ext import ConversationHandler, CommandHandler, MessageHandler, Filters
 
 from config.messages import messages
+from helpers import UTCTime
 from log.logger import logger
 from models import keyboards
 from models.Users.Patient import Patient
 
-PROCESS_PROFILE_PIC, PROCESS_NAME, PROCESS_GENDER, CHOOSING, PROCESS_LANGUAGE, PROCESS_DELETE_USER = range(6)
+PROCESS_PROFILE_PIC, PROCESS_NAME, PROCESS_GENDER, CHOOSING, PROCESS_LANGUAGE, PROCESS_DELETE_USER, PROCESS_SCHEDULE = range(
+    7)
 
 
 class ConfigHandler(object):
@@ -21,11 +23,11 @@ class ConfigHandler(object):
 
     def config(self, update, context):
         self.user = update.message.from_user
-        logger.info(f'User {self.user.username} name {self.user.first_name} id {self.user.id} started the configurator')
+        logger.info(f'User {self.user.username} id {self.user.id} started the configurator')
         try:
             self.patient = Patient(identifier=self.user.id, load_from_db=True)
         except Exception:
-            logger.info(f'User {self.user.username} name {self.user.first_name} id {self.user.id} was not registered')
+            logger.info(f'User {self.user.username} id {self.user.id} was not registered')
             update.message.reply_text('You must register first by clicking /start\n'
                                       'Debes registrarte primero pulsando /start.', reply_markup=ReplyKeyboardRemove())
             return ConversationHandler.END
@@ -45,13 +47,13 @@ class ConfigHandler(object):
         pic_name = f'pics/{self.user.id}.jpg'
         photo_file.download(pic_name)
         self.patient.picture = pic_name
-        logger.info(f'User {self.user.username} name {self.user.first_name} id {self.user.id} changed profile picture')
+        logger.info(f'User {self.user.username} id {self.user.id} changed profile picture')
         update.message.reply_text(messages[self.patient.language]['picture_updated'],
                                   reply_markup=ReplyKeyboardRemove())
         return self.config_menu(update, context)
 
     def ask_change_name(self, update, context):
-        logger.info(f'User {self.user.username} name {self.user.first_name} id {self.user.id} asked to change name')
+        logger.info(f'User {self.user.username} id {self.user.id} asked to change name')
         update.message.reply_text(messages[self.patient.language]['current_name'] + self.patient.name)
         update.message.reply_text(messages[self.patient.language]['change_name'], reply_markup=ReplyKeyboardRemove())
         return PROCESS_NAME
@@ -65,7 +67,7 @@ class ConfigHandler(object):
         return self.config_menu(update, context)
 
     def ask_change_gender(self, update, context):
-        logger.info(f'User {self.user.username} name {self.user.first_name} id {self.user.id} asked to change gender')
+        logger.info(f'User {self.user.username} id {self.user.id} asked to change gender')
         update.message.reply_text(messages[self.patient.language]['current_gender'] + self.patient.gender)
         update.message.reply_text(messages[self.patient.language]['change_gender'],
                                   reply_markup=keyboards.gender_keyboard[self.patient.language])
@@ -79,7 +81,7 @@ class ConfigHandler(object):
         return self.config_menu(update, context)
 
     def ask_change_language(self, update, context):
-        logger.info(f'User {self.user.username} name {self.user.first_name} id {self.user.id} asked to change language')
+        logger.info(f'User {self.user.username} id {self.user.id} asked to change language')
         update.message.reply_text(messages[self.patient.language]['current_language'] + self.patient.language)
         update.message.reply_text(messages[self.patient.language]['change_language'],
                                   reply_markup=keyboards.language_keyboard)
@@ -94,20 +96,38 @@ class ConfigHandler(object):
 
     def view_profile(self, update, context):
         message = messages[self.patient.language]['show_profile'].format(self.patient.name, self.patient.gender,
-                                                                         self.patient.language)
+                                                                         self.patient.language, self.patient.schedule)
         update.message.reply_text(message, parse_mode=ParseMode.HTML)
-        return CHOOSING
+        return self.config_menu(update, context)
 
     def ask_delete_user(self, update, context):
         logger.info(
-            f'User {self.user.username} name {self.user.first_name} id {self.user.id} wants to delete his account.')
+            f'User {self.user.username} id {self.user.id} wants to delete his account.')
         update.message.reply_text(messages[self.patient.language]['delete_user'],
                                   reply_markup=keyboards.delete_user_keyboard[self.patient.language])
         return PROCESS_DELETE_USER
 
+    def ask_change_schedule(self, update, context):
+        logger.info(f'User {self.user.username} id {self.user.id} asked to change schedule')
+        schedule_dt = UTCTime.to_locale(self.patient.schedule)
+        schedule = schedule_dt.strftime("%H:%M")
+        update.message.reply_text(
+            messages[self.patient.language]['current_schedule'] + schedule)
+        update.message.reply_text(messages[self.patient.language]['change_schedule'],
+                                  reply_markup=ReplyKeyboardRemove())
+        return PROCESS_SCHEDULE
+
+    def process_change_schedule(self, update, context):
+        self.patient.schedule = update.message.text
+        logger.info(
+            f'User {self.user.username} name {self.patient.name} id {self.user.id} changed schedule to {self.patient.schedule}')
+        # TODO modify job...
+        update.message.reply_text(messages[self.patient.language]['schedule_updated'])
+        return self.config_menu(update, context)
+
     def process_delete_user(self, update, context):
         logger.info(
-            f'User {self.user.username} name {self.user.first_name} id {self.user.id} deleted his account.')
+            f'User {self.user.username} id {self.user.id} deleted his account.')
         self.patient.delete_from_db()
         update.message.reply_text(messages[self.patient.language]['deleted_user'],
                                   reply_markup=keyboards.start_keyboard)
@@ -115,11 +135,11 @@ class ConfigHandler(object):
 
     def cancel(self, update, context):
         logger.info(
-            f'User {self.user.username} name {self.user.first_name} id {self.user.id} cancelled current operation.')
+            f'User {self.user.username} id {self.user.id} cancelled current operation.')
         return self.config_menu(update, context)
 
     def _exit(self, update, context):
-        logger.info(f'User {self.user.username} name {self.user.first_name} id {self.user.id} close the configurator.')
+        logger.info(f'User {self.user.username} id {self.user.id} close the configurator.')
         update.message.reply_text(messages[self.patient.language]['exit_configurator'],
                                   reply_markup=ReplyKeyboardRemove())
         return ConversationHandler.END
@@ -137,8 +157,9 @@ config_handler = ConversationHandler(
                                   instance.ask_change_language),
                    MessageHandler(Filters.regex(f'^(Ver mi perfil|View my profile)$'),
                                   instance.view_profile),
-                   MessageHandler(Filters.regex(f'^(Eliminar usuario|Delete user)$'),
-                                  instance.ask_delete_user)
+                   MessageHandler(Filters.regex(f'^(Borrar usuario️|Remove user️)$'),
+                                  instance.ask_delete_user),
+                   MessageHandler(Filters.regex('^(Cambiar horario|Change schedule)$'), instance.ask_change_schedule)
                    ],
         PROCESS_GENDER: [
             MessageHandler(Filters.regex('^(Male|Female|Other|Masculino|Femenino|Otro)$'), instance.process_gender)],
@@ -147,7 +168,9 @@ config_handler = ConversationHandler(
         PROCESS_LANGUAGE: [MessageHandler(Filters.regex(f'^({keyboards.flag("es")}|{keyboards.flag("gb")})$'),
                                           instance.process_language)],
         PROCESS_DELETE_USER: [MessageHandler(Filters.regex(f'^(Sí, eliminar mi usuario|Yes, delete my user)$'),
-                                             instance.process_delete_user)]
+                                             instance.process_delete_user)],
+        PROCESS_SCHEDULE: [MessageHandler(Filters.regex('^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$'),
+                                          instance.process_change_schedule)]
     },
     fallbacks=[CommandHandler('cancel', instance.cancel),
                CommandHandler('exit', instance._exit)]

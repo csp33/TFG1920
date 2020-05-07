@@ -1,10 +1,15 @@
+from datetime import datetime
+
+import pytz
+
+from helpers import UTCTime
 from models.Users.User import User
 
 
 class Patient(User):
     def __init__(self, identifier=None, name=None, picture=None, gender=None,
-                 language=None, load_from_db=False, questions_time=None):
-        self._questions_time = questions_time
+                 language=None, load_from_db=False, schedule=None):
+        self._schedule = schedule
         super().__init__(name=name,
                          identifier=identifier,
                          picture=picture,
@@ -15,9 +20,20 @@ class Patient(User):
                          load_from_db=load_from_db)
 
     @property
-    def questions_time(self):
-        return self._questions_time
-    @questions_time.setter
-    def questions_time(self, value):
-        self._questions_time = value
-        self.update_field('questions_time', value)
+    def schedule(self):
+        return self._schedule
+
+    @schedule.setter
+    def schedule(self, value):
+        utc_result = UTCTime.get_utc_result(value)
+        self._schedule = utc_result
+        self.update_field('schedule', utc_result)
+
+    def to_dict(self):
+        result = super().to_dict()
+        result['schedule'] = self.schedule
+        return result
+
+    def from_dict(self, doc):
+        self._schedule = doc['schedule']
+        super().from_dict(doc)

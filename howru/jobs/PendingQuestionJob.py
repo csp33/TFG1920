@@ -1,6 +1,6 @@
 import time
 from datetime import datetime, timedelta
-
+import pytz
 from telegram import ReplyKeyboardRemove
 
 from config.messages import messages
@@ -27,13 +27,15 @@ class PendingQuestionJob(object):
                                      reply_markup=keyboards.get_custom_keyboard(question.responses))
             while not self.is_question_answered(task):
                 time.sleep(1)
-        context.bot.send_message(chat_id=self.patient.identifier, text=messages[self.patient.language]['finish_answering'],
+        message = messages[self.patient.language]['finish_answering'] if pending_questions.count() else \
+        messages[self.patient.language]['no_questions']
+
+        context.bot.send_message(chat_id=self.patient.identifier, text=message,
                                  reply_markup=ReplyKeyboardRemove())
 
     def _create_job(self, context):
-        # TODO run job at start_schedule date (Patient's attribute)
         context.job_queue.run_daily(callback=self.job_callback,
-                                    time=datetime.now(),
+                                    time=self.patient.schedule,
                                     name=f'{self.patient.identifier}_pending_questions_job')
         # TODO store jobs using pickle https://github.com/python-telegram-bot/python-telegram-bot/wiki/Code-snippets#save-and-load-jobs-using-pickle
 
@@ -53,5 +55,3 @@ class PendingQuestionJob(object):
         return self.pending_db.search({
             'patient_id': self.patient.identifier
         })
-
-

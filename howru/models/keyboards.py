@@ -34,16 +34,16 @@ config_keyboard = {
     'ES': ReplyKeyboardMarkup([
         ['Cambiar imagen de perfil', 'Cambiar nombre'],
         ["Cambiar género", 'Cambiar idioma'],
-        ['Establecer horario', "Ver mi perfil"],
-        ["⚠️Eliminar usuario⚠️"]
+        ['Cambiar horario', "Ver mi perfil"],
+        ["Borrar usuario️"]
     ]
     ),
     'EN': ReplyKeyboardMarkup(
         [
             ['Change profile picture', 'Change name'],
             ["Change gender", 'Change language'],
-            ['Set schedule', "View my profile"],
-            ["⚠️Delete user⚠️"]
+            ['Change schedule', "View my profile"],
+            ["Remove user️"]
         ]
     ),
 }

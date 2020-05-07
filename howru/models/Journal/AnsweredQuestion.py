@@ -15,6 +15,11 @@ class AnsweredQuestion(JournalEntry):
         result['answer_date'] = self.answer_date
         return result
 
+    def from_dict(self, doc):
+        self._response = doc['response']
+        self._answer_date = doc['answer_date']
+        super().from_dict(doc)
+
     @property
     def answer_date(self):
         return self._answer_date
@@ -27,6 +32,7 @@ class AnsweredQuestion(JournalEntry):
     @property
     def response(self):
         return self._response
+
     @response.setter
     def response(self, value):
         self._response = value
