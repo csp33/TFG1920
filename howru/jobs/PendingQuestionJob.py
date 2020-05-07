@@ -29,7 +29,7 @@ class PendingQuestionJob(object):
                 time.sleep(1)
         message = messages[self.patient.language]['finish_answering'] if self.answered_questions_today() else \
             messages[self.patient.language]['no_questions']
-        logger.info(f'User {self.patient.name} id {self.patient.identifier} answered all the questions')
+        logger.info(f'User {self.patient.username} id {self.patient.identifier} answered all the questions')
         context.bot.send_message(chat_id=self.patient.identifier, text=message,
                                  reply_markup=ReplyKeyboardRemove())
 

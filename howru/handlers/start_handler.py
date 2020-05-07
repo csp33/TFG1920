@@ -16,7 +16,7 @@ class StartHandler(object):
 
     def start(self, update, context):
         self.user = update.message.from_user
-        self.patient = Patient(name=self.user.first_name, identifier=self.user.id)
+        self.patient = Patient(name=self.user.first_name, identifier=self.user.id, username=self.user.username)
         # Check that user is not registered
         if self.patient.exists():
             logger.error(self.patient.__dict__)

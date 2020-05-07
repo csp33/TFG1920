@@ -3,7 +3,7 @@ from models.Users.User import User
 
 
 class Patient(User):
-    def __init__(self, identifier=None, name=None, picture=None, gender=None,
+    def __init__(self, identifier=None, username=None, name=None, picture=None, gender=None,
                  language=None, load_from_db=False, schedule=None):
         self._schedule = schedule
         super().__init__(name=name,
@@ -12,6 +12,7 @@ class Patient(User):
                          gender=gender,
                          language=language,
                          role="Patient",
+                         username=username,
                          collection_name='patients',
                          load_from_db=load_from_db)
 

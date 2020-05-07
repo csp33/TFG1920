@@ -4,7 +4,7 @@ from models.keyboards import flag
 
 
 class User(object):
-    def __init__(self, name, identifier, picture, gender, role, language, collection_name, load_from_db):
+    def __init__(self, name, identifier, username, picture, gender, role, language, collection_name, load_from_db):
         self.db = MongoHelper(db='users', collection=collection_name)
         self._identifier = str(identifier)
         self.role = role
@@ -15,6 +15,7 @@ class User(object):
             self._picture = str(picture)
             self._gender = str(gender)
             self._language = str(language)
+            self._username = str(username)
 
     def to_dict(self):
         return {
@@ -22,7 +23,8 @@ class User(object):
             'name': self._name,
             'picture': self._picture,
             'gender': self._gender,
-            'language': self._language
+            'language': self._language,
+            'username': self._username
         }
 
     def to_db(self):
@@ -46,6 +48,7 @@ class User(object):
         self._picture = doc['picture']
         self._gender = doc['gender']
         self._language = doc['language']
+        self._username = doc['username']
 
     def update_field(self, field, value):
         self.db.update_document(self.identifier, {'$set': {field: value}})
@@ -99,6 +102,15 @@ class User(object):
             processed_value = "O"
         self._gender = processed_value
         self.update_field('gender', self._gender)
+
+    @property
+    def username(self):
+        return self._username
+
+    @username.setter
+    def username(self, value):
+        raise Exception("Username can not be changed")
+
 
     @property
     def language(self):
