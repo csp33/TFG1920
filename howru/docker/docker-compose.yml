@@ -16,5 +16,24 @@ services:
     image: mongo-populator
     links:
       - mongo-dbs
-  #web-interface:
+  web-interface:
+    image: web_interface
+    links:
+      - mongo-dbs:mongo-dbs
+    volumes:
+      - ~/Documents/TFG1920/howru/web_interface:/opt/web_interface
+    ports:
+      - "5025:5025"
+    restart: always
+
+  nginx:
+    image: "nginx"
+    ports:
+      - "85:85"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - web-interface
+    restart: always
+
 

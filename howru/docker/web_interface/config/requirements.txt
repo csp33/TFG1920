@@ -1,0 +1,2 @@
+djongo
+django==2.*
