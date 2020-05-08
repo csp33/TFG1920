@@ -2,6 +2,7 @@ FROM python:3.6.10-stretch
 ENV PYTHONUNBUFFERED 1
 # Copy config files
 ADD config/requirements.txt /root/requirements.txt
+ADD config/routes.json /etc/web_interface/cfg/routes.json
 # Install dependencies
 RUN pip install -r /root/requirements.txt
 # iPython for debugging
@@ -10,7 +11,7 @@ RUN pip3.6 install ipython
 WORKDIR /opt/web_interface
 
 # Run server
-#CMD python3 manage.py makemigrations && \
-#    python3 manage.py migrate && \
-  # python3 manage.py startserver 0:5025
-CMD tail -f /dev/null
+CMD python3 manage.py makemigrations && \
+    python3 manage.py migrate && \
+    python3 manage.py runserver 0:5025
+#CMD tail -f /dev/null
