@@ -24,6 +24,8 @@ services:
       - ~/Documents/TFG1920/howru/web_interface:/opt/web_interface
     ports:
       - "5025:5025"
+    depends_on:
+      - nginx
     restart: always
 
   nginx:
@@ -32,8 +34,6 @@ services:
       - "85:85"
     volumes:
       - ./nginx:/etc/nginx/conf.d
-    depends_on:
-      - web-interface
     restart: always
 
 

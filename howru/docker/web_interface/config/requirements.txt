@@ -1,2 +1,11 @@
 djongo
+asgiref
+autopep8
 django==2.*
+pycodestyle
+pytz
+sqlparse==0.2.4
+Unipath
+python-decouple
+gunicorn
+whitenoise
