@@ -19,3 +19,9 @@ def delete(request):
         'test_var': 'TEST VARIABLE THAT COMES FROM PYTHON CODE (QUESTIONS MANAGER/DELETE)',
     }
     return render(request, 'questions_manager/index.html', context)
+
+def view(request):
+    context = {
+        'test_var': 'TEST VARIABLE THAT COMES FROM PYTHON CODE (QUESTIONS MANAGER/VIEW)',
+    }
+    return render(request, 'questions_manager/index.html', context)
