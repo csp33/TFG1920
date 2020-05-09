@@ -29,7 +29,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app'  # Enable the inner app 
+    'app',  # Enable the inner app
+    'data_viewer.apps.DataViewerConfig',
+    'patients_manager.apps.PatientsManagerConfig',
+    'questions_manager.apps.QuestionsManagerConfig',
 ]
 
 MIDDLEWARE = [
