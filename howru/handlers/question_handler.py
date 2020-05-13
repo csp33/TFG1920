@@ -28,9 +28,10 @@ class QuestionHandler(object):
                                                  answer_date=datetime.utcnow(), response=response,
                                                  question_id=question_task['question_id'])
             answered_question.to_db()
-            # Delete question from pending
-            logger.debug(f'Deleting question task {question_task["_id"]} from pending_db...')
-            self.pending_db.delete_document_by_id(question_task['_id'])
+            # Set answering to false
+            self.pending_db.update_document(question_task['_id'], {'$set': {'answering': False}})
+            #logger.debug(f'Deleting question task {question_task["_id"]} from pending_db...')
+            #self.pending_db.delete_document_by_id(question_task['_id'])
         else:
             logger.debug(
                 f'User {user.username} id {user.id} wrote {response} while there was no question to answer')
