@@ -19,3 +19,9 @@ def view(request):
         'test_var': 'TEST VARIABLE THAT COMES FROM PYTHON CODE (PATIENTS MANAGER/VIEW)',
     }
     return render(request, 'patients_manager/view.html', context)
+
+def assign_questions(request):
+    context = {
+        'test_var': 'TEST VARIABLE THAT COMES FROM PYTHON CODE (PATIENTS MANAGER/ASSIGN QUESTIONS)',
+    }
+    return render(request, 'patients_manager/assign_questions.html', context)

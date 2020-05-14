@@ -9,3 +9,4 @@ Unipath
 python-decouple
 gunicorn
 whitenoise
+ujson
