@@ -2,7 +2,7 @@ FROM python:3.6.10-stretch
 ENV PYTHONUNBUFFERED 1
 # Copy config files
 ADD config/requirements.txt /root/requirements.txt
-ADD config/routes.json /etc/web_interface/cfg/routes.json
+ADD config/routes.json /etc/howru/cfg/routes.json
 # Install dependencies
 RUN pip install -r /root/requirements.txt
 # iPython for debugging

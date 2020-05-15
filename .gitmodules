@@ -1,0 +1,6 @@
+[submodule "howru/howru_chatbot"]
+	path = howru/howru_chatbot
+	url = git@github.com:csp98/howru_chatbot.git
+[submodule "howru/howru_web_interface"]
+	path = howru/howru_web_interface
+	url = https://github.com/csp98/howru_web_interface
