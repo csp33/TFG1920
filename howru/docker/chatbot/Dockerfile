@@ -3,7 +3,7 @@ FROM python:3.6.10-stretch
 # Install requirements
 
 ADD config/requirements.txt /root/requirements.txt
-ADD config/routes.json /etc/chatbot/cfg/routes.json
+ADD config/routes.json /etc/howru/cfg/routes.json
 RUN pip install -r /root/requirements.txt
 
 # iPython for debugging

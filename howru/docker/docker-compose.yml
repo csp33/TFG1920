@@ -5,7 +5,7 @@ services:
     links:
         - mongo-dbs:mongo-dbs
     volumes:
-        - ~/Documents/TFG1920/howru/:/opt/chatbot
+        - ~/Documents/TFG1920/howru/howru_chatbot:/opt/chatbot
     restart: always
   mongo-dbs:
     image: mongo:4.2.6
@@ -21,7 +21,7 @@ services:
     links:
       - mongo-dbs:mongo-dbs
     volumes:
-      - ~/Documents/TFG1920/howru/web_interface:/opt/web_interface
+      - ~/Documents/TFG1920/howru/howru_web_interface:/opt/web_interface
     ports:
       - "5025:5025"
     depends_on:
