@@ -1,8 +1,35 @@
 [
   {
-    "_id": {"$oid":"5eb40297cc7536407f3682bd"},
-    "question_id": {"$oid":"5eb4023bcc7536407f3682bc"},
-    "patient_id": "8251083",
-    "doctor_id": "1111111111"
+    "_id": {
+      "$oid": "5ebc1961ef47304423b1982a"
+    },
+    "question_id": {
+      "$oid": "5eb4023bcc7536407f3682bc"
+    },
+    "patient_id": "10137250",
+    "doctor_id": "1111111111",
+    "answering": false
+  },
+  {
+    "_id": {
+      "$oid": "5eb40297cc7536407f3682bd"
+    },
+    "question_id": {
+      "$oid": "5eb40ba0cc7536407f3682c9"
+    },
+    "patient_id": "10137250",
+    "doctor_id": "1111111111",
+    "answering": false
+  },
+  {
+    "_id": {
+      "$oid": "5ebc16e37c9c7cef18bf4a12"
+    },
+    "question_id": {
+      "$oid": "5eb40ba0cc7536407f3682c8"
+    },
+    "patient_id": "10137250",
+    "doctor_id": "1111111111",
+    "answering": false
   }
 ]
