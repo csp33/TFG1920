@@ -16,5 +16,7 @@ ENV PYTHONPATH /opt/chatbot
 # Run bot
 
 WORKDIR /opt/chatbot
-
-CMD python3 src/bot.py
+CMD python3 manage.py makemigrations && \
+    python3 manage.py migrate && \
+    python3 src/bot.py
+#CMD    tail -f /dev/null

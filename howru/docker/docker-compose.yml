@@ -3,29 +3,34 @@ services:
   psychologist-bot:
     image: psychologist-bot
     links:
-        - mongo-dbs:mongo-dbs
+        - db:db
     volumes:
         - ~/Documents/TFG1920/howru/howru_chatbot:/opt/chatbot
+    depends_on:
+      - db
     restart: always
-  mongo-dbs:
-    image: mongo:4.2.6
+  db:
+    image: postgres
     ports:
-      - "27017:27017"
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./db/config/initial_data.sql:/docker-entrypoint-initdb.d/init.sql
     restart: always
-  mongo-populator:
-    image: mongo-populator
-    links:
-      - mongo-dbs
   web-interface:
     image: web_interface
     links:
-      - mongo-dbs:mongo-dbs
+        - db:db
     volumes:
       - ~/Documents/TFG1920/howru/howru_web_interface:/opt/web_interface
     ports:
       - "5025:5025"
     depends_on:
       - nginx
+      - db
     restart: always
 
   nginx:

@@ -1,12 +1,13 @@
-djongo
 asgiref
 autopep8
-django==2.*
+django
 pycodestyle
 pytz
-sqlparse==0.2.4
 Unipath
 python-decouple
 gunicorn
 whitenoise
 ujson
+psycopg2-binary
+Pillow
+django_better_admin_arrayfield

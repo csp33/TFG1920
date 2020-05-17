@@ -1,4 +1,7 @@
 python-telegram-bot
-pymongo
 ujson
 pytz
+django
+psycopg2
+Pillow
+django_better_admin_arrayfield
