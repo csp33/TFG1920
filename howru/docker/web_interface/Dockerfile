@@ -15,5 +15,5 @@ WORKDIR /opt/web_interface
 CMD python3 manage.py makemigrations && \
     python3 manage.py migrate && \
     python3 manage.py loaddata /init_data.json && \
-    python3 manage.py runserver 0:5025
+    python3 manage.py runserver 0:8080
 #CMD tail -f /dev/null
