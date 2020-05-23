@@ -27,16 +27,16 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - nginx
+      - proxy
       - db
     restart: always
 
-  nginx:
-    image: "nginx"
+  proxy:
+    image: proxy
     ports:
       - "85:85"
     volumes:
-      - ./nginx:/etc/nginx/conf.d
+      - ./proxy:/etc/nginx/conf.d
     restart: always
 
 
