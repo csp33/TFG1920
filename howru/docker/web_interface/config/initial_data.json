@@ -3,17 +3,6 @@
     "model": "howru_models.question",
     "pk": 1,
     "fields": {
-      "responses": "[\"Entre 2 y 4\", \"Entre 4 y 6\", \"Entre 6 y 8\", \"M\\u00e1s de 8\"]",
-      "text": "\u00bfCu\u00e1ntas horas has dormido hoy?",
-      "creator_id": 2,
-      "public": true,
-      "language": "ES"
-    }
-  },
-  {
-    "model": "howru_models.question",
-    "pk": 2,
-    "fields": {
       "responses": "[\"S\\u00ed\", \"No\"]",
       "text": "\u00bfHas hecho deporte hoy?",
       "creator_id": 2,
@@ -23,10 +12,10 @@
   },
   {
     "model": "howru_models.question",
-    "pk": 3,
+    "pk": 2,
     "fields": {
-      "responses": "[\"Feliz\", \"Triste\", \"Cansado\", \"Aburrido\"]",
-      "text": "\u00bfC\u00f3mo te sientes hoy?",
+      "responses": "[\"Entre 2 y 4\", \"Entre 4 y 6\", \"Entre 6 y 8\", \"M\\u00e1s de 8\"]",
+      "text": "\u00bfCu\u00e1ntas horas has dormido hoy?",
       "creator_id": 2,
       "public": true,
       "language": "ES"
@@ -122,18 +111,10 @@
   },
   {
     "model": "sessions.session",
-    "pk": "09zfugaloq8nik6id21vtrqtdiwl7rve",
+    "pk": "ujjnu0397aq234juddog3x0z8vlmqt4s",
     "fields": {
-      "session_data": "MDU1NTliZjkxZGZiNThmNGYwMjBkMjMyMjBiZjNjODdiZWUzYTBjYTp7Il9hdXRoX3VzZXJfaWQiOiIzIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJkODUzN2UyMzNmN2M4ZDY1OTAxZjU3MTdjZTE0OTk1YTY0NDczYzExIn0=",
-      "expire_date": "2020-06-04T16:37:22.761Z"
-    }
-  },
-  {
-    "model": "sessions.session",
-    "pk": "zrf0f7zshxhupluiyjgoev8b48of8fae",
-    "fields": {
-      "session_data": "ZWMzNjg2MWQ4NTg5MzQyNTI2MDU5YjU5NDZmZjM1Njc2ZmZjMTg2OTp7Il9hdXRoX3VzZXJfaWQiOiIyIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJkNWU5OGU4ZjcwZmNkY2Q4NjBiMjg2NjFmYTcwYzUwYTk2NDA2ZTg0In0=",
-      "expire_date": "2020-06-02T15:15:21.802Z"
+      "session_data": "MTZkYmJhZWI4YzE1MGQ3ZGY3OTY5N2FkZjk3ZTRjMDlmM2Q2ZTAxNzp7Il9hdXRoX3VzZXJfaWQiOiIyIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJhZDMwMGNmMmY2NTE1ZTdlZWU3OGYwNDM1NGNkZWY0ZDA0YTFhMGExIiwibXlfcXVlc3Rpb25zX3BhZ2UiOiIxIn0=",
+      "expire_date": "2020-06-12T16:27:27.720Z"
     }
   },
   {
@@ -536,8 +517,8 @@
     "model": "auth.user",
     "pk": 1,
     "fields": {
-      "password": "pbkdf2_sha256$180000$tZ0it45fPVYF$xOr3ijp85CoEA0qT7NMcjiX3RzU20KyzJ/eYe5mg9KU=",
-      "last_login": "2020-05-21T16:37:07.605Z",
+      "password": "pbkdf2_sha256$180000$Ul5ha4mJ8dcn$IKj0Zmt6gYVwY3nEml5DWdYH9LKZb99BMJslZgXPo8s=",
+      "last_login": null,
       "is_superuser": true,
       "username": "root",
       "first_name": "",
@@ -545,7 +526,7 @@
       "email": "root@root.com",
       "is_staff": true,
       "is_active": true,
-      "date_joined": "2020-05-19T15:15:09.137Z",
+      "date_joined": "2020-05-29T16:26:20.389Z",
       "groups": [],
       "user_permissions": []
     }
@@ -554,8 +535,8 @@
     "model": "auth.user",
     "pk": 2,
     "fields": {
-      "password": "pbkdf2_sha256$180000$JSL4Sr4QSVLr$Yldt1XkTvDnUBeDeXNnfUkCxCBDDQL7oTT0psu3Miw8=",
-      "last_login": "2020-05-19T15:15:21.796Z",
+      "password": "pbkdf2_sha256$180000$x91UGTfekiFj$YkSpMuF4ogsFKKiI/0ugSN3JuX6VMvO5YVvymjkEEcw=",
+      "last_login": "2020-05-29T16:27:01.129Z",
       "is_superuser": false,
       "username": "carlossanchez",
       "first_name": "",
@@ -563,7 +544,7 @@
       "email": "",
       "is_staff": false,
       "is_active": true,
-      "date_joined": "2020-05-19T15:15:21.508Z",
+      "date_joined": "2020-05-29T16:26:30.137Z",
       "groups": [],
       "user_permissions": []
     }
@@ -572,8 +553,8 @@
     "model": "auth.user",
     "pk": 3,
     "fields": {
-      "password": "pbkdf2_sha256$180000$P2qGJMLQjmAf$o3g45K+pwJPJE8gL8fU/zYZ2eMTkcE/TtGVh8K992LE=",
-      "last_login": "2020-05-21T16:37:22.758Z",
+      "password": "pbkdf2_sha256$180000$1MhC50ov6MFK$tmnNXa2s/F0EvOOIT4eZ4fs+k5zk+PwlRJ3KmFhQz1c=",
+      "last_login": "2020-05-29T16:26:41.918Z",
       "is_superuser": false,
       "username": "data_populator",
       "first_name": "",
@@ -581,7 +562,25 @@
       "email": "",
       "is_staff": false,
       "is_active": true,
-      "date_joined": "2020-05-21T16:37:22.506Z",
+      "date_joined": "2020-05-29T16:26:41.678Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$180000$mK8duqh42ys5$xvI+SjbvAohToVicVLU78Ri7SImuRszAusPWgeeWtdM=",
+      "last_login": "2020-05-29T16:26:56.499Z",
+      "is_superuser": false,
+      "username": "data-analyst",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-05-29T16:26:56.215Z",
       "groups": [],
       "user_permissions": []
     }
@@ -601,8 +600,7 @@
       "user": 2,
       "assigned_questions": [
         1,
-        2,
-        3
+        2
       ]
     }
   },
@@ -611,6 +609,14 @@
     "pk": 3,
     "fields": {
       "user": 3,
+      "assigned_questions": []
+    }
+  },
+  {
+    "model": "howru_models.doctor",
+    "pk": 4,
+    "fields": {
+      "user": 4,
       "assigned_questions": []
     }
   }
