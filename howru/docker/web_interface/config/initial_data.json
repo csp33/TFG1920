@@ -88,14 +88,6 @@
     }
   },
   {
-    "model": "sessions.session",
-    "pk": "cyo0strybn4ssanc0nixa0qu593xfxqb",
-    "fields": {
-      "session_data": "ZmE3ZTM3YzE3NTJiZmNkMDAzYmFmY2FiOWYyYmM2MTQ0YmVkYjVjMTp7Il9hdXRoX3VzZXJfaWQiOiIzIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI4ODNkM2E0NTgxMWJhZTFlNDQ4NDU5ZDAwMWZhNzM2ODg1OTFkM2YyIn0=",
-      "expire_date": "2020-06-13T12:45:47.895Z"
-    }
-  },
-  {
     "model": "auth.permission",
     "pk": 1,
     "fields": {
@@ -495,61 +487,7 @@
     "model": "auth.user",
     "pk": 1,
     "fields": {
-      "password": "pbkdf2_sha256$180000$heTGUWvC6fqc$VmqwrMB6yz/axHF1PFesRKv0hxllzVyj/W9xKC+e9aE=",
-      "last_login": "2020-05-30T12:45:21.475Z",
-      "is_superuser": false,
-      "username": "data_populator",
-      "first_name": "",
-      "last_name": "",
-      "email": "",
-      "is_staff": false,
-      "is_active": true,
-      "date_joined": "2020-05-30T12:45:21.214Z",
-      "groups": [],
-      "user_permissions": []
-    }
-  },
-  {
-    "model": "auth.user",
-    "pk": 2,
-    "fields": {
-      "password": "pbkdf2_sha256$180000$uXDpNJNlqdNN$2IbXCe+j0XGei8P8QTYWtwuhHCigij73HWYKroa+jdM=",
-      "last_login": "2020-05-30T12:45:34.441Z",
-      "is_superuser": false,
-      "username": "data_analyst",
-      "first_name": "",
-      "last_name": "",
-      "email": "",
-      "is_staff": false,
-      "is_active": true,
-      "date_joined": "2020-05-30T12:45:34.213Z",
-      "groups": [],
-      "user_permissions": []
-    }
-  },
-  {
-    "model": "auth.user",
-    "pk": 3,
-    "fields": {
-      "password": "pbkdf2_sha256$180000$T463pNOky9UZ$rQ2g6RkaXc6vZJutXsA25csKE3yeA559TFiE8iRWkXY=",
-      "last_login": "2020-05-30T12:45:47.892Z",
-      "is_superuser": false,
-      "username": "carlossanchez",
-      "first_name": "",
-      "last_name": "",
-      "email": "",
-      "is_staff": false,
-      "is_active": true,
-      "date_joined": "2020-05-30T12:45:47.660Z",
-      "groups": [],
-      "user_permissions": []
-    }
-  },
-  {
-    "model": "auth.user",
-    "pk": 4,
-    "fields": {
-      "password": "pbkdf2_sha256$180000$YcXOOjqVI2Lb$7/bXD0ZjQwz40GHW00neH61WjLuFS8Xh8voEjlJTMXw=",
+      "password": "pbkdf2_sha256$180000$sqFmK2DcN3T1$MvjFSa3VLCDP9OEZyfkew+qjSTMbBXJlMhSwfYYFE4M=",
       "last_login": null,
       "is_superuser": true,
       "username": "root",
@@ -558,7 +496,61 @@
       "email": "root@root.com",
       "is_staff": true,
       "is_active": true,
-      "date_joined": "2020-05-30T12:46:09.972Z",
+      "date_joined": "2020-05-31T14:04:32.449Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$180000$jxfAwYGlTHjS$SCcaHXb6XkfjxJnal4ZNSQ3EHC7Ys55MEwm/1FuomRI=",
+      "last_login": "2020-05-31T14:04:40.602Z",
+      "is_superuser": false,
+      "username": "data_populator",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-05-31T14:04:40.359Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$180000$sRItKQSTu1jt$MbGS+n7ijP28A7cLpUthqxSJ6ekwJI3O0+19+wMBPDY=",
+      "last_login": "2020-05-31T14:05:01.270Z",
+      "is_superuser": false,
+      "username": "data_analyst",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-05-31T14:05:01.036Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$180000$pzsfSUbGFUSC$BPTnaFWRGvnrCCd8oeegO6vetIjuaR5jCQIM3Wke3W8=",
+      "last_login": "2020-05-31T14:05:14.284Z",
+      "is_superuser": false,
+      "username": "carlosssanchez",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-05-31T14:05:14.006Z",
       "groups": [],
       "user_permissions": []
     }
