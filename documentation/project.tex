@@ -25,12 +25,16 @@
 \usepackage[usestackEOL]{stackengine}
 \usepackage{titling}
 \usepackage{soul}
+\usepackage{dirtree}
 \usepackage{pgfplots}
 \usepackage[nottoc]{tocbibind}
 \usepackage{listings}
 \usepackage{array}
 \usepackage[framemethod=tikz]{mdframed}
 \usepackage{footnote}
+\newcommand{\dollar}{\mbox{\textdollar}}
+\usepackage{lscape}
+\usepackage{incgraph}
 \makesavenoteenv{tabular}
 \makesavenoteenv{table}
 \newcommand{\greentick}{\textcolor{green}{\ding{52}}}
@@ -47,11 +51,48 @@
     modifier={by-nc-sa},
     version={4.0},
 ]{doclicense}
+% Default fixed font does not support bold face
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{10} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{10}  % for normal
+
+% Custom colors
+\usepackage{color}
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+% Python style for highlighting
+\newcommand\pythonstyle{\lstset{
+language=Python,
+basicstyle=\ttm,
+otherkeywords={self},             % Add keywords here
+keywordstyle=\ttb\color{deepblue},
+emph={MyClass,__init__},          % Custom highlighting
+emphstyle=\ttb\color{deepred},    % Custom highlighting style
+stringstyle=\color{deepgreen},
+frame=tb,                         % Any extra options here
+showstringspaces=false            %
+}}
+% Python environment
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
+}
+{}
+
+% Python for external files
+\newcommand\pythonexternal[2][]{{
+\pythonstyle
+\lstinputlisting[#1]{#2}}}
+
+% Python for inline
+\newcommand\pythoninline[1]{{\pythonstyle\lstinline!#1!}}
 
 
 \lstset{
   breaklines=true,
   postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+  mathescape = true,
 }
 \lstdefinelanguage{docker-compose}{
   keywords={image, environment, ports, container_name, ports, volumes, links},
@@ -116,7 +157,7 @@ As we previously discussed, mental disorders are taboo, so having a bot you coul
 \subsection{Objectives}
 
 \begin{itemize}
-  \item \textbf{Main goal}: to develop a conversational agent as a sensor which will be able to interact with a person with a mental disorder in a natural way and ask questions defined by specialists.
+  \item \textbf{Main goal}: to develop a conversational-agent-as-a-sensor which will be able to interact with a person with a mental disorder in a natural way and ask questions defined by specialists.
   \item \textbf{Secondary goals}:
     \begin{itemize}
       \item To design a graphical web interface where doctors can consult their patient's responses.
@@ -263,26 +304,33 @@ MoSCoW prioritization method \cite{moscow} will be used to classify the requirem
   \item \emph{Must have} requirements. They are critical to the success of the project.
     \begin{itemize}
       \item The conversational agent must ask questions defined by doctors to the patients.
-      \item The conversational agent must have a custom keyboard with the possible question answers.
-      \item The application must allow doctors and patients enrollment.
-      \item The system must provide an interface to show the retrieved data.
+      \item The conversational agent must show a custom keyboard to the patient with the possible question answers.
+      \item The application must allow doctors and patients enrollment and account deletion.
+      \item The application must allow the doctors to download a file with their patients answers between two dates.
       \item The system must support modularity.
+      \item The system must work using UTC timezone.
     \end{itemize}
   \item \emph{Should have} requirements. These are important requirements, but not necessary for  the system release.
     \begin{itemize}
       \item The system should be under a CC BY-NC-SA 4.0 \cite{CC} license.
       \item The application should allow the doctors to add, modify and delete questions and their respective answers.
-      \item The application should generate plots to show the collected data to the doctors.
-      \item The conversational agent should support audio and text messages.
+      \item The application should allow the doctors to create public questions so that other doctors can assign them to their patients.
       \item The conversational agent should be able to ask questions following a configurable schedule.
+      \item The application should show interactive charts to doctors with their patients data.
+      \item The system should be able to show times according to Europe/Madrid timezone.
     \end{itemize}
   \item \emph{Could have} requirements. Desirable requirements that could improve user's experience or satisfaction. Will be included if there is time at the end of the development.
     \begin{itemize}
+      \item The system could implement a numeric priority to manage the order in which questions are asked.
+      \item The system could allow the doctors to configure the frequency of each question (only once, daily, weekly, monthly, etc.).
       \item The system could be translated to other languages.
-      \item The application could support password recovery functionality for doctors.
+      \item The application could support password change functionality for doctors.
       \item The application could support two factor authentication for doctors.
-      \item The conversational agent could support videomessages.
       \item The conversational agent could support groups.
+      \item The system could allow doctors and patients to delete all their data from the system.
+      \item The agent could offer an option to the patients to view and modify their profile data.
+      \item The applications could allow doctors to assign a question to all their patients when creating it.
+      \item The system could support more timezones.
     \end{itemize}
   \item \emph{Won't have} requirements. They are inappropiate or the least important ones, so they are not included in the project.
     \begin{itemize}
@@ -292,20 +340,383 @@ MoSCoW prioritization method \cite{moscow} will be used to classify the requirem
 \end{itemize}
 \newpage
 \subsubsection{Architecture}
+
 The proposed system will implement the following architecture:
 \begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{architecture.jpg}
-  \caption{HOW-R-U architecture}
+    \makebox[\linewidth]{
+        \includegraphics[width=1.35\linewidth, angle=-270]{architecture.pdf}
+    }
+    \caption{System architecture. Created using \emph{diagrams.net} \protect\cite{drawio}}
 \end{figure}
-\textcolor{red}{Explicar el diagrama (las cajas son módulos, los cuadrados componentes, discontinuos los opcionales, etc.)}
+
+Italic text and dashed lines represent optional features (should and could requirements), whereas continuous  lines refer to mandatory ones (must).
+
+The architecture is divided into three main modules: conversational agent (used by patients), databases and web displayer (used by doctors).
+
+HOW-R-U is structured in four main databases. Users database contains doctors and patients information and their corresponding configurations. Patient objects stored in this database have properties such as name, username, chat id, gender, language, schedule and profile picture, whereas Doctor entries contain attributes like username, password, if the doctor is a data analyst and session information. Questions database contain Question entries, consisting on question text, possible responses, question language, priority, frequency and author. Pending questions database holds entries that link a doctor, a question and a patient. Moreover, they also include a flag that determines if the question (assigned by the corresponding doctor) is being answering right now by the related patient. Finally, Answered questions database contains entries that also link a patient, a doctor and a question. They include two more properties: response given by the patient and answer date.
+
+The conversational agent offers the patient three submodules, triggered by different events. The first one is the accounts manager, including three components. The first one is the Account Creator, in which the conversational agent will ask the user the language in which the interface will be shown, his/her name, gender, profile picture and schedule for questions . This event is triggered when the patient interacts with the agent for the first time. The second one is the Account viewer, which shows the patient all the details about his/her account. Finally, the Account Remover allows the patient to completely delete all his/her data from the system in an unrecoverable way. These two last components are triggered by an specific command sent by the patient.
+
+The second module is the configurator. It is also triggered by a command. This interface shows a menu with the available options: change name, gender, language, profile picture or schedule. All these actions have a fallback command to cancel the current operation. When an operation is completed, the corresponding data is retrieved, modified or deleted from the Users database.
+
+Finally, the last module (conversation generator). This flow is triggered when the schedule time comes. The system will check the pending questions database to check if the user has to answer at least a question today. If the previous condition is fullfilled, the question will be prompted, along with a custom keyboard showing the different answers. Everytime a question is answered, an AnsweredQuestion entry containing the patient id, question id, doctor id and answer date is created and stored in the corresponding database. When all the pending questions have been answered, this flow terminates and the agent thanks the user. If there are no questions to ask, the chatbot will inform the patient.
+
+Last but not least, the web displayer interface contains four submodules. The first one is the doctors manager, which permits accounts creation, password change, authentication and deletion. The second one is the patient manager, which lets doctors to assign and unassign patients to its account as well as assign or unassign questions to them. The third one is the questions manager, which allows doctors to create, modify and delete questions. Finally, the data manager offers doctors the possibility to observe charts created with the patient's answers along the time or download a file containing all these data between two dates.
+
 
 
 
 \subsection{Implementation}
 
+The main software that will be used to implement this project will be the following:
+\begin{itemize}
+  \item Python 3.6.10 \cite{python} as the main programming language for both the web interface and the agent. The following libraries will also be used:
+  \begin{itemize}
+    \item \emph{python-telegram-bot} to develop the conversational agent.
+    \item \emph{ujson} to create and read JSON files in a fast way.
+    \item \emph{pytz} for timezone management.
+    \item \emph{psycopg2} to connect python with the database management system.
+    \item \emph{pillow} to work with images.
+  \end{itemize}
+  \item Django 3.0.6 \cite{django} as the framework to develop the web interface.
+  \item PostgreSQL 12.3 \cite{postgres} as the database management system.
+  \item Nginx 1.17 \cite{nginx} as the proxy to redirect the requests from users to the web interface.
+  \item Docker 19.03.6 \cite{docker} as the platform where the developing environment is built on.
+  \item Telegram \cite{Telegram} as the platform where the conversational agent will offer its services to the patients.
+\end{itemize}
 
-\section{Evaluation}
+HOW-R-U will be structured in the following way:
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=\textwidth]{repo_structure.pdf}
+    \caption{HOW-R-U structure. Created using \emph{diagrams.net} \protect\cite{drawio}}
+\end{figure}
+\newpage
+\subsection{Submodules: models and helpers}
+
+Models will be a submodule shared by both the web interface and the conversational agent. It will contain the definition of the different system classes. Django ORM will be used in both of them to simplify database and model operations. To add django to the conversational agent, a custom \emph{manage.py} with the system settings (such as database details and models specification) has been created:
+
+  \begin{python}[caption={Custom \emph{manage.py} file to use Django ORM in the agent. Based in \href{https://stackoverflow.com/questions/45595750/use-django-orm-outside-of-django}{https://stackoverflow.com/questions/45595750/use-django-orm-outside-of-django}}, captionpos=b]
+  #!/usr/bin/env python
+  import json
+  import sys
+  import django
+
+  ROUTES_FILE_PATH = '/etc/howru/cfg/routes.json'
+  with open(ROUTES_FILE_PATH) as routes_file:
+    json_file = json.load(routes_file)
+    NAME = json_file['name']
+    USER = json_file['user']
+    PWD = json_file['password']
+    HOST = json_file['host']
+    PORT = json_file['port']
+
+  DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': NAME,
+        'USER': USER,
+        'PASSWORD': PWD,
+        'HOST': HOST,
+        'PORT': PORT,
+    }
+  }
+
+  INSTALLED_APPS = [
+    'howru_models',
+    'django.contrib.contenttypes',
+    'django.contrib.auth'
+  ]
+  from django.conf import settings
+  settings.configure(
+    DATABASES=DATABASES,
+    INSTALLED_APPS=INSTALLED_APPS,
+    USE_TZ=True
+  )
+  django.setup()
+
+  \end{python}
+
+HOW-R-U models will follow the class diagram below:
+
+\begin{figure}[H]
+    \makebox[\linewidth]{
+        \includegraphics[width=\linewidth]{class_diagram.pdf}
+    }
+    \caption{System class diagram. Generated by \emph{django-extensions} \protect\cite{django}}
+\end{figure}
+
+As we can see, there are five main models in \emph{howru\_models}: Doctor, Patient, Question, Pending Question and Answered Question (both inherit from JournalEntry, an abstract model). A Doctor has a one-to-one relationship with an user, a \emph{Django} pre-defined model which takes care of all authentication, permissions, logs and session logic.
+
+The other submodule, helpers, allows coding and decoding flag emojis from country codes and managing time conversions between UTC (the main time standard in the world) and the timezone in which the system is configured.
+
+\subsection{Conversational agent}
+
+
+The conversational agent module contains 7 submodules: \emph{config}, where the secret token is stored and messages, a file which contains all the messages the bot can send in English and Spanish. The bot secret token is a string which contains an unique identifier that links a Telegram bot user with the code it will run. This token is given by \emph{@BotFather}, a bot used to create bots. More information about the bot creation process will be explained in the \hyperref[sec:deployment]{deployment section}.
+
+The next submodule, handlers, defines the bot behaviour according to certain events, like sending the \emph{/start} command (the first one that is sent when an user interacts with a bot), sending the {\emph{/config}} one, etc. There are three main handlers:
+\begin{itemize}
+  \item Start handler: asks the patient for his/her name, gender, language, schedule, and profile picture.
+  \item Config handler: manages the configurator module, as well as the account viewer and remover.
+  \item Questions handler: handles the questions prompting and answering.
+\end{itemize}
+
+Handlers are triggered by a certain event, catched by filters. For example, to catch the \emph{/start} message sent by the patient, the implemented procedure is the following:
+
+\begin{python}[caption={Patient start callback}, captionpos=b]
+GENDER, PICTURE, LANGUAGE, SCHEDULE = range(4)
+@send_typing_action
+def start(update, context):
+    """
+    Shows welcome message and asks for language
+    """
+    # Check that user is not registered
+    try:
+        patient = Patient.objects.get(identifier=update.message.from_user.id)
+        logger.info(
+            f'User {update.message.from_user.username} tried to register again.')
+        update.message.reply_text(text=messages[patient.language]['already_exists'])
+        return ConversationHandler.END
+    except Patient.DoesNotExist:
+        # The user should not exist in DB
+        context.user_data['patient'] = Patient(name=update.message.from_user.first_name, identifier=str(update.message.from_user.id), username=update.message.from_user.username)
+        logger.info(f'User {update.message.from_user.username} started a new conversation')
+        update.message.reply_text(text=f'Hi {update.message.from_user.first_name}. Welcome to HOW-R-U psychologist bot.\nHola {update.message.from_user.first_name}. Bienvenido al bot psicologo HOW-R-U')
+        update.message.reply_text(text=f'Please select a language:\nElija un idioma por favor:', reply_markup=keyboards.language_keyboard)
+    return LANGUAGE
+
+  <--------------->
+
+  start_handler = ConversationHandler(
+      entry_points=[CommandHandler('start', start)],
+      states={
+          LANGUAGE: [MessageHandler(Filters.regex(f'^({Flag.flag("es")}|{Flag.flag("gb")})$\dollar$'), language)],
+          GENDER: [MessageHandler(Filters.regex('^(Male|Female|Other|Masculino|Femenino|Otro)$\dollar$'), gender)],
+          PICTURE: [MessageHandler(Filters.photo, picture), CommandHandler('skip', skip_picture)],
+          SCHEDULE: [MessageHandler(Filters.regex('^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$\dollar$'), schedule)]
+      },
+      fallbacks=[],
+      name="starter"
+  )
+\end{python}
+
+We can see how the command \emph{start} is the entry point of the start handler. When the event is detected, \textbf{start} callback is invoked. This callback ensures that the patient is not already registered (if so, informs the user and finishes the conversation) and prompts a welcome message as well as a custom keyboard with flags, one for each available language. Then, it returns \emph{LANGUAGE}, an state that shows that the agent is waiting for language selection. Start callback creates a Patient object whose data will be filled in the following procedures and stores it in context user data, a reserved storage space for each user. After language selection, profile picture, gender and schedule are asked. Finally, the agent saves the entry in the database in the following way:
+
+\begin{python}[caption={Patient saver callback}, captionpos=b]
+  @send_typing_action
+  def finish(update, context):
+      """
+      Saves patient in DB, assigns him/her to data_analyst, creates PendingQuestion entries for assigned_to_all questions and finally creates the user's PendingQuestionJob
+      """
+      patient = context.user_data['patient']
+      patient.save()
+      # Add patient to data analysts and assigned_to_all questions
+      try:
+          data_analysts = Doctor.objects.filter(is_analyst=True)
+          for doctor in data_analysts:
+              patient.assigned_doctors.add(doctor)
+              patient.save()
+              assigned_to_all = doctor.assigned_questions.filter(assigned_to_all=True)
+              for question in assigned_to_all:
+                  pending_question = PendingQuestion(doctor=doctor, question=question, patient=patient, answering=False)
+                  pending_question.save()
+          logger.info("Patient %s assigned to data_analysts", patient.username)
+      except:
+          logger.exception("Exception while adding patient %s to data_analysts.", patient.username)
+      update.message.reply_text(messages[patient.language]['registration_ok'])
+      logger.info(f'Creating pending_questions job for user {update.message.from_user.username}')
+      PendingQuestionJob(context, patient)
+      return ConversationHandler.END
+\end{python}
+
+The database entry is created simply with the command \emph{patient.save()} thanks to \emph{django} ORM. After saving the patient for the first time, we need to assign it to the data analyst on the system and assign him the questions the analyst have created and configured as assigned to all. Finally, a \emph{job} is created so that assigned questions to the patient are sent. When these procedures are completed, the callback returns \emph{ConversationHandler.END}, indicating that the conversation has ended.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{start.png}
+  \caption{Agent showing welcome message and asking for language selection}
+\end{figure}
+
+The \emph{config handler} is invoked when the \emph{/config} command is sent. This command appears in a pop-up menu next to the text input. The configurator callbacks are pretty similar between them. There are two types of them: \emph{ask\_for\_$<$property$>$} and \emph{process\_$<$property$>$}. The first ones send a message to the patients with the old value of the property they want to change and ask them to send the new value. The second ones update the patient's database entry with the new value. For example, the schedule changer is implemented as follows:
+
+\begin{python}[caption={Name changer configurator callbacks}, captionpos=b]
+  @send_typing_action
+  def ask_change_language(update, context):
+      """
+      Sends old language to the user and asks for the new one
+      """
+      patient = context.user_data['patient']
+      logger.info(f'User {update.message.from_user.username} asked to change language')
+      update.message.reply_text(messages[patient.language]['current_language'] + patient.language)
+      update.message.reply_text(messages[patient.language]['change_language'], reply_markup=keyboards.language_keyboard)
+      return PROCESS_LANGUAGE
+
+  @send_typing_action
+  def process_language(update, context):
+      """
+      Saves the new language
+      """
+      patient = context.user_data['patient']
+      patient.language = Flag.unflag(update.message.text)
+      patient.save(update_fields=['language'])
+      logger.info(f'User {update.message.from_user.username} changed language to {patient.language}')
+      update.message.reply_text(messages[patient.language]['language_updated'])
+      return config_menu(update, context)
+  <------------------->
+  config_handler = ConversationHandler(
+      entry_points=[CommandHandler('config', config)],
+      states={
+          CHOOSING: [
+                     MessageHandler(Filters.regex('^(Cambiar nombre|Change name)$\dollar$'), ask_change_name),
+                     MessageHandler(Filters.regex(f'^(Cambiar idioma|Change language)$\dollar$'), ask_change_language),
+                     .....
+                     ],
+          PROCESS_NAME: [MessageHandler(~is_answering_filter & ~Filters.command, process_name)],
+          PROCESS_LANGUAGE: [MessageHandler(Filters.regex(f'^({Flag.flag("es")}|{Flag.flag("gb")})$\dollar$'),
+                                            process_language)],
+          .....
+      },
+      fallbacks=[CommandHandler('cancel', cancel),
+                 CommandHandler('exit', _exit)],
+      name="configurator"
+  )
+
+\end{python}
+
+The name changer needs a specific filter. As the desired input format is text, we need to distinguish between text and a command (started by \emph{/}). To do so, the command filter is negated (\emph{\~{}Filters.command}). In addition, the agent must distinguish when the name is being changed (a string is expected) and a question is being answered (a string is also being expected). To do so, a custom filter has been developed. This filter matches when a question is being answered at the moment (\emph{~is\_answering\_filter}). Finally, these two filters are combined using an \emph{AND} logic operation. Last but not least, \emph{/cancel} allows the user to cancel the current operation and go back to the configurator menu and \emph{/exit} closes the configurator.
+
+\begin{python}[caption={IsAnswering filter}, captionpos=b]
+class IsAnsweringFilter(BaseFilter):
+    def filter(self, message):
+        """
+        Checks if the patient is answering a question
+        :return: True if a question is being answered, False otherwise
+        """
+        patient = Patient.objects.get(identifier=message.from_user.id)
+        return patient.pendingquestion_set.all().filter(answering=True)
+  # Initialize the class.
+  is_answering_filter = IsAnsweringFilter()
+\end{python}
+
+Finally, the questions handlers contains just one callback and no states. The callback is invoked when the user sends a message that is not a command and a question is being answered at the moment.
+
+\begin{python}[caption={Questions handler}, captionpos=b]
+@send_typing_action
+def answer_question(update, context):
+    """
+    Prompts user's question by querying PendingQuestion DB.
+    Creates an AsweredQuestion object.
+    """
+    user = update.message.from_user
+    response = update.message.text
+    # Get question that is being answered from DB:
+    try:
+        question_task = _get_pending_question_task(str(user.id))
+    except PendingQuestion.DoesNotExist:
+        logger.info(
+            f'User {user.username} id {user.id} wrote {response} while there was no question to answer')
+        update.message.reply_text("Unrecognized command\nComando no reconocido", reply_markup=ReplyKeyboardRemove())
+        return ConversationHandler.END
+    logger.info(f'User {user.username} id {user.id} answered "{response}" to question "{question_task.question}"')
+    # Create answered question entry
+    answered_question = AnsweredQuestion(patient_id=user.id, doctor=question_task.doctor, answer_date=datetime.now(pytz.timezone('Europe/Madrid')), response=response, question=question_task.question)
+    answered_question.save()
+    # Set answering to false
+    question_task.answering = False
+    question_task.save()
+    return ConversationHandler.END
+
+def _get_pending_question_task(user_id):
+    """
+    Obtains the question that the user is answering
+    """
+    return PendingQuestion.objects.get(patient_id=user_id, answering=True)
+
+
+question_handler = ConversationHandler(
+    entry_points=[MessageHandler(~Filters.command & is_answering_filter, answer_question)],
+    states={},
+    fallbacks=[],
+    name="questions_handler"
+)
+
+\end{python}
+
+When the user sends an answer, this callback retrieves the pending question that is being answered and creates the corresponding AnsweredQuestion entry. After that, sets the answering flag to false in the PendingQuestion object.
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.75\textwidth]{config_menu.png}
+  \caption{Configurator menu}
+\end{figure}
+
+The next conversational agent module is \emph{jobs}. Jobs are tasks that run a callback with a fixed frequency (daily, monthly, hourly, etc.). In this project, jobs are used to ask the patient the corresponding questions when the schedule time arrives.
+\newpage
+
+\begin{python}[caption={PendingQuestion job}, captionpos=b]
+class PendingQuestionJob(object):
+  def __init__(self, context, patient):
+      self.patient = patient
+      self._create_job(context)
+
+  def job_callback(self, context):
+      """
+      Prompts PendingQuestions to the user.
+      """
+      pending_questions = self._get_pending_questions()
+      for task in pending_questions:
+          if not self.is_question_answered(task):
+              question = task.question
+              task.answering = True
+              task.save()
+              context.bot.send_message(chat_id=self.patient.identifier, text=question.text, reply_markup=keyboards.get_custom_keyboard(question.responses))
+              while not self.is_question_answered(task):
+                  time.sleep(0.5)
+      message = messages[self.patient.language]['finish_answering'] if self.answered_questions_today() else messages[self.patient.language]['no_questions']
+      logger.info(f'User {self.patient.username} answered all the questions')
+      context.bot.send_message(chat_id=self.patient.identifier, text=message, reply_markup=ReplyKeyboardRemove())
+      time.sleep(0.1)
+      if was_configurator_running(self.patient.identifier, context):
+          logger.info(f'Reopening configurator for user {self.patient.username} id {self.patient.identifier}')
+          context.bot.send_message(chat_id=self.patient.identifier,  text=messages[self.patient.language]['select_config'], reply_markup=keyboards.config_keyboard[self.patient.language])
+
+  def _create_job(self, context):
+      context.job_queue.run_daily(callback=self.job_callback, time=self.patient.schedule, name=f'{self.patient.identifier}_pending_questions_job')
+\end{python}
+
+When a PendingQuestionJob instance is created, a daily job is established (running at the patient schedule time). The job callback queries PendingQuestions database and select the ones that should be answered (depending on their frequency and last answer) and orders it by priority, so that questions with lower priority are asked first. Then, it creates a custom keyboard with one button per response and sends the patient the question text as a message. Finally, when all questions have been answered, the job informs the user and opens the configurator if it was open. Sleep times have been added to make the process smoother.
+
+
+Finally, \emph{pics} folder is a temporary directory where profile pictures are stored and then deleted after encoding them in base-64 to be uploaded to the database. \emph{log} contains a basic logging utility that shows useful information, such as time, process and thread. Finally, \emph{src} contains the main file which starts the bot service:
+
+\begin{python}[caption={Bot file, the one that starts the service}, captionpos=b]
+def main():
+    logger.info("Started HOW-R-U psychologist")
+    # Initialize bot
+    updater = Updater(token=bot_config.TOKEN, use_context=True)
+    dispatcher = updater.dispatcher
+    handlers = [start_handler, config_handler, question_handler]
+    # Add handlers to dispatcher
+    for handler in handlers:
+        dispatcher.add_handler(handler)
+    # Add error callback
+    dispatcher.add_error_handler(error_callback)
+    # Start bot service
+    updater.start_polling()
+    updater.idle()
+
+if __name__ == "__main__":
+    main()
+\end{python}
+
+\subsection{Web interface}
+
+
+\section{Deployment}
+\label{sec:deployment}
+
 
 \subsection{Experimental setup}
 
