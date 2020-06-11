@@ -93,6 +93,13 @@ showstringspaces=false            %
   breaklines=true,
   postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
   mathescape = true,
+  basicstyle=\ttm,
+  keywordstyle=\ttb\color{deepblue},
+  emph={MyClass,__init__},          % Custom highlighting
+  emphstyle=\ttb\color{deepred},    % Custom highlighting style
+  stringstyle=\color{deepgreen},
+  frame=tb,                         % Any extra options here
+  showstringspaces=false            %
 }
 \lstdefinelanguage{docker-compose}{
   keywords={image, environment, ports, container_name, ports, volumes, links},
@@ -110,12 +117,6 @@ showstringspaces=false            %
 
 \definecolor{light-gray}{gray}{0.95}
 \lstset{columns=fullflexible,basicstyle=\ttfamily}
-\surroundwithmdframed[
-  hidealllines=true,
-  backgroundcolor=light-gray,
-  innerleftmargin=0pt,
-  innertopmargin=0pt,
-  innerbottommargin=0pt]{lstlisting}
 
 \pgfplotsset{width=8cm,compat=1.9, xlabel={Year},
   ylabel={Number of documents}, xtick distance={2},
@@ -535,7 +536,7 @@ The database entry is created simply with the command \emph{patient.save()} than
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.75\textwidth]{start.png}
+  \includegraphics[width=\textwidth]{start.png}
   \caption{Agent showing welcome message and asking for language selection}
 \end{figure}
 
@@ -648,12 +649,17 @@ When the user sends an answer, this callback retrieves the pending question that
 
 \begin{figure}[H]
   \centering
-    \includegraphics[width=0.75\textwidth]{config_menu.png}
+    \includegraphics[width=\textwidth]{bot_answering.png}
+  \caption{HOW-R-U converstional agent asking a question to a patient}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=\textwidth]{config_menu.png}
   \caption{Configurator menu}
 \end{figure}
 
 The next conversational agent module is \emph{jobs}. Jobs are tasks that run a callback with a fixed frequency (daily, monthly, hourly, etc.). In this project, jobs are used to ask the patient the corresponding questions when the schedule time arrives.
-\newpage
 
 \begin{python}[caption={PendingQuestion job}, captionpos=b]
 class PendingQuestionJob(object):
@@ -710,8 +716,423 @@ def main():
 if __name__ == "__main__":
     main()
 \end{python}
-
+\newpage
 \subsection{Web interface}
+
+The web interface is based on \cite{appseed}.
+
+HOW-R-U web interface is is a \emph{django} project structured into four main applications: app (the homepage), questions manager, patients manager and authentication (create users, modify passwords and login/logout functionalities).
+
+The first page that is shown to the user is the login interface, with text boxes for user and password fields. The user can also register in the system with a button.
+
+\begin{figure}[H]
+  \begin{subfigure}[t]{0.4\textwidth}
+    \centering
+    \includegraphics[width=0.85\textwidth]{login.png}
+  \end{subfigure}
+  \hspace{3cm}
+  \begin{subfigure}[t]{0.4\textwidth}
+    \centering
+    \includegraphics[width=0.75\textwidth]{register.png}
+  \end{subfigure}
+  \caption{Login and register pages}
+\end{figure}
+
+The register form has several validations, such as password length, strength, etc. These validators are provided by \emph{django auth} application. The user can also choose to be a \emph{data analyst}, a special user that does not have to add patients to his/her account manually. Everytime a patient registers into the system is automatically assigned to all data analysts. This feature is useful to collect statistics.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{register_error.png}
+    \caption{Register form validations}
+\end{figure}
+
+\begin{python}[caption={Method to register an user in the system}, captionpos=b]
+  def register_user(request):
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # If the doctor is an analyst, assign him/her all the patients in the system
+            analyst = form.cleaned_data['is_analyst']
+            form.instance.doctor.is_analyst = analyst
+            if analyst:
+                form.instance.doctor.patient_set.set(Patient.objects.all())
+            form.save()
+            username = form.cleaned_data.get("username")
+            raw_password = form.cleaned_data.get("password1")
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect("/")
+    else:
+        form = SignUpForm()
+    return render(request, "accounts/register.html", {"form": form})
+\end{python}
+
+After logging in to the system, the homepage is shown. It is divided into three main sections. The first one shows statistics about the logged in doctor: the number of associated patients, submitted questions and total answers. Below, there is a panel that shows the percentage of answers per hour and patients per gender. Finally, a top 5 with the patients that have answered the most is exhibited.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{homepage.png}
+    \caption{Homepage filled with test data}
+\end{figure}
+\newpage
+\begin{python}[caption={Method to show the main homepage components}, captionpos=b]
+  @login_required(login_url="/login/")
+  def index(request):
+      """
+      Shows the index page, including global parameters (top patients, number of associated patients, answers, gender and time percentages, etc.)
+      """
+      doctor = request.user.doctor
+      top_patients = get_top_patients(doctor)
+      doctor_patients = doctor.patient_set
+      number_associated_patients = doctor_patients.count()
+      submitted_questions = Question.objects.filter(creator=doctor).count()
+      total_answers = get_total_answers(doctor)
+      male_percentage, female_percentage, other_percentage = get_gender_stats(doctor, number_associated_patients)
+      answers_per_hour = get_answers_per_hour(doctor)
+      context = {
+          "top_patients": top_patients,
+          "number_associated_patients": number_associated_patients,
+          "submitted_questions": submitted_questions,
+          "total_answers": total_answers,
+          "male_percentage": male_percentage,
+          "female_percentage": female_percentage,
+          "other_percentage": other_percentage,
+          "answers_per_hour": answers_per_hour
+      }
+      return render(request, "index.html", context)
+\end{python}
+
+In the sidebar the user has access to the main components of the system. The first one is the \textbf{questions manager}. When the doctor clics on it, a dropdown is opened, letting choose public or private questions.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3  \textwidth]{questions_dropdown.png}
+    \caption{Questions manager dropdown}
+\end{figure}
+
+The public question interface shows a paginated table containing all the questions that have been incorporated to the system and marked as public. Moreover, there is a search bar and a button to add a public question to the user's questions list, so that he/she can assign it to the patients. When the user searches a question, the search term is encoded in the URL (GET request). The system has to build custom URLs when a search is being performed and the user clics the next page. This is achieved thanks to the code below.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{public_questions.png}
+    \caption{Public questions page}
+\end{figure}
+
+\begin{python}[caption={Method to show public questions page}, captionpos=b]
+  @login_required(login_url="/login/")
+  def public_questions(request):
+      """
+      Shows public questions inside the system.
+      """
+      if 'search' in request.GET:
+          term = request.GET['search']
+          all_questions = Question.objects.filter(text__icontains=term, public=True).order_by('text')
+      else:
+          all_questions = Question.objects.filter(public=True).order_by('text')
+      page = request.GET.get('page', 1)
+      paginator = Paginator(all_questions, settings.PAGE_SIZE)
+      try:
+          questions = paginator.page(page)
+      except PageNotAnInteger:
+          questions = paginator.page(1)
+      except EmptyPage:
+          questions = paginator.page(paginator.num_pages)
+      request.session['public_questions_page'] = page
+      return render(request, 'questions_manager/public_questions.html', context={
+          'questions': questions,
+          'success_msg': request.session.pop('message', None)
+      })
+\end{python}
+
+The HTML page (template) to show the public questions is built following the pseudo-code below:
+\begin{lstlisting}[language=html, caption={Pseudo-code to generate public questions template page}, captionpos=b]
+<table>
+<thead>
+<tr>
+<th>Question text</th>
+<th>Possible responses</th>
+<th>Assigned to all</th>
+<th>Frequency</th>
+<th>Priority</th>
+<th>Creator</th>
+<th>Language</th>
+<th>Actions</th>
+</tr>
+</thead>
+{% for question in questions %}
+    <tr>
+        <td>
+          {{ question.text }}
+        </td>
+        <td>
+          {% for response in question.responses %}
+          {{response}} <br>
+          {% endfor %}
+        </td>
+        <td>
+          {% if question.assigned_to_all %}
+          check_icon
+          {% else %}
+          cross_icon
+          {% endif %}
+        </td>
+        <td>
+          {{ question.get_frequency_display }}
+        </td>
+        <td>
+          {{ question.priority }}
+        </td>
+        <td>
+          {{ question.creator.user.username }}
+          {% if question.creator.user.username == request.user.username %}
+          (You)
+          {% endif %}
+        </td>
+        <td>
+          {% if question.language == "ES" %}
+          spanish_flag
+          {% else %}
+          england_flag
+          {% endif %}
+        </td>
+        <td>
+          {% if question in request.user.doctor.assigned_questions.all %}
+          added_button
+          {% else %}
+          add_button
+          {%endif%}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+\end{lstlisting}
+
+\begin{python}[caption={Pagination code snippets. Retrieved from \href{https://medium.com/@sumitlni/paginate-properly-please-93e7ca776432}{https://medium.com/@sumitlni/paginate-properly-please-93e7ca776432}}, captionpos=b]
+@register.filter
+def paginate(paginator, current):
+  num_pages = settings.PAGE_SIZE
+  if paginator.num_pages > 2 * num_pages:
+      start = max(1, current - num_pages)
+      end = min(paginator.num_pages, current + num_pages)
+      if end < start + 2 * num_pages:
+          end = start + 2 * num_pages
+      elif start > end - 2 * num_pages:
+          start = end - 2 * num_pages
+      if start < 1:
+          end -= start
+          start = 1
+      elif end > paginator.num_pages:
+          start -= (end - paginator.num_pages)
+          end = paginator.num_pages
+      pages = [page for page in range(start, end + 1)]
+      return pages[:(2 * num_pages + 1)]
+  return paginator.page_range
+
+@register.simple_tag
+def get_url(request, field, value):
+    query_string = request.GET.copy()
+    query_string[field] = value
+    return query_string.urlencode()
+\end{python}
+
+
+
+The user's questions page is similar to the public ones. The main differences is that there are three new buttons: modify, delete and create new questions.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{my_questions.png}
+    \caption{User's questions page}
+\end{figure}
+
+The create and modify interfaces show a form with help messages to build or edit them. The main validations in these ones are that all fields are required and there should be at least two responses per question. Questions creator and modifier forms are created by inheriting from \emph{django.forms}.
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=\textwidth]{create_question.png}
+  \caption{Questions creator}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=\textwidth]{questions_modifier.png}
+  \caption{Questions modifier}
+\end{figure}
+The available fields are the following ones:
+\begin{itemize}
+  \item \textbf{Question text}: what should be asked to the patient.
+  \item \textbf{Responses} (one per line). They should be ordered from bad to good so that plots are properly rendered.
+  \item \textbf{Privacy} (public or private). Wether other users can add this question to their profile.
+  \item \textbf{Language} (English or Spanish).
+  \item \textbf{Frequency} (once, daily, weekly or mothly). How often the question should be asked.
+  \item \textbf{Priority} ($[1,\infty[$). Order in which the question should be asked. Lower priority questions will be asked first.
+  \item \textbf{Assigned to all} (yes or no). Wether the question should be automatically assigned to all the user's patients.
+\end{itemize}
+
+\begin{python}[caption={Form to create or modify questions}, captionpos=b]
+class QuestionForm(ModelForm):
+    privacy = forms.CharField()
+    to_all = forms.CharField()
+    responses_field = forms.CharField()
+    class Meta:
+        model = Question
+        fields = ["text", "public", "language", "priority", "frequency"]
+    def clean(self):
+        cd = self.cleaned_data
+        clean_responses = cd.get("responses_field").replace('\r', '')
+        response_list = list()
+        for response in clean_responses.split('\n'):
+            if response:
+                clean_response = response.strip()
+                if clean_response:
+                    response_list.append(response)
+        if len(response_list) < 2:
+            raise ValidationError("You must specify at least two possible responses")
+        self.cleaned_data['responses'] = response_list
+        privacy = cd.get("privacy")
+        self.cleaned_data['public'] = privacy == "Public"
+        self.cleaned_data['assigned_to_all'] = self.cleaned_data['to_all'] == "yes"
+\end{python}
+
+As \emph{public} and \emph{assigned to all} are boolean in the models but text in the views, we have to manually analyse the data retrieved from the form. The number of answers is also validated in the \emph{clean} method.
+
+Finally, the questions deletion page consists on a view showing a confirmation message and two buttons, \textbf{confirm} and \textbf{back}.
+\\
+
+The patients manager consists on another paginated table that shows all the patients associated to the doctor. There is also a search bar, a button to add new patients and three buttons to manage each patient: view data, assign questions and delete patient from the doctor's page. Finally, there is also a export button to dump responses to a CSV file.
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=\textwidth]{patients_manager.png}
+  \caption{Patients manager}
+\end{figure}
+
+The button to add new patients redirects the user to a page so that he/she can enter the patient's Telegram username. Once done, the patient will be shown in the main view.
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.6\textwidth]{add_patient.png}
+  \caption{Add patient page}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.6\textwidth]{added_patient.png}
+  \caption{Patients manager page after adding a new patient}
+\end{figure}
+
+The assign question page consists of a paginated table showing the doctor's questions list. The assignment/unassignment is performed with a button at the end of each row. These processes consist on creating or deleting a \emph{PendingQuestion} object linking doctor, patient and question.
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=\textwidth]{assign_questions.png}
+  \caption{Patients manager assign questions page}
+\end{figure}
+
+The patients deletion button removes it from the doctor's associated patients list. After that, it can be added again. By deleting a patient, all the related \emph{PendingQuestion} are also deleted so that questions assigned to that user by the doctor that deletes it are asked no more. However, answers are preserved so that data can be analysed in the future if it is added again. If the users wants to delete this data, he/she must delete the patient account.
+\\
+
+
+The export page offers a form to select patients, start date and end date. When done, it generates a CSV file with four columns: patient username, question, answer and date.
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=\textwidth]{export.png}
+  \caption{Export page}
+\end{figure}
+
+\begin{table}[h!]
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Patient username} & \textbf{Question}& \textbf{Answer}& \textbf{Date} \\
+\hline
+username4 & This is test question number 1  & response 4 & 2020-05-03 18:16:52 \\
+
+username4 & This is test question number 1  & response 1 & 2020-06-09 05:45:52 \\
+
+username4 & This is test question number 2  & response 2 & 2020-05-06 13:12:52 \\
+
+username4 & This is test question number 2  & response 3 & 2020-06-08 12:43:52 \\
+
+username10 & This is test question number 1  & response 1 & 2020-05-12 10:57:59 \\
+
+username10 & This is test question number 2  & response 1 & 2020-06-03 07:13:59 \\
+
+username10 & This is test question number 2  & response 3 & 2020-06-05 18:26:59 \\
+\hline
+\end{tabular}
+\caption{Example data generated with the \emph{Export} feature}
+\end{table}
+
+Finally, the\emph{View Data} section generates plots showing patient's answers. There are two plots per question: a line chart showing the different answers amongst time and a pie one manifesting the number of times each answer has been replied. Both charts are interactive so that when the doctor hovers the mouse on them, a box is shown specifying more data about the selected section. These view is also paginated and includes a search bar to filter questions.
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=\textwidth]{view_data.png}
+  \caption{View data page}
+\end{figure}
+
+The last system view is the account manager. It is a dropdown that lets the user change the password, delete the account or log out.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{account_dropdown.png}
+    \caption{Account manager dropdown}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{change_pwd.png}
+    \caption{Change password page}
+\end{figure}
+
+\begin{python}[caption={Method to change user's password}, captionpos=b]
+@login_required(login_url="/login/")
+def change_password(request):
+    """
+    Allows an user to change his/her password
+    """
+    success = False
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            success = True
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'change_password.html', {
+        'form': form,
+        'success': success
+    })
+\end{python}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{delete_account.png}
+    \caption{Delete account page}
+\end{figure}
+
+
+\begin{python}[caption={Method to delete an account}, captionpos=b]
+@login_required(login_url="/login/")
+def delete_account(request):
+    """
+    Deletes a doctor from the system
+    """
+    if request.method == "POST":
+        request.user.doctor.delete()
+        request.user.delete()
+        return redirect('/')
+    context = {}
+    return render(request, 'delete_account.html', context)
+\end{python}
+
+
+As relationships between \emph{Doctors}, \emph{Questions} and \emph{JournalEntries} have the\\\emph{on\_delete=CASCADE} parameter specified, the DBMS automatically deletes the related user's questions, pending questions and answered questions.
 
 
 \section{Deployment}
