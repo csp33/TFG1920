@@ -11,6 +11,7 @@
 \usepackage{multirow}
 \usepackage{amsmath}
 \usepackage{subcaption}
+\usepackage{booktabs}
 \usepackage{adjustbox}
 \usepackage{url}
 \usepackage{svg}
@@ -101,9 +102,51 @@ showstringspaces=false            %
   frame=tb,                         % Any extra options here
   showstringspaces=false            %
 }
+
+\lstdefinelanguage{docker}{
+  keywords={FROM, RUN, COPY, ADD, ENTRYPOINT, CMD,  ENV, ARG, WORKDIR, EXPOSE, LABEL, USER, VOLUME, STOPSIGNAL, ONBUILD, MAINTAINER},
+  keywordstyle=\color{blue}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
 \lstdefinelanguage{docker-compose}{
   keywords={image, environment, ports, container_name, ports, volumes, links},
   keywordstyle=\color{blue}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+\lstdefinelanguage{nginx}{
+  keywords={server},
+  keywordstyle=[2]\color{blue}\bfseries,
+  keywordstyle=[3]\color{purple}\ttfamily,
+  keywords=[2]{listen, location},
+  keywords=[3]{proxy_pass, proxy_set_header},
+  keywordstyle=\color{olive}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+\lstdefinelanguage{docker-compose-2}{
+  keywords={version, services},
+  keywordstyle=[2]\color{blue}\bfseries,
+  keywords=[2]{image, environment, ports, container_name, ports, links, build,
+  volumes, depends_on, restart},
+  keywordstyle=\color{olive}\bfseries,
   identifierstyle=\color{black},
   sensitive=false,
   comment=[l]{\#},
@@ -248,7 +291,7 @@ They can use different methods to communicate with their audience: text, voice o
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.2]{custom_keyboard.jpg}
+  \includegraphics[width=0.5\textwidth]{custom_keyboard.jpg}
   \caption{Example of a custom keyboard for a conversational agent}{Reprinted from https://core.telegram.org/bots}
 \end{figure}
 
@@ -350,9 +393,24 @@ The proposed system will implement the following architecture:
     \caption{System architecture. Created using \emph{diagrams.net} \protect\cite{drawio}}
 \end{figure}
 
+\begin{figure}[H]
+    \makebox[\linewidth]{
+        \includegraphics[width=0.95\linewidth]{conv_agent.pdf}
+    }
+    \caption{System architecture (conversational agent and databases)}
+\end{figure}
+
+\begin{figure}[H]
+    \makebox[\linewidth]{
+        \includegraphics[width=0.98\linewidth]{web_int.pdf}
+    }
+    \caption{System architecture (web interface agent and databases)}
+\end{figure}
+
+
 Italic text and dashed lines represent optional features (should and could requirements), whereas continuous  lines refer to mandatory ones (must).
 
-The architecture is divided into three main modules: conversational agent (used by patients), databases and web displayer (used by doctors).
+The architecture is divided into three main modules: conversational agent (used by patients), databases and web interface (used by doctors).
 
 HOW-R-U is structured in four main databases. Users database contains doctors and patients information and their corresponding configurations. Patient objects stored in this database have properties such as name, username, chat id, gender, language, schedule and profile picture, whereas Doctor entries contain attributes like username, password, if the doctor is a data analyst and session information. Questions database contain Question entries, consisting on question text, possible responses, question language, priority, frequency and author. Pending questions database holds entries that link a doctor, a question and a patient. Moreover, they also include a flag that determines if the question (assigned by the corresponding doctor) is being answering right now by the related patient. Finally, Answered questions database contains entries that also link a patient, a doctor and a question. They include two more properties: response given by the patient and answer date.
 
@@ -362,7 +420,7 @@ The second module is the configurator. It is also triggered by a command. This i
 
 Finally, the last module (conversation generator). This flow is triggered when the schedule time comes. The system will check the pending questions database to check if the user has to answer at least a question today. If the previous condition is fullfilled, the question will be prompted, along with a custom keyboard showing the different answers. Everytime a question is answered, an AnsweredQuestion entry containing the patient id, question id, doctor id and answer date is created and stored in the corresponding database. When all the pending questions have been answered, this flow terminates and the agent thanks the user. If there are no questions to ask, the chatbot will inform the patient.
 
-Last but not least, the web displayer interface contains four submodules. The first one is the doctors manager, which permits accounts creation, password change, authentication and deletion. The second one is the patient manager, which lets doctors to assign and unassign patients to its account as well as assign or unassign questions to them. The third one is the questions manager, which allows doctors to create, modify and delete questions. Finally, the data manager offers doctors the possibility to observe charts created with the patient's answers along the time or download a file containing all these data between two dates.
+Last but not least, the web interface interface contains four submodules. The first one is the doctors manager, which permits accounts creation, password change, authentication and deletion. The second one is the patient manager, which lets doctors to assign and unassign patients to its account as well as assign or unassign questions to them. The third one is the questions manager, which allows doctors to create, modify and delete questions. Finally, the data manager offers doctors the possibility to observe charts created with the patient's answers along the time or download a file containing all these data between two dates.
 
 
 
@@ -381,7 +439,7 @@ The main software that will be used to implement this project will be the follow
   \end{itemize}
   \item Django 3.0.6 \cite{django} as the framework to develop the web interface.
   \item PostgreSQL 12.3 \cite{postgres} as the database management system.
-  \item Nginx 1.17 \cite{nginx} as the proxy to redirect the requests from users to the web interface.
+  \item Nginx 1.17 \cite{nginx} as the reverse proxy to redirect the requests from users to the web interface.
   \item Docker 19.03.6 \cite{docker} as the platform where the developing environment is built on.
   \item Telegram \cite{Telegram} as the platform where the conversational agent will offer its services to the patients.
 \end{itemize}
@@ -391,8 +449,10 @@ HOW-R-U will be structured in the following way:
 \begin{figure}[H]
   \centering
     \includegraphics[width=\textwidth]{repo_structure.pdf}
-    \caption{HOW-R-U structure. Created using \emph{diagrams.net} \protect\cite{drawio}}
+    \caption{HOW-R-U modules structure. Created using \emph{diagrams.net} \protect\cite{drawio}}
 \end{figure}
+
+In addition, the system will be prepared to be compatible with Docker in order to deploy a HOW-R-U development environment by including a folder with \emph{Dockerfiles}, \emph{docker-compose} and configuration files.
 \newpage
 \subsection{Submodules: models and helpers}
 
@@ -448,14 +508,21 @@ HOW-R-U models will follow the class diagram below:
     \caption{System class diagram. Generated by \emph{django-extensions} \protect\cite{django}}
 \end{figure}
 
-As we can see, there are five main models in \emph{howru\_models}: Doctor, Patient, Question, Pending Question and Answered Question (both inherit from JournalEntry, an abstract model). A Doctor has a one-to-one relationship with an user, a \emph{Django} pre-defined model which takes care of all authentication, permissions, logs and session logic.
+\begin{figure}[H]
+    \makebox[\linewidth]{
+        \includegraphics[width=\linewidth]{class_diagram_zoom.pdf}
+    }
+    \caption{System class diagram (HOW-R-U classes)}
+\end{figure}
+
+As we can see, there are six main models in \emph{howru\_models}: Doctor, Patient, Question, Response, Pending Question and Answered Question (both inherit from JournalEntry, an abstract model). A Doctor has a one-to-one relationship with an user, a \emph{Django} pre-defined model which takes care of all authentication, permissions, logs and session logic.
 
 The other submodule, helpers, allows coding and decoding flag emojis from country codes and managing time conversions between UTC (the main time standard in the world) and the timezone in which the system is configured.
 
 \subsection{Conversational agent}
 
 
-The conversational agent module contains 7 submodules: \emph{config}, where the secret token is stored and messages, a file which contains all the messages the bot can send in English and Spanish. The bot secret token is a string which contains an unique identifier that links a Telegram bot user with the code it will run. This token is given by \emph{@BotFather}, a bot used to create bots. More information about the bot creation process will be explained in the \hyperref[sec:deployment]{deployment section}.
+The conversational agent module contains 7 submodules: \emph{config}, where the secret token is stored and messages, a file which contains all the messages the bot can send in English and Spanish. The bot secret token is a string which contains an unique identifier that links a Telegram bot user with the code it will run. This token is given by \emph{@BotFather}, a bot used to create bots. More information about the bot creation process will be explained in the \hyperref[sec:env_setup]{environment setup section}.
 
 The next submodule, handlers, defines the bot behaviour according to certain events, like sending the \emph{/start} command (the first one that is sent when an user interacts with a bot), sending the {\emph{/config}} one, etc. There are three main handlers:
 \begin{itemize}
@@ -503,7 +570,7 @@ def start(update, context):
   )
 \end{python}
 
-We can see how the command \emph{start} is the entry point of the start handler. When the event is detected, \textbf{start} callback is invoked. This callback ensures that the patient is not already registered (if so, informs the user and finishes the conversation) and prompts a welcome message as well as a custom keyboard with flags, one for each available language. Then, it returns \emph{LANGUAGE}, an state that shows that the agent is waiting for language selection. Start callback creates a Patient object whose data will be filled in the following procedures and stores it in context user data, a reserved storage space for each user. After language selection, profile picture, gender and schedule are asked. Finally, the agent saves the entry in the database in the following way:
+We can see how the command \emph{start} is the entry point of the start handler. When the event is detected, \textbf{start} callback is invoked. This callback ensures that the patient is not already registered (if so, informs the user and finishes the conversation) and prompts a welcome message as well as a custom keyboard with flags, one for each available language. Then, it returns \emph{LANGUAGE}, an state that shows that the agent is waiting for language selection. Start callback creates a Patient object whose data will be filled in the following procedures and stores it in context user data, a reserved storage space for each user. After language, profile picture, gender and schedule are asked, the agent finally saves the entry in the database in the following way:
 
 \begin{python}[caption={Patient saver callback}, captionpos=b]
   @send_typing_action
@@ -532,7 +599,7 @@ We can see how the command \emph{start} is the entry point of the start handler.
       return ConversationHandler.END
 \end{python}
 
-The database entry is created simply with the command \emph{patient.save()} thanks to \emph{django} ORM. After saving the patient for the first time, we need to assign it to the data analyst on the system and assign him the questions the analyst have created and configured as assigned to all. Finally, a \emph{job} is created so that assigned questions to the patient are sent. When these procedures are completed, the callback returns \emph{ConversationHandler.END}, indicating that the conversation has ended.
+The database entry is created simply with the command \emph{patient.save()} thanks to \emph{django} ORM. After saving the patient for the first time, we need to assign it to all data analysts in the system and assign him/her the questions the analyst have created and configured as assigned to all. Finally, a \emph{job} is created so that assigned questions to the patient are sent. When these procedures are completed, the callback returns \emph{ConversationHandler.END}, indicating that the conversation has ended.
 
 \begin{figure}[H]
   \centering
@@ -728,23 +795,24 @@ The first page that is shown to the user is the login interface, with text boxes
 \begin{figure}[H]
   \begin{subfigure}[t]{0.4\textwidth}
     \centering
-    \includegraphics[width=0.85\textwidth]{login.png}
+    \includegraphics[width=\textwidth]{login.png}
   \end{subfigure}
   \hspace{3cm}
   \begin{subfigure}[t]{0.4\textwidth}
     \centering
-    \includegraphics[width=0.75\textwidth]{register.png}
+    \includegraphics[width=\textwidth]{register.png}
   \end{subfigure}
   \caption{Login and register pages}
 \end{figure}
 
-The register form has several validations, such as password length, strength, etc. These validators are provided by \emph{django auth} application. The user can also choose to be a \emph{data analyst}, a special user that does not have to add patients to his/her account manually. Everytime a patient registers into the system is automatically assigned to all data analysts. This feature is useful to collect statistics.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{register_error.png}
     \caption{Register form validations}
 \end{figure}
+
+The register form has several validations, such as password length, strength, etc. These validators are provided by \emph{django auth} application. The user can also choose to be a \emph{data analyst}, a special user that does not have to add patients to his/her account manually. Everytime a patient registers into the system is automatically assigned to all data analysts. This feature is useful to collect statistics.
 
 \begin{python}[caption={Method to register an user in the system}, captionpos=b]
   def register_user(request):
@@ -773,7 +841,29 @@ After logging in to the system, the homepage is shown. It is divided into three 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{homepage.png}
-    \caption{Homepage filled with test data}
+    \caption{HOW-R-U homepage}
+\end{figure}
+
+\begin{figure}[H]
+    \makebox[\linewidth]{
+        \includegraphics[width=0.8\linewidth]{homepage_1.png}
+    }
+    \caption{HOW-R-U homepage (doctor statistics)}
+\end{figure}
+
+
+\begin{figure}[H]
+    \makebox[\linewidth]{
+        \includegraphics[width=0.8\linewidth]{homepage_2.png}
+    }
+    \caption{HOW-R-U homepage (response statistics)}
+\end{figure}
+
+\begin{figure}[H]
+    \makebox[\linewidth]{
+        \includegraphics[width=\linewidth]{homepage_3.png}
+    }
+    \caption{HOW-R-U homepage (top 5)}
 \end{figure}
 \newpage
 \begin{python}[caption={Method to show the main homepage components}, captionpos=b]
@@ -815,8 +905,22 @@ The public question interface shows a paginated table containing all the questio
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{public_questions.png}
+    \includegraphics[width=\textwidth]{public_questions.png}
     \caption{Public questions page}
+\end{figure}
+
+\begin{figure}[H]
+    \makebox[\linewidth]{
+        \includegraphics[width=\linewidth]{public_questions_1.png}
+    }
+    \caption{Public questions page (question created by other user)}
+\end{figure}
+
+\begin{figure}[H]
+    \makebox[\linewidth]{
+        \includegraphics[width=\linewidth]{public_questions_2.png}
+    }
+    \caption{Public questions page (question created by the current user)}
 \end{figure}
 
 \begin{python}[caption={Method to show public questions page}, captionpos=b]
@@ -947,19 +1051,37 @@ The user's questions page is similar to the public ones. The main differences is
     \caption{User's questions page}
 \end{figure}
 
+
+\begin{figure}[H]
+    \makebox[\linewidth]{
+        \includegraphics[width=\linewidth]{my_questions_1.png}
+    }
+    \caption{User's questions page (example)}
+\end{figure}
+
 The create and modify interfaces show a form with help messages to build or edit them. The main validations in these ones are that all fields are required and there should be at least two responses per question. Questions creator and modifier forms are created by inheriting from \emph{django.forms}.
 
 \begin{figure}[H]
   \centering
-    \includegraphics[width=\textwidth]{create_question.png}
-  \caption{Questions creator}
+    \includegraphics[width=\textwidth]{questions_modifier.png}
+  \caption{Questions creator and modifier}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
-    \includegraphics[width=\textwidth]{questions_modifier.png}
-  \caption{Questions modifier}
+    \makebox[\linewidth]{
+        \includegraphics[width=\linewidth]{questions_modifier_1.png}
+    }
+    \caption{Questions creator and modifier fields (1/2)}
 \end{figure}
+
+\begin{figure}[H]
+    \makebox[\linewidth]{
+        \includegraphics[width=\linewidth]{questions_modifier_2.png}
+    }
+    \caption{Questions creator and modifier fields (2/2)}
+\end{figure}
+
+
 The available fields are the following ones:
 \begin{itemize}
   \item \textbf{Question text}: what should be asked to the patient.
@@ -1009,19 +1131,14 @@ The patients manager consists on another paginated table that shows all the pati
   \caption{Patients manager}
 \end{figure}
 
+\begin{figure}[H]
+    \makebox[\linewidth]{
+        \includegraphics[width=0.8\linewidth]{patients_manager_1.png}
+    }
+    \caption{Patients manager (example)}
+\end{figure}
+
 The button to add new patients redirects the user to a page so that he/she can enter the patient's Telegram username. Once done, the patient will be shown in the main view.
-
-\begin{figure}[H]
-  \centering
-    \includegraphics[width=0.6\textwidth]{add_patient.png}
-  \caption{Add patient page}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-    \includegraphics[width=0.6\textwidth]{added_patient.png}
-  \caption{Patients manager page after adding a new patient}
-\end{figure}
 
 The assign question page consists of a paginated table showing the doctor's questions list. The assignment/unassignment is performed with a button at the end of each row. These processes consist on creating or deleting a \emph{PendingQuestion} object linking doctor, patient and question.
 
@@ -1029,6 +1146,20 @@ The assign question page consists of a paginated table showing the doctor's ques
   \centering
     \includegraphics[width=\textwidth]{assign_questions.png}
   \caption{Patients manager assign questions page}
+\end{figure}
+
+\begin{figure}[H]
+    \makebox[\linewidth]{
+        \includegraphics[width=\linewidth]{assign_questions_1.png}
+    }
+    \caption{Patients manager assign questions page (unassigned question)}
+\end{figure}
+
+\begin{figure}[H]
+    \makebox[\linewidth]{
+        \includegraphics[width=\linewidth]{assign_questions_2.png}
+    }
+    \caption{Patients manager assign questions page (assigned question)}
 \end{figure}
 
 The patients deletion button removes it from the doctor's associated patients list. After that, it can be added again. By deleting a patient, all the related \emph{PendingQuestion} are also deleted so that questions assigned to that user by the doctor that deletes it are asked no more. However, answers are preserved so that data can be analysed in the future if it is added again. If the users wants to delete this data, he/she must delete the patient account.
@@ -1043,26 +1174,28 @@ The export page offers a form to select patients, start date and end date. When 
   \caption{Export page}
 \end{figure}
 
-\begin{table}[h!]
-\begin{tabular}{|c|c|c|c|}
-\hline
-\textbf{Patient username} & \textbf{Question}& \textbf{Answer}& \textbf{Date} \\
-\hline
-username4 & This is test question number 1  & response 4 & 2020-05-03 18:16:52 \\
-
-username4 & This is test question number 1  & response 1 & 2020-06-09 05:45:52 \\
-
-username4 & This is test question number 2  & response 2 & 2020-05-06 13:12:52 \\
-
-username4 & This is test question number 2  & response 3 & 2020-06-08 12:43:52 \\
-
-username10 & This is test question number 1  & response 1 & 2020-05-12 10:57:59 \\
-
-username10 & This is test question number 2  & response 1 & 2020-06-03 07:13:59 \\
-
-username10 & This is test question number 2  & response 3 & 2020-06-05 18:26:59 \\
-\hline
-\end{tabular}
+\begin{table}[]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}cccc@{}}
+\toprule
+\textbf{Patient username} & \textbf{Question}                                                                                      & \textbf{Answer}   & \textbf{Date}       \\ \midrule
+robert\_garfield          & How do you feel today?                                                                                 & Tired             & 2020-04-01 04:12:20 \\
+robert\_garfield          & How do you feel today?                                                                                 & Sad               & 2020-04-02 05:24:20 \\
+robert\_garfield          & How long have you slept today?                                                                         & 0-2 hours         & 2020-04-01 12:56:20 \\
+robert\_garfield          & How long have you slept today?                                                                         & 4-6 hours         & 2020-04-02 11:28:20 \\
+robert\_garfield          & Do you feel sad and cry easily?                                                                        & Yes               & 2020-04-01 14:22:21 \\
+robert\_garfield          & Do you feel sad and cry easily?                                                                        & No                & 2020-04-02 06:31:21 \\
+oliver\_morton            & How do you feel today?                                                                                 & Very happy        & 2020-04-01 01:45:19 \\
+oliver\_morton            & How do you feel today?                                                                                 & Happy             & 2020-04-02 02:59:19 \\
+oliver\_morton            & How long have you slept today?                                                                         & More than 8 hours & 2020-04-01 20:51:20 \\
+oliver\_morton            & How long have you slept today?                                                                         & 2-4 hours         & 2020-04-01 22:24:20 \\
+oliver\_morton            & Do you feel sad and cry easily?                                                                        & No                & 2020-04-01 07:47:20 \\
+oliver\_morton            & Do you feel sad and cry easily?                                                                        & Yes               & 2020-04-02 17:26:20 \\
+oliver\_morton            & \begin{tabular}[c]{@{}c@{}}Have you noticed an appetite \\ decreasement in the last week?\end{tabular} & Yes               & 2020-04-01 21:41:20 \\
+oliver\_morton            & \begin{tabular}[c]{@{}c@{}}Have you noticed an appetite \\ decreasement in the last week?\end{tabular} & Yes               & 2020-04-08 21:09:20 \\ \bottomrule
+\end{tabular}%
+}
 \caption{Example data generated with the \emph{Export} feature}
 \end{table}
 
@@ -1072,6 +1205,20 @@ Finally, the\emph{View Data} section generates plots showing patient's answers. 
   \centering
     \includegraphics[width=\textwidth]{view_data.png}
   \caption{View data page}
+\end{figure}
+\vspace{5cm}
+\begin{figure}[H]
+    \makebox[\linewidth]{
+        \includegraphics[width=\linewidth]{view_data_1.png}
+    }
+    \caption{View data page (line chart)}
+\end{figure}
+
+\begin{figure}[H]
+    \makebox[\linewidth]{
+        \includegraphics[width=0.5\linewidth]{view_data_2.png}
+    }
+    \caption{View data page (pie chart)}
 \end{figure}
 
 The last system view is the account manager. It is a dropdown that lets the user change the password, delete the account or log out.
@@ -1131,22 +1278,281 @@ def delete_account(request):
     return render(request, 'delete_account.html', context)
 \end{python}
 
+HOW-R-U web interface icons have been gathered from \cite{pixabay}
+\newpage
+\subsection{Docker}
 
-As relationships between \emph{Doctors}, \emph{Questions} and \emph{JournalEntries} have the\\\emph{on\_delete=CASCADE} parameter specified, the DBMS automatically deletes the related user's questions, pending questions and answered questions.
+HOW-R-U development environment is composed of four main containers: conversational agent, web interface, database and reverse proxy. The containers use volumes, so that changes made to their files take effect inmediately, avoiding an environment restart to test them. The \emph{docker-compose} specification is the following one:
+
+\begin{lstlisting}[language=docker-compose-2, caption={HOW-R-U docker-compose file}, captionpos=b]
+version: "3.1"
+services:
+  conversational-agent:
+    image: conversational-agent
+    links:
+        - db:db
+    volumes:
+        - ~/Documents/TFG1920/howru/howru_chatbot:/opt/chatbot
+    depends_on:
+      - db
+    restart: always
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    restart: always
+  web-interface:
+    image: web_interface
+    links:
+        - db:db
+    volumes:
+      - ~/Documents/TFG1920/howru/howru_web_interface:/opt/web_interface
+    ports:
+      - "8080:8080"
+    depends_on:
+      - proxy
+      - db
+    restart: always
+  proxy:
+    image: proxy
+    ports:
+      - "85:85"
+    volumes:
+      - ./proxy:/etc/nginx/conf.d
+    restart: always
+\end{lstlisting}
+
+The individual \emph{Dockerfiles} of the previous containers are the following ones:
+
+\begin{lstlisting}[language=docker, caption={HOW-R-U conversational agent Dockerfile}, captionpos=b]
+FROM python:3.6.10-stretch
+
+# Install requirements
+
+ADD config/requirements.txt /root/requirements.txt
+ADD config/routes.json /etc/howru/cfg/routes.json
+RUN pip install -r /root/requirements.txt
+
+# iPython for debugging
+RUN pip3.6 install ipython
+
+# Set PYTHONPATH
+ENV PYTHONPATH /opt/chatbot
+
+# Run bot
+WORKDIR /opt/chatbot
+CMD python3 manage.py makemigrations && \
+    python3 manage.py migrate && \
+    python3 src/bot.py
+#CMD    tail -f /dev/null
+\end{lstlisting}
+
+\begin{lstlisting}[language=nginx, caption={HOW-R-U web interface Dockerfile}, captionpos=b]
+FROM python:3.6.10-stretch
+ENV PYTHONUNBUFFERED 1
+
+# Copy config files
+ADD config/requirements.txt /root/requirements.txt
+ADD config/routes.json /etc/howru/cfg/routes.json
+ADD config/initial_data.json /initial_data.json
+
+# Install dependencies
+RUN pip install -r /root/requirements.txt
+
+# iPython for debugging
+RUN pip3.6 install ipython
+
+# Set workdir
+WORKDIR /opt/web_interface
+
+# Run server
+CMD python3 manage.py makemigrations && \
+    python3 manage.py migrate && \
+    python3 manage.py loaddata /initial_data.json && \
+    python3 manage.py runserver 0:8080
+#CMD tail -f /dev/null
+\end{lstlisting}
+
+\begin{lstlisting}[language=docker, caption={HOW-R-U web reverse proxy Dockerfile}, captionpos=b]
+FROM nginx:latest
+COPY web_interface.conf /etc/nginx/conf.d/web_interface.conf
+\end{lstlisting}
+
+The reverse proxy configuration file just indicates the port where the web interface will be hosted:
+\begin{lstlisting}[language=nginx, mathescape=false, caption={HOW-R-U web reverse proxy configuration file}, captionpos=b]
+server {
+    listen      85;
+    location / {
+        proxy_pass http://localhost:8080/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+\end{lstlisting}
 
 
-\section{Deployment}
-\label{sec:deployment}
+\section{Environment setup}
+\label{sec:env_setup}
+
+\subsection{Development environment}
+
+The development environment will be deployed using \cite{docker}. To do that, the user just needs to install \emph{Docker}, clone the code repository and run the attached script:
+
+\begin{lstlisting}[mathescape=false, language=bash, caption={Commands to deploy development environment}, captionpos=b]
+  $> git clone https://github.com/csp98/TFG1920
+  $> cd howru/docker
+  $> ./start.sh
+\end{lstlisting}
+
+The \emph{start.sh} scripts build all the images and then launches them in \emph{docker}:
+
+\begin{lstlisting}[language=bash, caption={start.sh script}, captionpos=b]
+#!/bin/zsh
+# Chatbot
+docker build -t psychologist-bot chatbot
+
+# Web interface
+docker build -t web_interface web_interface
+docker build -t proxy proxy
+
+docker-compose -p "howru" up -d --remove-orphans --force-recreate
+\end{lstlisting}
+\newpage
+
+\subsection{Production environment}
+
+The production environment will be deployed using \emph{Amazon Web Services}. There will be three tipes of instances: psychologist bot, web interface and databases.
+
+\subsubsection{Pre-deployment: Telegram bot creation}
+
+The first step is to create the production conversational agent in Telegram. To do so, the user must establish a conversation with \emph{@BotFather} and send the bot creation commands:
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{bot_creation.png}
+  \caption{Telegram bot creation}
+\end{figure}
+
+\emph{@BotFather} will provide the user with a private authentication token that HOW-R-U will use to control the conversational agent. The user can customize the bot by adding a profile picture, changing description, etc. by using the related \emph{@BotFather} commands.
+
+\subsubsection{System deployment}
+
+The next step is to deploy the system into AWS. The first component that is going to be deployed will be the database.
+
+The user has to log in into \emph{Amazon Relational Database System (RDS)} and create a PostgreSQL database, setting an username and password. The user can use this tutorial as reference: \href{https://aws.amazon.com/getting-started/tutorials/create-connect-postgresql-db/}{https://aws.amazon.com/getting-started/tutorials/create-connect-postgresql-db/}.
 
 
-\subsection{Experimental setup}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{db_creation.png}
+  \caption{Database instance being created}
+\end{figure}
 
-\subsection{Results}
+Then, the chatbot and web interface instances should be created using EC2. They should work under a Linux distribution. The web interface needs an specific rule in the security group so that it can be accessed from outside (port 80, HTTP):
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{web_int_sg.png}
+  \caption{Security group rule for web interface instance}
+\end{figure}
+
+The next step is to deploy the web interface. To do so, the user must clone the repository from the instance:
+
+\begin{lstlisting}[mathescape=false, language=bash, caption={Commands to download web interface repository}, captionpos=b]
+  web_interface > sudo su
+  web_interface > yum install git
+  web_interface > mkdir /opt/web_interface
+  web_interface > cd /opt/web_interface
+  web_interface > git clone --recurse-submodules https://github.com/csp98/howru_web_interface.git .
+\end{lstlisting}
+
+Now we should configure four parameters: DB routes file, debug mode (should be disabled), allowed hosts and Django secret key. The first one consists on creating a file (\emph{/etc/howru/cfg/routes.json}) with the following content:
+
+\begin{lstlisting}[caption={Routes file}, captionpos=b]
+{
+  "host": "<DB instance DNS>",
+  "port": 5432,
+  "name": "postgres",
+  "user": "<DB username>",
+  "password": "<DB password>"
+}
+\end{lstlisting}
+
+The Django secret key can be generated with the following website: \href{https://miniwebtool.com/django-secret-key-generator/}{https://miniwebtool.com/django-secret-key-generator/}. Once retrieved, the user should create the following file:
+
+\begin{lstlisting}[mathescape=false, language=bash, caption={Command to create Django key file}, captionpos=b]
+  web_interface > nano /opt/web_interface/core/key.py
+\end{lstlisting}
+
+\begin{python}[caption={Django key file contents}, captionpos=b]
+  KEY = '<KEY>'
+\end{python}
+
+Finally, the user must edit \emph{/opt/web\_interface/core/settings.py} setting \emph{DEBUG=False} and \emph{ALLOWED\_HOSTS = [*']}
+
+The environment files are now ready. The next steps consist on installing \emph{Python}, the requirements and running the server.
+
+\begin{lstlisting}[mathescape=false, language=bash]
+web_interface > yum install python3 python3-pip python-psycopg2 postgresql gcc python3-devel
+web_interface > pip3 install -r requirements.txt
+web_interface > python3 manage.py makemigrations
+web_interface > python3 manage.py migrate
+\end{lstlisting}
+
+Finally, we will configure \emph{screen} to detach the session where the interface will run:
+
+\begin{lstlisting}[mathescape=false, language=bash]
+web_interface > yum install screen
+web_interface > screen
+web_interface > python3 manage.py runserver 0:80
+\end{lstlisting}
+
+And finally press \emph{Ctrl+A+D} and close the SSH session. The web interface is now successfully configured and deployed and doctors can now use it by accessing through the public DNS.
+
+Finally, let's deploy the conversational agent. Log in into the instance via SSH and do the following:
+
+\begin{lstlisting}[mathescape=false, language=bash]
+conv_agent > sudo su
+conv_agent > yum install python3 python3-pip python3-devel git screen
+conv_agent > mkdir /opt/chatbot
+conv_agent > cd /opt/chatbot
+conv_agent > git clone --recurse-submodules https://github.com/csp98/howru_chatbot.git .
+\end{lstlisting}
+
+Create the routes file (same as the web interface one) in the same directory. After that, the file with the bot secret token, \emph{/opt/chatbot/config/bot\_config.py}, and add the following:
+\begin{python}
+TOKEN = "<SECRET TOKEN>"
+\end{python}
+
+Now install the requirements, detach the screen and launch the conversational agent:
+
+\begin{lstlisting}[mathescape=false, language=bash]
+conv_agent > python3 -m pip install -r requirements.txt
+conv_agent > export PYTHONPATH=`pwd`
+conv_agent > export DJANGO_SETTINGS_MODULE="manage.settings"
+conv_agent > python3 manage.py makemigrations
+conv_agent > python3 manage.py migrate
+conv_agent > python3 src/bot.py
+\end{lstlisting}
+
+After that, HOW-R-U system is ready to be used.
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=\textwidth]{production.png}
+    \caption{HOW-R-U production conversational agent}
+\end{figure}
 
 
 \section{Discussion}
+fortalezas y debilidades (no como lista)
 
 \section{Conclusions}
+revisión de objetivos logrados y no logrados
 
 \newpage
 \bibliographystyle{apacite}
