@@ -201,11 +201,11 @@ As we previously discussed, mental disorders are taboo, so having a bot you coul
 \subsection{Objectives}
 
 \begin{itemize}
-  \item \textbf{Main goal}: to develop a conversational-agent-as-a-sensor which will be able to interact with a person with a mental disorder in a natural way and ask questions defined by specialists.
+  \item \textbf{Main goal}: to develop a conversational-agent-as-a-sensor which will be able to interact with a person with a disorder and ask questions defined by specialists.
   \item \textbf{Secondary goals}:
     \begin{itemize}
       \item To design a graphical web interface where doctors can consult their patient's responses.
-      \item To design a flexible and scalable architecture to add functionality to the conversational agent.
+      \item To design a flexible and scalable architecture to add functionality to the system.
       \item To design an architecture based on containers to host the different system modules.
       \item To implement a system that covers the previous goals.
       \item To test a beta version of the assistant in real people and analyse the retrieved data as well as target audience's feelings about it.
@@ -218,9 +218,9 @@ The first chapter of this project offers an introduction to the context in which
 
 The second one (\textbf{Methodology}) contains the proper requisites design, architecture, programming language and frameworks that are intended to be used in the system development, as well as its the most important modules and some code snippets to illustrate its functionality.\\
 
-The third one, \textbf{Evaluation}, shows the results of the application testing amongst real people and the obtained results in an objective way.\\
+The third one, \textbf{Environment Setup}, explains how to deploy both a development and a production environment for HOW-R-U.\\
 
-The fourth chapter, \textbf{Discussion}, analyses the results obtained in the third chapter.\\
+The fourth chapter, \textbf{Discussion}, analyses the system by performing a SWOT analysis.\\
 
 Finally, the last one, \textbf{Conclussions} analyses the initial objectives of the project and if they were achieved or not.
 
@@ -785,6 +785,8 @@ if __name__ == "__main__":
 \end{python}
 \newpage
 \subsection{Web interface}
+\label{sec:web_int}
+
 
 The web interface is based on \cite{appseed}.
 
@@ -1281,6 +1283,7 @@ def delete_account(request):
 HOW-R-U web interface icons have been gathered from \cite{pixabay}
 \newpage
 \subsection{Docker}
+\label{sec:docker}
 
 HOW-R-U development environment is composed of four main containers: conversational agent, web interface, database and reverse proxy. The containers use volumes, so that changes made to their files take effect inmediately, avoiding an environment restart to test them. The \emph{docker-compose} specification is the following one:
 
@@ -1482,7 +1485,7 @@ Now we should configure four parameters: DB routes file, debug mode (should be d
 }
 \end{lstlisting}
 
-The Django secret key can be generated with the following website: \href{https://miniwebtool.com/django-secret-key-generator/}{https://miniwebtool.com/django-secret-key-generator/}. Once retrieved, the user should create the following file:
+The Django secret key can be generated with the following website: \\\href{https://miniwebtool.com/django-secret-key-generator/}{https://miniwebtool.com/django-secret-key-generator/}. Once retrieved, the user should create the following file:
 
 \begin{lstlisting}[mathescape=false, language=bash, caption={Command to create Django key file}, captionpos=b]
   web_interface > nano /opt/web_interface/core/key.py
@@ -1532,6 +1535,7 @@ Now install the requirements, detach the screen and launch the conversational ag
 
 \begin{lstlisting}[mathescape=false, language=bash]
 conv_agent > python3 -m pip install -r requirements.txt
+conv_agent > screen
 conv_agent > export PYTHONPATH=`pwd`
 conv_agent > export DJANGO_SETTINGS_MODULE="manage.settings"
 conv_agent > python3 manage.py makemigrations
@@ -1549,10 +1553,46 @@ After that, HOW-R-U system is ready to be used.
 
 
 \section{Discussion}
-fortalezas y debilidades (no como lista)
+
+The discussion of the proposed system will be based on a SWOT analysis (\textbf{S}trengths, \textbf{W}eaknesses, \textbf{O}pportunities and \textbf{T}hreats). The main \underline{strength} of HOW-R-U is its versatility: it can be used in many different scenarios, from health domains to analysis of data based on surveys. Moreover, the interface is intended to be easy to use and learn so that users do not struggle when manipulating it. Another strength is that the patient does not need to install a specific application to use it. Regarding the  \underline{opportunities} of the system, a strong case of use could be a wide data analysis about COVID-19 symptoms to identify patterns over the population, build a map based on infected patients, etc.
+
+
+The main  \underline{weakness} of the system is that Telegram is not used by the majority of people, so it is likely that most patients will have to install it. This weakness leads to the  \underline{threat} of another system that uses its own specific app. As patients would have to install an application in both cases, maybe they could opt for the particular one, that could offer another user interface, animations, etc.
+
+\newpage
 
 \section{Conclusions}
-revisión de objetivos logrados y no logrados
+
+\subsection{Main goal: to develop a conversational-agent-as-a-sensor which will be able to interact with a person with a disorder and ask questions defined by specialists}
+
+This objective is achieved, as the conversational agent module manages patient-system interactions. Moreover, the system allows doctors to create custom questions through the web interface. In addition, they can use questions created by other specialists (if they set them as public).
+
+\subsection{Secondary goals}
+
+\subsubsection{To design a graphical web interface where doctors can consult their patient’s responses}
+
+This goal is also reached, as shown in the \hyperref[sec:web_int]{web interface implementation section}. Besides, doctors can either analyse the retrieved data through the integrated charts or download a CSV file to ellaborate their own metrics.
+
+\subsubsection{To design a flexible and scalable architecture to add functionality to the system}
+
+As doctors can add custom questions with the system, HOW-R-U can be used in a lot of scenarios. The \emph{data analyst} feature also allows the system to be used not only in medical situations, but also in surveys ones.
+
+
+\subsubsection{To design an architecture based on containers to host the different system modules}
+
+As shown in the \hyperref[sec:docker]{Docker implementation section}, the system is structured in containers so that a development environment can be easily set up.
+
+\subsubsection{To implement a system that covers the previous goals}
+
+The system is implemented, as the \hyperref[sec:implementation]{implementation} illustrates.
+
+\subsubsection{To test a beta version of the assistant in real people and analyse the retrieved data as well as target audience’s feelings about it}
+
+This is the only objective that has not been accomplished. HOW-R-U started being a much elementary system: it didn't have a web interface (doctors would have had to control everything from another Telegram bot), questions were not customizable (the developer would have had to define and hardcode them), there were no concepts such as frequency or priority (questions were asked daily in a random order), etc.
+
+We decided to leave this goal behind in order to give more functionality and customization to HOW-R-U so that it could be used in a wider variety of scenarios, not only the health care ones.
+
+The whole source code of HOW-R-U is available at \href{https://github.com/csp98/TFG1920}{https://github.com/csp98/TFG1920}
 
 \newpage
 \bibliographystyle{apacite}
