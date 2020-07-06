@@ -25,6 +25,7 @@
 \definecolor{swotW}{RGB}{247,193,139}
 \definecolor{swotO}{RGB}{173,208,187}
 \definecolor{swotT}{RGB}{192,165,184}
+\usepackage{eurosym} % para el euro
 \usepackage[raster]{tcolorbox}
 \usepackage{amsthm}
 \usepackage{multicol}
@@ -228,7 +229,7 @@ As we previously discussed, mental disorders are taboo, so having a bot you coul
 In addition, the mental specialist-patients ratio is quite low in Spain, about 2 psychologists per 100.000 citizens, \cite{elmundo}. In the future, this lack of specialist will be even more evident, as more people will suffer from mental health disorders. In fact, by 2030 there will be approximately 2 million more adults in the UK with a mental health problem. \cite{nhs}.
 
 \subsection{Objectives}
-
+\label{sec:objectives}
 \begin{itemize}
   \item \textbf{Main goal}: to develop a conversational-agent-as-a-sensor which will be able to interact with a person with a disorder and ask questions defined by specialists.
   \item \textbf{Secondary goals}:
@@ -245,7 +246,7 @@ In addition, the mental specialist-patients ratio is quite low in Spain, about 2
 
 The first chapter of this project offers an introduction to the context in which the main goal is intended to be developed as well as an analysis of related papers. This section is divided into four main categories (health application domains, conversational agents types, communication format and architecture) and a research about the popularity of chatbots.
 
-The second one (\textbf{Methodology}) contains the proper requisites design, architecture, programming language and frameworks that are intended to be used in the system development, as well as its the most important modules and some code snippets to illustrate its functionality. The third one (\textbf{Environment Setup}) explains how to deploy both a development and a production environment for HOW-R-U. The fourth chapter (\textbf{Discussion}) analyses the system by performing a SWOT analysis. Finally, the last one (\textbf{Conclussions}) analyses the initial objectives of the project and if they were achieved or not.
+The second one (\textbf{Methodology}) contains the proper requisites design, architecture, programming language and frameworks that are intended to be used in the system development, as well as its the most important modules and some code snippets to illustrate its functionality. The third one (\textbf{Environment Setup}) explains how to deploy both a development and a production environment for HOW-R-U. The fourth chapter (\textbf{Discussion}) analyses the system by performing a SWOT analysis. Finally, the last one (\textbf{Conclusions}) analyses the initial objectives of the project and if they were achieved or not, as well as possible future work.
 
 
 \newpage
@@ -537,7 +538,7 @@ The other submodule, helpers, allows coding and decoding flag emojis from countr
 \subsection{Conversational agent}
 
 
-The conversational agent module contains seven submodules: \emph{config}, where the secret token is stored and messages, a file which contains all the messages the bot can send in English and Spanish. The bot secret token is a string which contains an unique identifier that links a Telegram bot user with the code it will run. This token is given by \emph{@BotFather}, a bot used to create bots. More information about the bot creation process will be explained in the \hyperref[sec:env_setup]{environment setup section}.
+The conversational agent module contains seven submodules: \emph{config}, where the secret token is stored and messages, a file which contains all the messages the bot can send in English and Spanish. The bot secret token is a string which contains an unique identifier that links a Telegram bot user with the code it will run. This token is given by \emph{@BotFather} \cite{botfather}, a bot used to create bots. More information about the bot creation process will be explained in the \hyperref[sec:env_setup]{environment setup section}.
 
 The next submodule, \emph{handlers}, defines the bot behaviour according to certain events, like sending the \emph{/start} command (the first one that is sent when an user interacts with a bot), sending the {\emph{/config}} one, etc., There are three main handlers:
 \begin{itemize}
@@ -621,7 +622,7 @@ The database entry is created simply with the command \emph{patient.save()} than
   \includegraphics[width=0.45\textwidth]{start.png}
   \caption{Agent showing the welcome message and asking for language selection.}
 \end{figure}
-
+\newpage
 The \emph{config handler} is invoked when the \emph{/config} command is sent. This command appears in a pop-up menu next to the text input. The configurator callbacks are pretty similar between them. There are two types of them: \emph{ask\_for\_$<$property$>$} and \emph{process\_$<$property$>$}. The first ones send a message to the patients with the old value of the property they want to change and ask them to send the new value. The second ones update the patient's database entry with the new value. For example, the schedule changer is implemented as follows:
 
 \begin{python}[caption={Name changer configurator callbacks}, captionpos=b]
@@ -717,14 +718,12 @@ def _get_pending_question_task(user_id):
     """
     return PendingQuestion.objects.get(patient_id=user_id, answering=True)
 
-
 question_handler = ConversationHandler(
     entry_points=[MessageHandler(~Filters.command & is_answering_filter, answer_question)],
     states={},
     fallbacks=[],
     name="questions_handler"
 )
-
 \end{python}
 
 When the user sends an answer, this callback retrieves the pending question that is being answered and creates the corresponding AnsweredQuestion entry. After that, the answering flag is set to False in the PendingQuestion object.
@@ -1180,7 +1179,7 @@ The export page offers a form to select patients, start date and end date. When 
   \caption{Export page}
 \end{figure}
 
-\begin{table}[]
+\begin{table}[h!]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}cccc@{}}
@@ -1340,7 +1339,6 @@ The individual \emph{Dockerfiles} of the previous containers are the following o
 FROM python:3.6.10-stretch
 
 # Install requirements
-
 ADD config/requirements.txt /root/requirements.txt
 ADD config/routes.json /etc/howru/cfg/routes.json
 RUN pip install -r /root/requirements.txt
@@ -1356,10 +1354,9 @@ WORKDIR /opt/chatbot
 CMD python3 manage.py makemigrations && \
     python3 manage.py migrate && \
     python3 src/bot.py
-#CMD    tail -f /dev/null
 \end{lstlisting}
 
-\begin{lstlisting}[language=nginx, caption={HOW-R-U web interface Dockerfile}, captionpos=b]
+\begin{lstlisting}[language=docker, caption={HOW-R-U web interface Dockerfile}, captionpos=b]
 FROM python:3.6.10-stretch
 ENV PYTHONUNBUFFERED 1
 
@@ -1382,7 +1379,6 @@ CMD python3 manage.py makemigrations && \
     python3 manage.py migrate && \
     python3 manage.py loaddata /initial_data.json && \
     python3 manage.py runserver 0:8080
-#CMD tail -f /dev/null
 \end{lstlisting}
 
 \begin{lstlisting}[language=docker, caption={HOW-R-U web reverse proxy Dockerfile}, captionpos=b]
@@ -1405,7 +1401,7 @@ server {
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{docker-compose.png}
-  \caption{Docker-compose file schema.}
+  \caption{Docker-compose file schema. Generated by \protect\cite{dockerviz}}
 \end{figure}
 \section{Environment setup}
 \label{sec:env_setup}
@@ -1464,7 +1460,7 @@ The first step is to create the production conversational agent in Telegram. To 
 
 \subsubsection{System deployment}
 
-The next step is to deploy the system into AWS. The first component that is going to be deployed will be the database.
+The next step is to deploy the system into Amazon Web Services \cite{aws}. The first component that is going to be deployed will be the database.
 
 The user has to log in into \emph{Amazon Relational Database System (RDS)} and create a PostgreSQL database, setting an username and password. The user can use this tutorial as reference: \href{https://aws.amazon.com/getting-started/tutorials/create-connect-postgresql-db/}{https://aws.amazon.com/getting-started/tutorials/create-connect-postgresql-db/}.
 
@@ -1576,7 +1572,7 @@ After that, HOW-R-U system is ready to be used.
 The discussion of the proposed system will be based on a SWOT analysis (\textbf{S}trengths, \textbf{W}eaknesses, \textbf{O}pportunities and \textbf{T}hreats). The main \underline{strength} of HOW-R-U is its versatility: it can be used in many different scenarios, from health domains to analysis of data based on surveys. For example, a health clinic could offer a suite of e-coaches based on HOW-R-U: a nutritionist, a psychologist, a dermatologyst, etc., that would make the patients regular questions so that their daily status is tracked by doctors, obtaining a big quantity of useful data.  Moreover, the interface is intended to be easy to use and learn so that users do not struggle when manipulating it. Another strength is that the patient does not need to install a specific application to use it because HOW-R-U conversational agent can be used both through Telegram Web or Desktop. Regarding the \underline{opportunities} of the system, a strong case of use could be a wide data analysis about COVID-19 symptoms to identify patterns over the population, build a map based on infected patients, etc.,. Furthermore, as Telegram is one of the chat applications that offers more privacy for its users, the system can be more attractive to them than other systems that use other apps ensuring less privacy.
 
 
-The main \underline{weakness} of the system is that its deployment requires specific knowledge about architectures, system shells, etc., so it is not suitable for everyone. In addition,  Telegram is not used by the majority of people, so it is likely that most patients will have to install it. This weakness leads to the  \underline{threat} of another system that uses its own specific app. As patients would have to install an application in both cases, maybe they could opt for the particular one, that could offer another user interface, animations, etc.,. Another threat is that elder people may not know how to use Telegram. Lastly, not every patient has a smartphone, so a minor percentage of the couldn't use the system.
+The main \underline{weakness} of the system is that its deployment requires specific knowledge about architectures, system shells, etc., so it is not suitable for everyone. In addition,  Telegram is not used by the majority of people, so it is likely that most patients will have to install it. This weakness leads to the  \underline{threat} of another system that uses its own specific app. As patients would have to install an application in both cases, maybe they could opt for the particular one, that could offer another user interface, animations, etc.,. Another threat is that elder people may not know how to use Telegram. Lastly, not every patient has a smartphone, so a minor percentage of the could not use the system.
 
 \begin{figure}[H]
   \centering
@@ -1673,7 +1669,7 @@ The planification of this project has been divided into two main groups: documen
 
 \subsubsection{Budget}
 
-HOW-R-U is distributed under a Creative Commons “Attribution-NonCommercial-ShareAlike 4.0 International” license, which means that the project can be freely used \textbf{as long as} it is not generate profit, so the main budget element will be the hosting. HOW-R-U can be hosted in a propietary infrastructure (in which the system administrator would have to buy and maintain all the equipment) or in the cloud (where the system administrator would pay per use). Regarding the cloud model, there could be three approaches depending on the system usage: a high and scalable one, a low and non scalable one and a single instance.
+HOW-R-U is distributed under a Creative Commons “Attribution-NonCommercial-ShareAlike 4.0 International” license, which means that the project can be freely used \textbf{as long as} it is not used to generate profit, so the main budget element will be the hosting. HOW-R-U can be hosted in a propietary infrastructure (in which the system administrator would have to buy and maintain all the equipment) or in the cloud (where the system administrator would pay per use). Regarding the cloud model, there could be three approaches depending on the system usage: a high and scalable one, a low and non scalable one and a single instance.
 
 \subsubsection{Scalable environment}
 
@@ -1681,19 +1677,32 @@ Scalable configuration is suitable if the system is widely used. It is formed by
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.65\textwidth]{cost.png}
+  \includegraphics[width=0.5\textwidth]{cost.png}
   \caption{AWS cost for a HOW-R-U scalable production environment (Amazon Web Services Calculator (\href{https://calculator.aws/\#/estimate}{https://calculator.aws/\#/estimate}))}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{scalable.pdf}
+  \caption{Scalable environment architecture diagram. Created using \emph{diagrams.net} \protect\cite{drawio}.}
 \end{figure}
 
 \subsubsection{Non scalable environment}
 
-Non-scalable configuration is oriented for environments where the workload is not high. It consists on two machines: a database server and an instance that will host both the conversational agent and the web interface. If the number of accesses to the system increases, it would be easy to create another instance and transition to the scalable environment. Moreover, no database migrations would be needed, as this architecture provides an independent database instance.
+Non-scalable configuration is oriented for environments where the workload is not high. It consists on two elements: a database cluster (which is scalable) and an instance that will host both the conversational agent and the web interface. If the number of accesses to the system increases, it would be easy to create another instance and transition to the scalable environment. Moreover, no database migrations would be needed, as this architecture provides an independent database cluster.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.65\textwidth]{cost_noscalable.png}
-  \caption{AWS cost for a HOW-R-U non scalable production environment (Amazon Web Services Calculator (\href{https://calculator.aws/\#/estimate}{https://calculator.aws/\#/estimate}))}
+  \caption{AWS cost for a HOW-R-U non-scalable production environment (Amazon Web Services Calculator (\href{https://calculator.aws/\#/estimate}{https://calculator.aws/\#/estimate}))}
 \end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{non-scalable.pdf}
+  \caption{Non-scalable environment architecture diagram. Created using \emph{diagrams.net} \protect\cite{drawio}.}
+\end{figure}
+\newpage
 
 \subsubsection{One single instance}
 
@@ -1705,7 +1714,57 @@ This is the cheapest alternative, but the worst one if the system expects to get
   \caption{AWS cost for a HOW-R-U one-instance production environment (Amazon Web Services Calculator (\href{https://calculator.aws/\#/estimate}{https://calculator.aws/\#/estimate}))}
 \end{figure}
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{one-instance.pdf}
+  \caption{One-instance environment architecture diagram. Created using \emph{diagrams.net} \protect\cite{drawio}.}
+\end{figure}
+\newpage
+
+Another important element in the budget is the development cost of the system per employee which would be the following:
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|c|c|}
+    \hline
+    \textbf{Concept} & \textbf{Cost} \\
+    \hline
+    Base salary & 1000\euro \\
+    Bonus payments & 200\euro \\
+    Proportional part of the extra pays & 150\euro \\
+    Type of contract & Indefinite \\
+    Type of working days & Full time \\
+    Tax withholdings & 7\% \\
+    Accident and occupational disease contribution basis & 1\% \\
+    \hline
+     \textbf{Total cost for the company} & 1767.15\euro \\
+      \textbf{Net salary for the employee} & 1169.78\euro \\
+    \hline
+  \end{tabular}
+  \caption{System cost per employee per month}
+\end{table}
+
+The total cost of the system (human resources and hosting) having one single employee is detailed below, depending on the chosen architecture:
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    \textbf{Architecture} & \textbf{Human resources cost} & \textbf{Architecture cost} & \textbf{Total cost}\\
+    \hline
+     Scalable & 1767.15\euro & 107.42\euro & 1874.57\euro \\
+     Non scalable & 1767.15\euro & 62\euro & 1829.15\euro \\
+     One instance & 1767.15\euro & 44.44\euro & 1811.59\euro \\
+     \hline
+  \end{tabular}
+  \caption{System total cost per moth}
+\end{table}
+\newpage
 \section{Conclusions}
+
+The sections below analyse the project's success level, regarding every goal defined in the \hyperref[sec:objectives]{Objectives section}, as well as possible areas for potential future work.
+
+\subsection{Achievements}
 
 \begin{itemize}
   \item \textbf{Main goal: to develop a conversational-agent-as-a-sensor which will be able to interact with a person with a disorder and ask questions defined by specialists}. This objective is achieved, as the conversational agent module manages patient-system interactions. Moreover, the system allows doctors to create custom questions through the web interface. In addition, they can use questions created by other specialists (if they set them as public).
@@ -1719,8 +1778,14 @@ This is the cheapest alternative, but the worst one if the system expects to get
     We decided to leave this goal behind in order to give more functionality and customization to HOW-R-U so that it could be used in a wider variety of scenarios, not only the health care ones.
   \end{itemize}
 \end{itemize}
+\newpage
+\subsection{Future work}
+
+HOW-R-U functionality can be extended in many ways. For example, the web interface could be enriched with more data views, like patient's country, city, age, etc. Moreover, this module could be able to automatically generate the charts requested by the user. Another improvement area can be the conversational agent module, which could be ported to other chat applications in order to cover more population. This would make patients feel more confortable about HOW-R-U, as they would not have to download another chat application if they did not have \cite{Telegram} installed.
 
 
+Another area of improvement could be the development of a QA (Quality Assurance) suite of tests. This would make easier to detect if a new change performed in the system introduces regression over the previous status of HOW-R-U. What is more, HOW-R-U could be analyzed in order to apply profiling techniques to improve the system performance by detecting the bottleneck points of the different flows and optimising them. Finally, the system could be translated to other languages so that it can be used worldwide. This requirement would also need more timezones to be available in order to correctly work with patients' schedule.
+\vspace{1cm}
 
 The whole source code of HOW-R-U is available at \href{https://github.com/csp98/TFG1920}{https://github.com/csp98/TFG1920}
 
