@@ -44,6 +44,8 @@
 \usepackage{footnote}
 \newcommand{\dollar}{\mbox{\textdollar}}
 \usepackage{lscape}
+\usepackage{amsmath}  % for \hookrightarrow
+\usepackage{xcolor}   % for \textcolor
 \usepackage{incgraph}
 \makesavenoteenv{tabular}
 \makesavenoteenv{table}
@@ -1572,7 +1574,7 @@ After that, HOW-R-U system is ready to be used.
 The discussion of the proposed system will be based on a SWOT analysis (\textbf{S}trengths, \textbf{W}eaknesses, \textbf{O}pportunities and \textbf{T}hreats). The main \underline{strength} of HOW-R-U is its versatility: it can be used in many different scenarios, from health domains to analysis of data based on surveys. For example, a health clinic could offer a suite of e-coaches based on HOW-R-U: a nutritionist, a psychologist, a dermatologyst, etc., that would make the patients regular questions so that their daily status is tracked by doctors, obtaining a big quantity of useful data.  Moreover, the interface is intended to be easy to use and learn so that users do not struggle when manipulating it. Another strength is that the patient does not need to install a specific application to use it because HOW-R-U conversational agent can be used both through Telegram Web or Desktop. Regarding the \underline{opportunities} of the system, a strong case of use could be a wide data analysis about COVID-19 symptoms to identify patterns over the population, build a map based on infected patients, etc.,. Furthermore, as Telegram is one of the chat applications that offers more privacy for its users, the system can be more attractive to them than other systems that use other apps ensuring less privacy.
 
 
-The main \underline{weakness} of the system is that its deployment requires specific knowledge about architectures, system shells, etc., so it is not suitable for everyone. In addition,  Telegram is not used by the majority of people, so it is likely that most patients will have to install it. This weakness leads to the  \underline{threat} of another system that uses its own specific app. As patients would have to install an application in both cases, maybe they could opt for the particular one, that could offer another user interface, animations, etc.,. Another threat is that elder people may not know how to use Telegram. Lastly, not every patient has a smartphone, so a minor percentage of the could not use the system.
+The main \underline{weakness} of the system is that its deployment requires specific knowledge about architectures, system shells, etc., so it is not suitable for everyone. In addition,  Telegram is not used by the majority of people, so it is likely that most patients will have to install it. This weakness leads to the  \underline{threat} of another system that uses its own specific app. As patients would have to install an application in both cases, maybe they could opt for the particular one, that could offer another user interface, animations, etc.,. Another threat is that elderly people may not know how to use Telegram. Lastly, not every patient has a smartphone, so a minor percentage of the could not use the system.
 
 \begin{figure}[H]
   \centering
@@ -1599,7 +1601,7 @@ The main \underline{weakness} of the system is that its deployment requires spec
   \end{tcolorbox}
   \begin{tcolorbox}[equal height group=B, size=fbox, colback=swotT!60, colframe=swotT!80!black, title=\textsc{threats}]
   \begin{enumerate}
-  \item Elder people may not know how to use Telegram.
+  \item Elderly people may not know how to use Telegram.
   \item If patients do not have Telegram installed, they could install a specific app instead of Telegram.
   \item Not all patients have smartphones.
   \end{enumerate}

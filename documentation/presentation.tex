@@ -104,7 +104,7 @@ showstringspaces=false            %
 \date{17th July 2020}
 \subtitle{Suite of e-coaches aimed to analyse human behaviour}
 
-\author{Carlos Sánchez Páez\\Oresti Baños Legrán}
+\author{Author:\\Carlos Sánchez Páez\\Supervisor:\\Oresti Baños Legrán}
 
 \makeatletter
   \setbeamertemplate{sidebar \beamer@sidebarside}%{sidebar theme}
@@ -158,21 +158,12 @@ showstringspaces=false            %
  \titlepage
 \end{frame}
 
-\begin{frame}{Índice}
+\begin{frame}{Index}
  \tableofcontents
  % You might wish to add the option [pausesections]
 \end{frame}
 
 \section{Introduction}
-\subsection{Proposal}
-\begin{frame}[fragile]{Proposal}
-  \begin{itemize}[<+->]
-    \item \emph{E-coaches} suite as chatbots.
-    \item Doctors can assign questions to patients.
-    \item Data analysis.
-    \item Psychologist bot.
-  \end{itemize}
-\end{frame}
 \subsection{Context and motivation}
 \begin{frame}[fragile]{Context}
   \begin{itemize}[<+->]
@@ -195,8 +186,18 @@ showstringspaces=false            %
   \begin{itemize}[<+->]
     \item Technology is becoming increasingly integrated into our lives.
     \item Smartphones are used in a daily basis.
-    \item Chatbots are becoming growingly becoming popular.
-    \item In Spain there are 2 psychologist per 100.000 citizens \cite{elmundo}.
+    \item Chatbots are growingly becoming popular.
+    \item In Spain there are 2 psychologists per 100.000 citizens \cite{elmundo}.
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Proposal}
+\begin{frame}[fragile]{Proposal}
+  \begin{itemize}[<+->]
+    \item \emph{E-coaches} suite as chatbots.
+    \item Doctors can assign questions to patients.
+    \item Data analysis.
+    \item Psychologist bot.
   \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -205,16 +206,15 @@ showstringspaces=false            %
   \begin{itemize}[<+->]
     \item \textbf{Main goal}:
     \begin{itemize}[<+->]
-      \item \emph{Conversational-agent-as-a-sensor} that asks questions to patients.
-      \item Questions will be defined by specialists.
+      \item To develop a \emph{conversational-agent-as-a-sensor} which will be able to interact with a person with a disorder and ask questions defined by specialists
     \end{itemize}
     \item \textbf{Secondary goals}.
       \begin{itemize}[<+->]
-        \item Graphical web interface for doctors.
-        \item Flexible and scalable architecture to add functionality to the system.
-        \item Architecture based on containers to host the different system modules.
-        \item Implement a system that covers the previous goals.
-        \item Test a beta version of the system to retrieve target audience’s feelings about it.
+        \item To design a graphical web interface where doctors can consult their patient's responses.
+        \item To design a flexible and scalable architecture to add functionality to the system.
+        \item To design an architecture based on containers to host the different system modules.
+        \item To implement a system that covers the previous goals.
+        \item To test a beta version of the assistant in real people and analyse the retrieved data as well as target audience's feelings about it.
       \end{itemize}
   \end{itemize}
 \end{frame}
@@ -386,6 +386,7 @@ showstringspaces=false            %
 
 \begin{frame}[fragile]{Implementation (conversational agent)}
   \begin{itemize}[<+->]
+    \item Python 3.6.10 \cite{python}
     \item Handlers.
           \begin{itemize}[<+->]
             \item Start handler
@@ -399,68 +400,6 @@ showstringspaces=false            %
   \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Implementation (conversational agent start handler)}
-  \begin{minted}[fontsize=\tiny, breaklines]{python}
-  GENDER, PICTURE, LANGUAGE, SCHEDULE = range(4)
-  @send_typing_action
-  def start(update, context):
-      """
-      Shows welcome message and asks for language
-      """
-      # Check that user is not registered
-      try:
-          patient = Patient.objects.get(identifier=update.message.from_user.id)
-          logger.info(  f'User {update.message.from_user.username} tried to register again.')
-          update.message.reply_text(text=messages[patient.language]['already_exists'])
-          return ConversationHandler.END
-      except Patient.DoesNotExist:
-          # The user should not exist in DB
-          context.user_data['patient'] = Patient(name=update.message.from_user.first_name, identifier=str(update.message.from_user.id), username=update.message.from_user.username)
-          logger.info(f'User {update.message.from_user.username} started a new conversation')
-          send_welcome_message(patient)
-          send_language_selection(patient)
-      return LANGUAGE
-\end{minted}
-\end{frame}
-
-\begin{frame}[fragile]{Implementation (conversational agent start handler)}
-  \begin{minted}[fontsize=\tiny, breaklines]{python}
-  start_handler = ConversationHandler(
-      entry_points=[CommandHandler('start', start)],
-      states={
-          LANGUAGE: [MessageHandler(Filters.regex(f'^({Flag.flag("es")}|{Flag.flag("gb")})$'), language)],
-          GENDER: [MessageHandler(Filters.regex('^(Male|Female|Other|Masculino|Femenino|Otro)$'), gender)],
-          PICTURE: [MessageHandler(Filters.photo, picture), CommandHandler('skip', skip_picture)],
-          SCHEDULE: [MessageHandler(Filters.regex('^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$'), schedule)]
-      },
-      fallbacks=[]
-  )
-\end{minted}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]{Implementation (conversational agent PendingQuestionJob)}
-  \begin{minted}[fontsize=\tiny, breaklines]{python}
-  class PendingQuestionJob(object):
-
-    def __init__(self, context, patient):
-        self.patient = patient
-        self._create_job(context)
-
-    def _create_job(self, context):
-        context.job_queue.run_daily(callback=self.job_callback, time=self.patient.schedule, name=f'{self.patient.identifier}_pending_questions_job')
-
-    def job_callback(self, context):
-        pending_questions = self._get_pending_questions()
-        for task in pending_questions:
-            if not self.is_question_answered(task):
-              task.answering = True
-              ask_question(task, self.patient)
-        send_message(self.patient, "All questions have been answered")
-        if was_configurator_running(self.patient.identifier, context):
-          reopen_configurator(self.patient)
-\end{minted}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]{Implementation (conversational agent)}
   \begin{figure}[H]
     \centering
@@ -479,6 +418,21 @@ showstringspaces=false            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[fragile]{Implementation (web interface)}
+  \begin{itemize}[<+->]
+    \item Django \cite{django} project.
+    \item Applications.
+          \begin{itemize}[<+->]
+            \item Homepage.
+            \item Doctors manager.
+            \item Questions manager.
+            \item Patients manager.
+            \item Data viewer.
+          \end{itemize}
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]{Implementation (web interface)}
   \begin{figure}[H]
       \centering
       \includegraphics[width=\textwidth]{homepage.png}
@@ -486,35 +440,14 @@ showstringspaces=false            %
   \end{figure}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \begin{frame}[fragile]{Implementation (web interface)}
-  \begin{minted}[fontsize=\tiny, breaklines]{python}
-    @login_required(login_url="/login/")
-    def index(request):
-        """
-        Shows the index page, including global parameters (top patients, number of associated patients, answers, gender and time percentages, etc.,)
-        """
-        doctor = request.user.doctor
-        top_patients = get_top_patients(doctor)
-        doctor_patients = doctor.patient_set
-        number_associated_patients = doctor_patients.count()
-        submitted_questions = Question.objects.filter(creator=doctor).count()
-        total_answers = get_total_answers(doctor)
-        male_percentage, female_percentage, other_percentage = get_gender_stats(doctor, number_associated_patients)
-        answers_per_hour = get_answers_per_hour(doctor)
-        context = {
-            "top_patients": top_patients,
-            "number_associated_patients": number_associated_patients,
-            "submitted_questions": submitted_questions,
-            "total_answers": total_answers,
-            "male_percentage": male_percentage,
-            "female_percentage": female_percentage,
-            "other_percentage": other_percentage,
-            "answers_per_hour": answers_per_hour
-        }
-        return render(request, "index.html", context)
-  \end{minted}
+  \begin{figure}[H]
+      \centering
+      \includegraphics[width=\textwidth]{doctors_manager.png}
+      \caption{Doctors manager.}
+  \end{figure}
 \end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[fragile]{Implementation (web interface)}
   \begin{figure}[H]
@@ -592,6 +525,24 @@ showstringspaces=false            %
   \end{figure}
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{Implementation (web interface)}
+  \begin{figure}[H]
+    \centering
+      \includegraphics[width=\textwidth]{view_data_1.png}
+    \caption{View data page (line chart).}
+  \end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{Implementation (web interface)}
+  \begin{figure}[H]
+    \centering
+      \includegraphics[width=0.6\textwidth]{view_data_2.png}
+    \caption{View data page (pie chart).}
+  \end{figure}
+\end{frame}
+
 \section{Environments}
 \subsection{Development environment}
 \begin{frame}[fragile]{Development environment}
@@ -627,7 +578,7 @@ showstringspaces=false            %
 \end{frame}
 
 
-\section{Discussion and Conclussions}
+\section{Discussion and Conclusions}
 
 \begin{frame}[fragile]{Discussion}
   \begin{figure}[H]
@@ -637,16 +588,16 @@ showstringspaces=false            %
   \end{figure}
 \end{frame}
 
-\begin{frame}[fragile]{Conclussions}
+\begin{frame}[fragile]{Conclusions}
   \begin{itemize}[<+->]
-    \item \textbf{Main goal}: \emph{Conversational-agent-as-a-sensor} that asks questions defined by specialists to patients. \uncover<2-8>{\greentick}
+    \item \textbf{Main goal}: to develop a \emph{conversational-agent-as-a-sensor} which will be able to interact with a person with a disorder and ask questions defined by specialists. \uncover<2-8>{\greentick}
     \item \textbf{Secondary goals}.
       \begin{itemize}[<+->]
-        \item Graphical web interface for doctors. \uncover<4-8>{\greentick}
-        \item Flexible and scalable architecture to add functionality to the system. \uncover<5-8>{\greentick}
-        \item Architecture based on containers to host the different system modules. \uncover<6-8>{\greentick}
-        \item Implement a system that covers the previous goals. \uncover<7-8>{\greentick}
-        \item Test a beta version of the system to retrieve target audience’s feelings about it. \uncover<8>{\redcross}
+        \item To design a graphical web interface where doctors can consult their patient's responses. \uncover<4-8>{\greentick}
+        \item To design a flexible and scalable architecture to add functionality to the system. \uncover<5-8>{\greentick}
+        \item To design an architecture based on containers to host the different system modules. \uncover<6-8>{\greentick}
+        \item To implement a system that covers the previous goals. \uncover<7-8>{\greentick}
+        \item To test a beta version of the assistant in real people and analyse the retrieved data as well as target audience's feelings about it. \uncover<8>{\redcross}
       \end{itemize}
   \end{itemize}
 \end{frame}
@@ -661,6 +612,10 @@ showstringspaces=false            %
 \begin{frame}{The end}
 \begin{center}
   \Huge
+  Thank you for your attention
+\end{center}
+\begin{center}
+  \large
   Time for questions
 \end{center}
 \end{frame}
